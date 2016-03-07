@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition name=".basic"  template="/WEB-INF/views/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+	
+	<definition name=".login"  template="/WEB-INF/views/layout/login.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+	<definition name="login" extends=".login">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/login.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="orderManagement" extends=".basic">
+		<put-attribute name="body" value="/WEB-INF/views/orderManagement.jsp" />
+	</definition>
+	<definition name="userManagement"  extends=".basic">
+		<put-attribute name="body" value="/WEB-INF/views/userManagement.jsp" />
+	</definition>
+	
+	<definition name="passwordChange"  extends=".basic">
+		<put-attribute name="body" value="/WEB-INF/views/passwordChange.jsp" />
+	</definition>
+	
+	<!-- 작업중 -->
+	<definition name="orderCalculate"  extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/orderCalculate.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="orderDetail"  extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/orderDetail.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="orderGoodsMapping"  extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/orderGoodsMapping.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="orderHistory"  extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/orderHistory.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="orderPO"  extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/orderPO.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	
+	
+	
+
+	<!-- default  현재는 admin/xxxx   용도로 사용되고 있음.  -->
+	
+	<definition name="*/*" extends=".basic">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="*/*/*" extends=".basic">
+		<put-attribute name="body" value="/WEB-INF/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+<!-- 	<definition name="admin/clientMngDetail" extends=".basic"> -->
+<!-- 		<put-attribute name="header" value="" /> -->
+<!-- 		<put-attribute name="body" value="/WEB-INF/views/admin/clientMngDetail.jsp" /> -->
+<!-- 		<put-attribute name="footer" value="" /> -->
+<!-- 	</definition> -->
+	
+
+
+	
+	
+</tiles-definitions>

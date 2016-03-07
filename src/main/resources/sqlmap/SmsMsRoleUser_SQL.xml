@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsRoleUser">
+
+	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="SmsMsRoleUserVO" type="com.b5m.sms.vo.SmsMsRoleUserVO" />
+
+	<resultMap id="smsMsRoleUserVO" class="com.b5m.sms.vo.SmsMsRoleUserVO">
+		<result property="userEml" column="USER_EML" columnIndex="1" />
+		<result property="RoleGrpDivCd" column="ROLE_GRP_DIV_CD" columnIndex="2" />
+
+	</resultMap>
+	
+	<select id="smsMsRoleUserDAO.selectSmsMsRoleUser" parameterClass="SmsMsRoleUserVO" resultMap="smsMsRoleUserVO">
+			SELECT 
+				USER_EML,
+				ROLE_GRP_DIV_CD
+   
+			FROM SMS_MS_ROLE_USER
+			WHERE 1=1
+				<isNotEmpty property="userEml" prepend="AND">
+					<![CDATA[ USER_EML = #userEml#]]>
+			    </isNotEmpty> 
+	</select>
+	<delete id="smsMsRoleUserDAO.deleteSmsMsRoleUserByUserEml" parameterClass="SmsMsRoleUserVO">
+			DELETE FROM SMS_MS_ROLE_USER
+			WHERE <![CDATA[ USER_EML = #userEml# ]]>
+	</delete>
+	<insert id="smsMsRoleUserDAO.insertSmsMsRoleUser" parameterClass="SmsMsRoleUserVO">
+		INSERT INTO SMS_MS_ROLE_USER 
+			( 
+				ROLE_GRP_DIV_CD,
+				USER_EML
+			 )
+		VALUES
+		 	(
+		 		#RoleGrpDivCd#,
+		 		#userEml# 
+			)
+	</insert>
+
+
+
+</sqlMap>

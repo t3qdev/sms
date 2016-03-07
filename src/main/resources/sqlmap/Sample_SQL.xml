@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Sample">
+
+	<select id="tbSampleDAO.selectSample" parameterClass="map" resultClass="java.util.HashMap">
+
+		SELECT CAT_CD
+		, CAT_NM
+		FROM tb_ms_cmn_cat
+
+	</select>
+
+</sqlMap>

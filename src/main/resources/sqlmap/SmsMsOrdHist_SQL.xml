@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsOrdHist">
+
+	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="smsMsOrdHistVO" type="com.b5m.sms.vo.SmsMsOrdHistVO" />
+
+	<resultMap id="smsMsOrdHist" class="com.b5m.sms.vo.SmsMsOrdHistVO">
+		<result property="ordNo" column="ORD_NO" columnIndex="1" />
+		<result property="ordHistSeq" column="ORD_HIST_SEQ" columnIndex="2" />
+		<result property="ordStatCd" column="ORD_STAT_CD" columnIndex="3" />
+		<result property="ordHistWrtrEml" column="ORD_HIST_WRTR_EML" columnIndex="4" />
+		<result property="ordHistRegDttm" column="ORD_HIST_REG_DTTM" columnIndex="5" />
+		<result property="ordHistHistCont" column="ORD_HIST_HIST_CONT" columnIndex="6" />
+	</resultMap>
+	
+	<select id="smsMsOrdHistDAO.selectSmsMsOrdHist" parameterClass="smsMsOrdHistVO" resultMap="smsMsOrdHist">
+			SELECT 
+				ORD_NO,
+		        ORD_HIST_SEQ,
+		        ORD_STAT_CD,
+		        ORD_HIST_WRTR_EML,
+		        DATE_FORMAT(ORD_HIST_REG_DTTM,'%Y-%m-%d') AS ORD_HIST_REG_DTTM,
+		        ORD_HIST_HIST_CONT
+   
+			FROM SMS_MS_ORD_HIST
+			WHERE 1=1
+				<isNotEmpty property="ordNo" prepend="AND">
+					<![CDATA[ ORD_NO like #ordNo# ]]>
+			    </isNotEmpty>
+			    <isNotEmpty property="ordHistSeq" prepend="AND">
+					<![CDATA[ ORD_HIST_SEQ like #ordHistSeq# ]]>
+			    </isNotEmpty>
+			    <isNotEmpty property="ordHistWrtrEml" prepend="AND">
+					<![CDATA[ ORD_HIST_WRTR_EML like #ordHistWrtrEml# ]]>
+			    </isNotEmpty>
+   			ORDER BY ORD_HIST_SEQ DESC
+	</select>
+	<select id="smsMsOrdHistDAO.selectSmsMsOrdHistMaxSeq" parameterClass="smsMsOrdHistVO" resultMap="smsMsOrdHist">
+	       SELECT 
+				ORD_NO,
+		        ORD_HIST_SEQ,
+		        ORD_STAT_CD,
+		        ORD_HIST_WRTR_EML,
+		        DATE_FORMAT(ORD_HIST_REG_DTTM,'%Y-%m-%d') AS ORD_HIST_REG_DTTM ,
+		        ORD_HIST_HIST_CONT
+   			FROM SMS_MS_ORD_HIST
+			WHERE 1=1
+	        AND ORD_HIST_SEQ = 
+	         (SELECT 
+	        	MAX(ORD_HIST_SEQ) 
+	        FROM SMS_MS_ORD_HIST 
+	        WHERE 1=1
+				and	ORD_NO like #ordNo#  ) AND ORD_NO like  #ordNo#
+	</select>
+	<select id="smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount" parameterClass="smsMsOrdHistVO" resultClass="String">
+	      SELECT 
+	      		IFNULL(MAX(ORD_HIST_SEQ),0)
+	      FROM 
+	      		SMS_MS_ORD_HIST
+	      WHERE 1=1 
+	      		AND ORD_NO = #ordNo#
+	</select>
+	
+	
+	<update id="smsMsOrdHistDAO.updateSmsMsOrdHist" parameterClass="smsMsOrdHistVO">
+			<![CDATA[
+			UPDATE SMS_MS_ORD_HIST
+			SET 
+				ORD_STAT_CD = #ordStatCd#,
+				ORD_HIST_WRTR_EML = #ordHistWrtrEml#,
+				ORD_HIST_REG_DTTM = NOW(),
+				ORD_HIST_HIST_CONT = #ordHistHistCont#
+			WHERE ORD_NO=#ordNo# AND ORD_HIST_SEQ=#ordHistSeq#
+			
+			]]>
+	</update>
+	
+	<insert id="smsMsOrdHistDAO.insertSmsMsOrdHist" parameterClass="smsMsOrdHistVO">
+		INSERT INTO SMS_MS_ORD_HIST 
+			( 
+				ORD_NO,
+				ORD_HIST_SEQ,
+				ORD_STAT_CD,
+				ORD_HIST_WRTR_EML,
+				ORD_HIST_REG_DTTM,
+                ORD_HIST_HIST_CONT
+			 )
+		VALUES
+		 	(
+		 		#ordNo#,
+		 		#ordHistSeq#,
+		 		#ordStatCd#,
+				#ordHistWrtrEml#,
+				NOW(),
+                #ordHistHistCont#
+			)
+	</insert>
+
+
+
+</sqlMap>

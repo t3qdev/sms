@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsUser">
+
+	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="smsMsUserVO" type="com.b5m.sms.vo.SmsMsUserVO" />
+
+	<resultMap id="smsMsUser" class="com.b5m.sms.vo.SmsMsUserVO">
+		<result property="userEml" column="USER_EML" columnIndex="1" />
+		<result property="userPwd" column="USER_PWD" columnIndex="2" />
+		<result property="userPwdStatCd" column="USER_PWD_STAT_CD" columnIndex="3" />
+		<result property="userAlasEngNm" column="USER_ALAS_ENG_NM" columnIndex="4" />
+		<result property="userAlasCnsNm" column="USER_ALAS_CNS_NM" columnIndex="5" />
+		<result property="ognzDivCd" column="OGNZ_DIV_CD" columnIndex="6" />
+		<result property="userStatCd" column="USER_STAT_CD" columnIndex="7" />
+	</resultMap>
+	
+
+	<select id="smsMsUserDAO.selectSmsMsUser" parameterClass="smsMsUserVO" resultMap="smsMsUser">
+			SELECT 
+				USER_EML,
+		        USER_PWD,
+		        USER_PWD_STAT_CD,
+		        USER_ALAS_ENG_NM,
+		        USER_ALAS_CNS_NM,
+		        OGNZ_DIV_CD,
+		        USER_STAT_CD
+   
+			FROM SMS_MS_USER
+			WHERE 1=1
+				<isNotEmpty property="userEml" prepend="AND">
+					<![CDATA[ USER_EML like #userEml# ]]>
+			    </isNotEmpty> 
+			    <isNotEmpty property="userPwd" prepend="AND">
+					<![CDATA[ USER_PWD = #userPwd# ]]>
+    			</isNotEmpty> 
+    			<isNotEmpty property="userAlasCnsNm" prepend="AND">
+					<![CDATA[ USER_ALAS_CNS_NM = #userAlasCnsNm# ]]>
+    			</isNotEmpty> 
+	</select>
+	<update id="smsMsUserDAO.updateSmsMsUser" parameterClass="smsMsUserVO">
+			<![CDATA[
+			UPDATE SMS_MS_USER
+			SET 
+				USER_PWD = #userPwd#,
+				USER_PWD_STAT_CD = #userPwdStatCd#,
+				USER_ALAS_ENG_NM = #userAlasEngNm#,
+				USER_ALAS_CNS_NM = #userAlasCnsNm#,
+				OGNZ_DIV_CD = #ognzDivCd#,
+				USER_STAT_CD = #userStatCd#
+			WHERE USER_EML=#userEml#
+			
+			]]>
+	</update>
+	<update id="smsMsUserDAO.updateSmsMsUserWithoutPassword" parameterClass="smsMsUserVO">
+			<![CDATA[
+			UPDATE SMS_MS_USER
+			SET 
+				USER_ALAS_ENG_NM = #userAlasEngNm#,
+				USER_ALAS_CNS_NM = #userAlasCnsNm#,
+				OGNZ_DIV_CD = #ognzDivCd#,
+				USER_STAT_CD = #userStatCd#
+			WHERE USER_EML=#userEml#
+			
+			]]>
+	</update>
+	
+	<insert id="smsMsUserDAO.insertSmsMsUser" parameterClass="smsMsUserVO">
+		INSERT INTO SMS_MS_USER 
+			( 
+				USER_EML,
+				USER_PWD,
+				USER_PWD_STAT_CD,
+				USER_ALAS_ENG_NM,
+				USER_ALAS_CNS_NM,
+                OGNZ_DIV_CD,
+                USER_STAT_CD
+			 )
+		VALUES
+		 	(
+		 		#userEml#,
+		 		#userPwd#,
+		 		#userStatCd#,
+				#userAlasEngNm#,
+				#userAlasCnsNm#,
+                #ognzDivCd#,
+                #userStatCd#
+			)
+	</insert>
+<!-- 주문번호에 해당하는 사용자를 가져옴 =상해/한국 담당자 -->
+	<select id="smsMsUserDAO.selectSmsMsUserbyOrdNo" parameterClass="String" resultMap="smsMsUser">
+			SELECT 
+				A.USER_EML,
+		        A.USER_PWD,
+		        A.USER_PWD_STAT_CD,
+		        A.USER_ALAS_ENG_NM,
+		        A.USER_ALAS_CNS_NM,
+		        A.OGNZ_DIV_CD,
+		        A.USER_STAT_CD
+			FROM SMS_MS_USER A, SMS_MS_ORD_USER B
+			WHERE A.USER_EML = B.USER_EML
+				AND B.ORD_NO=#ordNo#
+	</select>
+
+</sqlMap>

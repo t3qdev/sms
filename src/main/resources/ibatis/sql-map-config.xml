@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<sqlMap resource="sqlmap/Sample_SQL.xml"></sqlMap>
+	<sqlMap resource="sqlmap/SmsMsUser_SQL.xml"></sqlMap>
+	<sqlMap resource="sqlmap/SmsMsRoleUser_SQL.xml"></sqlMap>
+	<sqlMap resource="sqlmap/SmsMsOrdHist_SQL.xml"></sqlMap>
+
+	<sqlMap resource="sqlmap/SmsMsEstmGuds_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsEstm_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsGudsImg_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsGuds_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsOrdFile_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsOrdGuds_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsOrd_SQL.xml" />
+	<sqlMap resource="sqlmap/TbMsOrd_SQL.xml" />
+	<sqlMap resource="sqlmap/TbMsOrdSpl_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsOrdUser_SQL.xml" />
+
+</sqlMapConfig>

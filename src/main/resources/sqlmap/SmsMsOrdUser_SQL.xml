@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsOrdUser">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsOrdUserVO" type="com.b5m.sms.vo.SmsMsOrdUserVO" />
+	
+	<resultMap id="smsMsOrdUser" class="com.b5m.sms.vo.SmsMsOrdUserVO">
+		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
+		<result property="userEml" column="USER_EML" columnIndex="2"/>
+
+	</resultMap>
+	
+
+	<select id="smsMsOrdUserDAO.selectSmsMsOrdUserByOrdNo" parameterClass="String" resultMap="smsMsOrdUser">
+			SELECT
+				USER_EML
+					FROM sms_ms_ord_user
+			WHERE ORD_NO=#ordNo#
+	</select>
+	
+	<insert id="smsMsOrdUserDAO.insertSmsMsOrdUser_S" parameterClass="smsMsOrdUserVO">
+	<![CDATA[
+		
+		INSERT INTO 
+				SMS_MS_ORD_USER (
+										ORD_NO
+										, USER_EML
+									)
+				VALUES	(
+								#ordNo#
+								, #userEml#
+							)
+				
+	]]>
+	</insert>
+
+	<delete id="smsMsOrdUserDAO.deleteSmsMsOrdUserByOrdNo" parameterClass="String">
+		DELETE FROM SMS_MS_ORD_USER
+			WHERE ORD_NO =#ordNo#
+	</delete>
+
+
+</sqlMap>

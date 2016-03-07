@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	
+	
+	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+		<property name="properties">
+			<map>
+				<entry key="pageUnit" value="10" />
+				<entry key="pageSize" value="10" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- CDN ImageUploadUtil 초기 설정을 위해 무조건 한 번 인스텐스를 만들어 줌 -->
+	<!-- 	
+	<bean class="com.b5m.sms.common.file.cdn.ImageUploadUtil">
+		<property name="bsDomain" value="${file.cdn.bsDomain}" />
+		<property name="tfsUrl" value="${file.cdn.tfsUrl}" />
+		<property name="userName" value="${file.cdn.userName}" />
+		<property name="topicName" value="${file.cdn.topicName}" />
+
+	</bean>
+ 	-->
+	<!--  CDN ImageUploadUtil Static 변수 초기화를 위해 static void setConfig (...) 메소드를 만들고 이를 호출. -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.b5m.sms.common.file.cdn.ImageUploadUtil.setConfig" />
+		<property name="arguments">
+			<list>
+				<value>${file.cdn.bsDomain}</value>
+				<value>${file.cdn.tfsUrl}</value>
+				<value>${file.cdn.userName}</value>
+				<value>${file.cdn.topicName}</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!--  /opt/b5c-disk static 변수 초기화  메소드를 만들고 이를 호출. -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.b5m.sms.web.controller.AbstractFileController.setOPT_B5C_DISK" />
+		<property name="arguments">
+			<list>
+				<value>${file.opt.b5c.disk}</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 메일을 발송하는 Mail 클래스의 서버정보를 셋팅하고 인스턴스를 생성해 놓은 후 이를 재 사용하기 위한 목적.  -->
+	<bean id="mail" class="com.b5m.sms.common.mail.Mail">
+		<property name="host" value="${mail.host}" />
+		<property name="senderId" value="${mail.senderId}" />
+		<property name="senderName" value="${mail.senderName}" />
+		<property name="senderEmail" value="${mail.senderEmail}" />
+		<property name="senderPassword" value="${mail.senderPassword}" />
+		<property name="port" value="${mail.port}" />
+	</bean>
+
+
+
+</beans>	

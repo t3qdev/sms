@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsEstm">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsEstmVO" type="com.b5m.sms.vo.SmsMsEstmVO" />
+	
+	<resultMap id="smsMsEstm" class="com.b5m.sms.vo.SmsMsEstmVO">
+		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
+		<result property="poNo" column="PO_NO" columnIndex="2"/>
+		<result property="dlvModeCd" column="DLV_MODE_CD" columnIndex="3"/>
+		<result property="dlvDestCd" column="DLV_DEST_CD" columnIndex="4"/>
+		<result property="dlvAmt" column="DLV_AMT" columnIndex="5"/>
+		<result property="poDt" column="PO_DT" columnIndex="6"/>
+		<result property="poRegrEml" column="PO_REGR_EML" columnIndex="7"/>
+		<result property="poSumAmt" column="PO_SUM_AMT" columnIndex="8"/>
+		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" columnIndex="9"/>
+		<result property="stdXchrAmt" column="STD_XCHR_AMT" columnIndex="10"/>
+		<result property="ordArvlDt" column="ORD_ARVL_DT" columnIndex="11"/>
+		<result property="poMemoCont" column="PO_MEMO_CONT" columnIndex="12"/>
+	</resultMap>
+	
+	<insert id="smsMsEstmDAO.insertSmsMsEstm_S">
+		<![CDATA[
+			INSERT INTO sms_ms_estm 
+				( ORD_NO
+				  , PO_NO
+				  , DLV_MODE_CD
+				  , DLV_DEST_CD
+				  , DLV_AMT
+				  , PO_DT
+				  , PO_REGR_EML
+				  , PO_SUM_AMT
+				  , STD_XCHR_KIND_CD
+				  , STD_XCHR_AMT
+				  , ORD_ARVL_DT
+				  , PO_MEMO_CONT )
+			VALUES ( #ordNo#
+				  , #poNo#
+				  , #dlvModeCd#
+				  , #dlvDestCd#
+				  , #dlvAmt#
+				  , #poDt#
+				  , #poRegrEml#
+				  , #poSumAmt#
+				  , #stdXchrKindCd#
+				  , #stdXchrAmt#
+				  , #ordArvlDt#
+				  , #poMemoCont# )
+		]]>
+	</insert>
+	
+	<update id="smsMsEstmDAO.updateSmsMsEstm_S">
+		<![CDATA[
+			UPDATE sms_ms_estm
+			SET ORD_NO=#ordNo#
+				, PO_NO=#poNo#
+				, DLV_MODE_CD=#dlvModeCd#
+				, DLV_DEST_CD=#dlvDestCd#
+				, DLV_AMT=#dlvAmt#
+				, PO_DT=#poDt#
+				, PO_REGR_EML=#poRegrEml#
+				, PO_SUM_AMT=#poSumAmt#
+				, STD_XCHR_KIND_CD=#stdXchrKindCd#
+				, STD_XCHR_AMT=#stdXchrAmt#
+				, ORD_ARVL_DT=#ordArvlDt#
+				, PO_MEMO_CONT=#poMemoCont#
+			]]>
+	</update>
+	
+	<delete id="smsMsEstmDAO.deleteSmsMsEstm" parameterClass="String">
+			DELETE FROM sms_ms_estm
+			WHERE ORD_NO=#ordNo#
+	</delete>
+	
+	<insert id="smsMsEstmDAO.insertSmsMsEstm" parameterClass="smsMsEstmVO">
+			INSERT INTO sms_ms_estm 
+				( ORD_NO
+				  , PO_NO
+				  , DLV_MODE_CD
+				  , DLV_AMT
+				  , PO_DT
+				  , PO_REGR_EML
+				  , PO_SUM_AMT
+				  , STD_XCHR_KIND_CD
+				  , STD_XCHR_AMT
+				  , ORD_ARVL_DT
+				  , PO_MEMO_CONT )
+			VALUES ( #ordNo#
+				  , #poNo#
+				  , #dlvModeCd#
+				  , #dlvAmt#
+				  , #poDt#
+				  , #poRegrEml#
+				  , #poSumAmt#
+				  , #stdXchrKindCd#
+				  , #stdXchrAmt#
+				  , #ordArvlDt#
+				  , #poMemoCont# )
+	
+	
+	</insert>
+
+	
+	
+
+</sqlMap>

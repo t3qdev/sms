@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsOrdFile">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsOrdFileVO" type="com.b5m.sms.vo.SmsMsOrdFileVO"/>
+	
+	<resultMap id="smsMsOrdFile" class="com.b5m.sms.vo.SmsMsOrdFileVO">
+		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
+		<result property="ordFileSeq" column="ORD_FILE_SEQ" columnIndex="2"/>
+		<result property="ordFileKindCd" column="ORD_FILE_KIND_CD" columnIndex="3"/>
+		<result property="ordFileOrgtFileNm" column="ORD_FILE_ORGT_FILE_NM" columnIndex="4"/>
+		<result property="ordFileSysFileNm" column="ORD_FILE_SYS_FILE_NM" columnIndex="5"/>
+		<result property="ordFileRegrEml" column="ORD_FILE_REGR_EML" columnIndex="6"/>
+		<result property="ordFileRegDttm" column="ORD_FILE_REG_DTTM" columnIndex="7"/>
+		<result property="userAlasEngNm" column="USER_ALAS_ENG_NM" columnIndex="8"/>
+		<result property="userAlasCnsNm" column="USER_ALAS_CNS_NM" columnIndex="9"/>
+	</resultMap>
+	
+	
+	<select id="smsMsOrdFileDAO.selectSmsMsOrdFileByOrdNo" parameterClass="String" resultMap="smsMsOrdFile">
+	<![CDATA[
+			SELECT
+								A.ORD_NO
+								, A.ORD_FILE_SEQ
+								, A.ORD_FILE_KIND_CD
+								, A.ORD_FILE_ORGT_FILE_NM
+								, A.ORD_FILE_SYS_FILE_NM
+								, A.ORD_FILE_REGR_EML
+								, A.ORD_FILE_REG_DTTM
+								, B.USER_ALAS_ENG_NM
+								, B.USER_ALAS_CNS_NM
+								
+					FROM sms_ms_ord_file A, sms_ms_user B
+			WHERE A.ORD_NO=#ordNo#
+				AND A.ORD_FILE_REGR_EML=B.USER_EML
+			ORDER BY ord_file_seq desc
+	]]>
+	</select>	
+	
+	<select id="smsMsOrdFileDAO.selectSmsMsOrdFileSeqNext" parameterClass="String" resultClass="String">
+	      SELECT 
+	      		IFNULL(MAX(ORD_FILE_SEQ)+1,0)
+	      FROM 
+	      		SMS_MS_ORD_FILE
+	      WHERE ORD_NO = #ordNo#
+	</select>
+	
+	<insert id="smsMsOrdFileDAO.insertSmsMsOrdFile" parameterClass="smsMsOrdFileVO">
+			INSERT INTO SMS_MS_ORD_FILE 
+			( 
+					ORD_NO
+				  , ORD_FILE_SEQ
+				  , ORD_FILE_KIND_CD
+				  , ORD_FILE_ORGT_FILE_NM
+				  , ORD_FILE_SYS_FILE_NM
+				  , ORD_FILE_REGR_EML
+				  , ORD_FILE_REG_DTTM 
+			)
+			VALUES 
+			(
+					#ordNo#
+				  , #ordFileSeq#
+				  , #ordFileKindCd#
+				  , #ordFileOrgtFileNm#
+				  , #ordFileSysFileNm#
+				  , #ordFileRegrEml#
+				  , NOW() 
+			)
+		
+	</insert>
+
+</sqlMap>

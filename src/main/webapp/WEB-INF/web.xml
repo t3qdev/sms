@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<display-name>egov.sample</display-name>
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>*.ajax</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>HTMLTagFilter</filter-name>
+		<filter-class>egovframework.rte.ptl.mvc.filter.HTMLTagFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.ajax</url-pattern>
+	</filter-mapping>
+
+
+	<!-- Root Web Application Context 설정 -->
+	<!-- Root Web App. Context 디폴트 설정파일 (/WEB-INF/applicationContext.xml)을 사용하지 않을 때. 설정파일 위치 지정 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value> classpath*:spring/context-*.xml </param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Servlet Web Application Context 설정 -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<!-- Servlet Web Application Context 디폴트 설정파일 (/WEB-INF/{servlet-name}-servlet.xml)을 사용하지 않을 때. 설정파일 위치 지정 -->
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/springmvc/dispatcher-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+		<url-pattern>*.file</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.ajax</url-pattern>
+	</servlet-mapping>
+
+<!-- 	<filter>
+		<filter-name>FileUploadFilter</filter-name>
+		<filter-class>com.b5m.sms.common.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>FileUploadFilter</filter-name>
+		<url-pattern>*.file</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>com.b5m.sms.common.listener.PropertyLoadListener</listener-class>
+	</listener>
+	 -->
+	
+
+	<!-- spring security -->
+	<!-- 스프링 세션 리스너 등록 -->
+
+	<listener>
+		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<!-- 스프링 보안 필터 -->
+
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+
+
+	<error-page>
+		<error-code>403</error-code>
+		<location>/common/authError.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/common/noResource.jsp</location>
+	</error-page>
+	
+<!-- 	<session-config> -->
+<!-- 		<cookie-config> -->
+<!-- 			<http-only>true</http-only> -->
+<!-- 			<secure>true</secure> -->
+<!-- 		</cookie-config> -->
+<!-- 	</session-config> -->
+	
+	<configuration>
+		<system.webServer>
+			<security>
+				<requestFiltering>
+					<verbs allowUnlisted="true">
+						<add verb="OPTIONS" allowed="false" />
+					</verbs>
+				</requestFiltering>
+			</security>
+		</system.webServer>
+	</configuration>
+
+</web-app>

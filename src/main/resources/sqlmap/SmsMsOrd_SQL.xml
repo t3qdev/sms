@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsOrd">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsOrdVO" type="com.b5m.sms.vo.SmsMsOrdVO" />
+	<typeAlias  alias="codeVO" type="com.b5m.sms.vo.CodeVO"/>
+	<typeAlias  alias="orderCalculateVO" type="com.b5m.sms.vo.OrderCalculateVO"/>
+	<typeAlias  alias="orderDetailVO" type="com.b5m.sms.vo.OrderDetailVO"/>
+	
+	<resultMap id="smsMsOrd" class="com.b5m.sms.vo.SmsMsOrdVO">
+		<result property="ordNo" column="ORD_NO" />
+		<result property="ordNm" column="ORD_NM" />
+		<result property="ordTypeCd" column="ORD_TYPE_CD" />
+		<result property="ordStatCd" column="ORD_STAT_CD" />
+		<result property="b5cOrdNo" column="B5C_ORD_NO" />
+		<result property="dlvModeCd" column="DLV_MODE_CD" />
+		<result property="dlvDestCd" column="DLV_DEST_CD" />
+		<result property="custId" column="CUST_ID" />
+		<result property="ordSumAmt" column="ORD_SUM_AMT" />
+		<result property="ordEstmDt" column="ORD_ESTM_DT" />
+		<result property="ordReqDt" column="ORD_REQ_DT" />
+		<result property="ordExpDt" column="ORD_EXP_DT" />
+		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" />
+		<result property="ordArvlDt" column="ORD_ARVL_DT" />
+		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" />
+		<result property="stdXchrAmt" column="STD_XCHR_AMT" />
+		<result property="bactRegDt" column="BACT_REG_DT" />
+		<result property="bactRegrEml" column="BACT_REGR_EML" />
+		<result property="bactPrvdDt" column="BACT_PRVD_DT" />
+		<result property="bactPrvdAmt" column="BACT_PRVD_AMT" />
+		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT" />
+		<result property="poSchdDt" column="PO_SCHD_DT" />
+		<result property="pymtPrvdModeCont" column="PYMT_PRVD_MODE_CONT" />
+		<result property="ctrtTmplYn" column="CTRT_TMPL_YN" />
+		<result property="smplReqYn" column="SMPL_REQ_YN" />
+		<result property="qlfcReqYn" column="QLFC_REQ_YN" />
+		<result property="custOrdProcCont" column="CUST_ORD_PROC_CONT" />
+		<result property="paptDpstDt" column="PAPT_DPST_DT" />
+		<result property="paptDpstAmt" column="PAPT_DPST_AMT"/>
+		<result property="paptDpstRate" column="PAPT_DPST_RATE" />
+		<result property="raptDpstDt" column="RAPT_DPST_DT" />
+		<result property="raptDpstAmt" column="RAPT_DPST_AMT" />
+		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
+		<result property="wrhsDlvDt" column="WRHS_DLV_DT" />
+		<result property="wrhsDlvDestCd" column="WRHS_DLV_DEST_CD" />
+		<result property="dptrDlvDt" column="DPTR_DLV_DT" />
+		<result property="dptrDlvDestCd" column="DPTR_DLV_DEST_CD" />
+		<result property="arvlDlvDt" column="ARVL_DLV_DT" />
+		<result property="arvlDlvDestCd" column="ARVL_DLV_DEST_CD" />
+		<result property="poDlvDt" column="PO_DLV_DT" />
+		<result property="poDlvDestCd" column="PO_DLV_DEST_CD" />
+		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
+		
+	</resultMap>
+
+	<resultMap id="orderDetail" class="com.b5m.sms.vo.OrderDetailVO">		
+		<result property="dlvModeCd" column="DLV_MODE_CD" columnIndex="1"/>
+		<result property="dlvDestCd" column="DLV_DEST_CD" columnIndex="2"/>
+		<result property="custId" column="CUST_ID" columnIndex="3"/>
+		<result property="ordEstmDt" column="ORD_ESTM_DT" columnIndex="4"/>
+		<result property="ordReqDt" column="ORD_REQ_DT" columnIndex="5"/>
+		<result property="ordExpDt" column="ORD_EXP_DT" columnIndex="6"/>
+		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" columnIndex="7"/>	
+		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" columnIndex="8"/>
+		<result property="stdXchrAmt" column="STD_XCHR_AMT" columnIndex="9"/>
+		<result property="poSchdDt" column="PO_SCHD_DT" columnIndex="10"/>
+		<result property="pymtPrvdModeCont" column="PYMT_PRVD_MODE_CONT" columnIndex="11"/>
+		<result property="ctrtTmplYn" column="CTRT_TMPL_YN" columnIndex="12"/>
+		<result property="smplReqYn" column="SMPL_REQ_YN" columnIndex="13"/>
+		<result property="qlfcReqYn" column="QLFC_REQ_YN" columnIndex="14"/>
+		<result property="custOrdProcCont" column="CUST_ORD_PROC_CONT" columnIndex="15"/>
+		<result property="ordMemoCont" column="ORD_MEMO_CONT" columnIndex="16"/>
+		<result property="ordNm" column="ORD_NM" columnIndex="17"/>
+	</resultMap>
+	
+	<resultMap id="orderCalculate" class="com.b5m.sms.vo.OrderCalculateVO">		
+		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
+		<result property="bactPrvdDt" column="BACT_PRVD_DT" columnIndex="2"/>
+		<result property="bactPrvdAmt" column="BACT_PRVD_AMT" columnIndex="3"/>
+		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT" columnIndex="4"/>
+		<result property="bactRegrEml" column="BACT_REGR_EML" columnIndex="5"/>
+		<result property="bactRegDt" column="BACT_REG_DT" columnIndex="6"/>
+
+	</resultMap>
+	
+	<resultMap id="smsMsOrdView" class="com.b5m.sms.vo.SmsMsOrdVO">
+		<result property="ordNo" column="ORD_NO" />
+		<result property="ordReqDt" column="ORD_REQ_DT" />
+		<result property="clientNm" column="CLIENT_NM" />
+		<result property="orderedGudsNm" column="ORDERED_GUDS_NM" />
+		<result property="showDetail" column="SHOW_DETAIL" />
+		<result property="ordSumAmt" column="ORD_SUM_AMT" />
+		<result property="korMng" column="KOR_MNG" />
+		<result property="cnsMng" column="CNS_MNG" />
+		<result property="ordTypeCd" column="ORD_TYPE_CD" />
+		<result property="histDetail" column="HIST_DETAIL" />
+		
+		
+		<result property="ordStatCd" column="ORD_STAT_CD" />
+		<result property="bactPrvdDt" column="BACT_PRVD_DT" />
+		<result property="bactPrvdAmt" column="BACT_PRVD_AMT" />
+		<result property="paptDpstDt" column="PAPT_DPST_DT" />
+		<result property="paptDpstAmt" column="PAPT_DPST_AMT"/>
+		<result property="paptDpstRate" column="PAPT_DPST_RATE" />
+		<result property="wrhsDlvDt" column="WRHS_DLV_DT" />
+		<result property="wrhsDlvDestCd" column="WRHS_DLV_DEST_CD" />
+		<result property="dptrDlvDt" column="DPTR_DLV_DT" />
+		<result property="dptrDlvDestCd" column="DPTR_DLV_DEST_CD" />
+		<result property="arvlDlvDt" column="ARVL_DLV_DT" />
+		<result property="arvlDlvDestCd" column="ARVL_DLV_DEST_CD" />
+		<result property="poDlvDt" column="PO_DLV_DT" />
+		<result property="poDlvDestCd" column="PO_DLV_DEST_CD" />
+		<result property="raptDpstDt" column="RAPT_DPST_DT" />
+		<result property="raptDpstAmt" column="RAPT_DPST_AMT" />
+		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
+		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
+		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
+		<result property="count" column="COUNT"/>
+	</resultMap>
+		
+	<insert id="smsMsOrdDAO.insertSmsMsOrd_S" parameterClass="smsMsOrdVO">
+		<![CDATA[
+			INSERT INTO sms_ms_ord 
+				( ORD_NO
+				  , ORD_NM
+				  , ORD_TYPE_CD
+				  , ORD_STAT_CD
+				  , B5C_ORD_NO
+				  , DLV_MODE_CD
+				  , DLV_DEST_CD
+				  , CUST_ID
+				  , ORD_SUM_AMT
+				  , ORD_ESTM_DT
+				  , ORD_REQ_DT
+				  , ORD_EXP_DT
+				  , ORD_HOPE_ARVL_DT
+				  , ORD_ARVL_DT
+				  , STD_XCHR_KIND_CD
+				  , STD_XCHR_AMT
+				  , BACT_REG_DT
+				  , BACT_REGR_EML
+				  , BACT_PRVD_DT
+				  , BACT_PRVD_AMT
+				  , BACT_PRVD_MEMO_CONT
+				  , PO_SCHD_DT
+				  , PYMT_PRVD_MODE_CONT
+				  , CTRT_TMPL_YN
+				  , SMPL_REQ_YN
+				  , QLFC_REQ_YN
+				  , CUST_ORD_PROC_CONT
+				  , PAPT_DPST_DT
+				  , PAPT_DPST_AMT
+				  , PAPT_DPST_RATE
+				  , RAPT_DPST_DT
+				  , RAPT_DPST_AMT
+				  , RAPT_DPST_RATE
+				  , WRHS_DLV_DT
+				  , WRHS_DLV_DEST_CD
+				  , DPTR_DLV_DT
+				  , DPTR_DLV_DEST_CD
+				  , ARVL_DLV_DT
+				  , ARVL_DLV_DEST_CD
+				  , PO_DLV_DT
+				  , PO_DLV_DEST_CD
+				  , ORD_MEMO_CONT )
+			VALUES ( #ordNo#
+				  , #ordNm#
+				  , #ordTypeCd#
+				  , #ordStatCd#
+				  , #b5cOrdNo#
+				  ,(SELECT CD FROM TB_MS_CMN_CD WHERE CD_VAL = #dlvModeCd# AND CD LIKE 'N00052%')
+				  ,(SELECT CD FROM TB_MS_CMN_CD WHERE CD_VAL = #dlvDestCd#)
+				  , #custId#
+				  , #ordSumAmt#
+				  , #ordEstmDt#
+				  , #ordReqDt#
+				  , #ordExpDt#
+				  , #ordHopeArvlDt#
+				  , #ordArvlDt#
+				  , #stdXchrKindCd#
+				  , #stdXchrAmt#
+				  , #bactRegDt#
+				  , #bactRegrEml#
+				  , #bactPrvdDt#
+				  , #bactPrvdAmt#
+				  , #bactPrvdMemoCont#
+				  , #poSchdDt#
+				  , #pymtPrvdModeCont#
+				  , #ctrtTmplYn#
+				  , #smplReqYn#
+				  , #qlfcReqYn#
+				  , #custOrdProcCont#
+				  , #paptDpstDt#
+				  , #paptDpstAmt#
+				  , #paptDpstRate#
+				  , #raptDpstDt#
+				  , #raptDpstAmt#
+				  , #raptDpstRate#
+				  , #wrhsDlvDt#
+				  , #wrhsDlvDestCd#
+				  , #dptrDlvDt#
+				  , #dptrDlvDestCd#
+				  , #arvlDlvDt#
+				  , #arvlDlvDestCd#
+				  , #poDlvDt#
+				  , #poDlvDestCd#
+				  , #ordMemoCont# )
+		]]>
+	</insert>
+	
+	<insert id="smsMsOrdDAO.insertSmsMsOrd_BATCH" parameterClass="smsMsOrdVO">
+	<![CDATA[
+		
+		INSERT INTO 
+				SMS_MS_ORD (
+										ORD_NO
+										, B5C_ORD_NO
+										, ORD_STAT_CD
+									)
+				VALUES	(
+								#ordNo#
+								, #b5cOrdNo#
+								, #ordStatCd#
+							)
+				)
+	]]>
+	</insert>
+	
+	<select id="smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo"   resultClass="String">
+		SELECT 
+			IFNULL(      MAX(ORD_NO)+1 , CONCAT(DATE_FORMAT(NOW(),"%Y%m%d"),"000")            ) 
+		FROM 
+			SMS_MS_ORD 
+		WHERE 
+			ORD_NO LIKE CONCAT(DATE_FORMAT(NOW(),"%Y%m%d"),'%')
+	</select>
+	
+	<select id="smsMsOrdDAO.selectSmsMsOrdByB5cOrdNo"   parameterClass="String" resultClass="String">
+		SELECT
+			ORD_NO
+		FROM
+			SMS_MS_ORD
+		WHERE
+			B5C_ORD_NO = #b5cOrdNo#
+
+	</select>
+	
+	<update id="smsMsOrdDAO.updateSmsMsOrd_S">
+		<![CDATA[
+			UPDATE sms_ms_ord
+			SET ORD_NO=#ordNo#
+				, ORD_NM=#ordNm#
+				, ORD_TYPE_CD=#ordTypeCd#
+				, ORD_STAT_CD=#ordStatCd#
+				, B5C_ORD_NO=#b5cOrdNo#
+				, DLV_MODE_CD=#dlvModeCd#
+				, DLV_DEST_CD=#dlvDestCd#
+				, CUST_ID=#custId#
+				, ORD_SUM_AMT=#ordSumAmt#
+				, ORD_ESTM_DT=#ordEstmDt#
+				, ORD_REQ_DT=#ordReqDt#
+				, ORD_EXP_DT=#ordExpDt#
+				, ORD_HOPE_ARVL_DT=#ordHopeArvlDt#
+				, ORD_ARVL_DT=#ordArvlDt#
+				, STD_XCHR_KIND_CD=#stdXchrKindCd#
+				, STD_XCHR_AMT=#stdXchrAmt#
+				, BACT_REG_DT=#bactRegDt#
+				, BACT_REGR_EML=#bactRegrEml#
+				, BACT_PRVD_DT=#bactPrvdDt#
+				, BACT_PRVD_AMT=#bactPrvdAmt#
+				, BACT_PRVD_MEMO_CONT=#bactPrvdMemoCont#
+				, PO_SCHD_DT=#poSchdDt#
+				, PYMT_PRVD_MODE_CONT=#pymtPrvdModeCont#
+				, CTRT_TMPL_YN=#ctrtTmplYn#
+				, SMPL_REQ_YN=#smplReqYn#
+				, QLFC_REQ_YN=#qlfcReqYn#
+				, CUST_ORD_PROC_CONT=#custOrdProcCont#
+				, PAPT_DPST_DT=#paptDpstDt#
+				, PAPT_DPST_AMT=#paptDpstAmt#
+				, PAPT_DPST_RATE=#paptDpstRate#
+				, RAPT_DPST_DT=#raptDpstDt#
+				, RAPT_DPST_AMT=#raptDpstAmt#
+				, RAPT_DPST_RATE=#raptDpstRate#
+				, WRHS_DLV_DT=#wrhsDlvDt#
+				, WRHS_DLV_DEST_CD=#wrhsDlvDestCd#
+				, DPTR_DLV_DT=#dptrDlvDt#
+				, DPTR_DLV_DEST_CD=#dptrDlvDestCd#
+				, ARVL_DLV_DT=#arvlDlvDt#
+				, ARVL_DLV_DEST_CD=#arvlDlvDestCd#
+				, PO_DLV_DT=#poDlvDt#
+				, PO_DLV_DEST_CD=#poDlvDestCd#
+				, ORD_MEMO_CONT=#ordMemoCont#
+			]]>
+	</update>
+	
+	<delete id="smsMsOrdDAO.deleteSmsMsOrd_S">
+		<![CDATA[
+			DELETE FROM sms_ms_ord 
+			]]>
+	</delete>
+
+	<select id="smsMsOrdDAO.selectSmsMsOrdDetail" resultMap="orderDetail" parameterClass="String">
+		<![CDATA[
+			SELECT
+				 DLV_MODE_CD
+				, DLV_DEST_CD
+				, CUST_ID
+				, ORD_ESTM_DT
+				, ORD_REQ_DT
+				, ORD_EXP_DT
+				, ORD_HOPE_ARVL_DT
+				, STD_XCHR_KIND_CD
+				, STD_XCHR_AMT
+				, PO_SCHD_DT
+				, PYMT_PRVD_MODE_CONT
+				, CTRT_TMPL_YN
+				, SMPL_REQ_YN
+				, QLFC_REQ_YN
+				, CUST_ORD_PROC_CONT
+				, ORD_MEMO_CONT
+				, ORD_NM
+			FROM sms_ms_ord
+			WHERE ORD_NO=#ordNo#
+			]]>
+	</select>
+
+	<select id="smsMsOrdDAO.selectTbMsCmnCd" resultClass="codeVO" parameterClass="String">
+		<![CDATA[
+			SELECT
+				 CD as cd
+				 ,CD_VAL as cdVal
+			FROM tb_ms_cmn_cd
+			WHERE substr(CD,1,6)=#cd#
+			]]>
+	</select>
+
+	<select id="smsMsOrdDAO.selectSmsMsOrdCalculate" resultMap="orderCalculate" parameterClass="String">
+		<![CDATA[
+			SELECT
+				 ORD_NO
+				, BACT_PRVD_DT
+				, BACT_PRVD_AMT
+				, BACT_PRVD_MEMO_CONT
+				, BACT_REGR_EML
+				, BACT_REG_DT
+			FROM sms_ms_ord
+			WHERE ORD_NO=#ordNo#
+			]]>
+	</select>
+
+	<update id="smsMsOrdDAO.updateSmsMsOrdCalculate"  parameterClass="orderCalculateVO">
+		<![CDATA[
+			UPDATE sms_ms_ord
+				SET 	BACT_PRVD_DT=#bactPrvdDt#
+						, BACT_PRVD_AMT=#bactPrvdAmt#
+						, BACT_PRVD_MEMO_CONT=#bactPrvdMemoCont#
+						, BACT_REGR_EML=#bactRegrEml#
+						, BACT_REG_DT=now()
+				WHERE ORD_NO=#ordNo#
+			]]>
+	</update>
+	
+	<update id="smsMsOrdDAO.updateSmsMsOrdDetail"  parameterClass="orderDetailVO">
+		<![CDATA[
+			UPDATE sms_ms_ord
+				SET 	CUST_ID=#custId#
+						, ORD_REQ_DT=#ordReqDt#
+						, ORD_HOPE_ARVL_DT=#ordHopeArvlDt#
+						, STD_XCHR_AMT=#stdXchrAmt#
+						, STD_XCHR_KIND_CD=#stdXchrKindCd#
+						, PYMT_PRVD_MODE_CONT=#pymtPrvdModeCont#
+						, DLV_MODE_CD=#dlvModeCd#
+						, DLV_DEST_CD=#dlvDestCd#
+						, ORD_ESTM_DT=#ordEstmDt#
+						, ORD_EXP_DT=#ordExpDt#
+						, CTRT_TMPL_YN=#ctrtTmplYn#
+						, BACT_REGR_EML=#stdXchrAmt#
+						, SMPL_REQ_YN=#smplReqYn#
+						, PO_SCHD_DT=#poSchdDt#
+						, QLFC_REQ_YN=#qlfcReqYn#
+						, CUST_ORD_PROC_CONT=#custOrdProcCont#
+						, ORD_MEMO_CONT=#ordMemoCont#
+				WHERE ORD_NO=#ordNo#
+			]]>
+	</update>
+	
+	<select id="smsMsOrdDAO.selectSmsMsOrdForOrderManamentView" parameterClass="smsMsOrdVO" resultMap="smsMsOrdView">
+	SELECT 
+	
+				A.ORD_NO AS ORD_NO
+				,A.ORD_REQ_DT AS ORD_REQ_DT
+			    ,A.CUST_ID AS CLIENT_NM
+				,(SELECT Z.ORD_GUDS_CNS_NM FROM SMS_MS_ORD_GUDS Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM SMS_MS_ORD_GUDS Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
+                ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
+                      THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
+                      ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
+				 END AS SHOW_DETAIL
+			    ,A.ORD_SUM_AMT	AS ORD_SUM_AMT
+				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM SMS_MS_USER Q, SMS_MS_ORD_USER W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS KOR_MNG
+				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM SMS_MS_USER Q, SMS_MS_ORD_USER W WHERE Q.USER_EML=W.USER_EML AND Q.OGNZ_DIV_CD="N000530200" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
+				,A.ORD_TYPE_CD AS ORD_TYPE_CD
+			    ,A.ORD_STAT_CD AS ORD_STAT_CD
+			    ,(SELECT CONCAT(C.ORD_HIST_REG_DTTM," ",C.ORD_HIST_HIST_CONT) FROM SMS_MS_ORD_HIST C WHERE C.ORD_NO = A.ORD_NO AND C.ORD_HIST_SEQ = (SELECT MAX(J.ORD_HIST_SEQ) FROM SMS_MS_ORD_HIST J WHERE J.ORD_NO=A.ORD_NO )  ) AS HIST_DETAIL
+			    ,A.ORD_STAT_CD AS ORD_STAT_CD
+				,A.BACT_PRVD_DT AS BACT_PRVD_DT
+				,A.BACT_PRVD_AMT AS BACT_PRVD_AMT
+			    ,A.PAPT_DPST_DT AS PAPT_DPST_DT
+			    ,A.PAPT_DPST_AMT AS PAPT_DPST_AMT
+			    ,A.PAPT_DPST_RATE AS PAPT_DPST_RATE
+			    ,A.WRHS_DLV_DT AS WRHS_DLV_DT
+			    ,A.WRHS_DLV_DEST_CD AS WRHS_DLV_DEST_CD
+			    ,A.DPTR_DLV_DT AS DPTR_DLV_DT
+			    ,A.DPTR_DLV_DEST_CD AS DPTR_DLV_DEST_CD
+				,A.ARVL_DLV_DT AS ARVL_DLV_DT
+			    ,A.ARVL_DLV_DEST_CD AS ARVL_DLV_DEST_CD
+			    ,A.PO_DLV_DT AS PO_DLV_DT
+			    ,A.PO_DLV_DEST_CD AS PO_DLV_DEST_CD
+			    ,A.RAPT_DPST_DT AS RAPT_DPST_DT
+			    ,A.RAPT_DPST_AMT AS RAPT_DPST_AMT
+			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
+			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
+			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
+	    		,(SELECT COUNT(*) FROM SMS_MS_ORD) AS COUNT
+		FROM
+				 SMS_MS_ORD A
+		WHERE 1=1 
+				<isNotEmpty property="ordNo">			 
+					 AND ORD_NO = #ordNo#
+				</isNotEmpty>
+				<isNotEmpty property="ordReqDt">			 
+				 	 AND ORD_REQ_DT = #ordReqDt#
+				</isNotEmpty>
+				<isNotEmpty property="custId">			 
+					 AND CUST_ID = #custId#
+				</isNotEmpty>
+				<isNotEmpty property="cnsMng">			 
+					 AND CNS_MNG = #cnsMng#
+				</isNotEmpty>
+				<isNotEmpty property="korMng">			 
+					 AND KOR_MNG = #korMng#
+				</isNotEmpty>
+				<isNotEmpty property="ordTypeCd">			 
+					 AND ORD_TYPE_CD = #ordTypeCd#
+				</isNotEmpty>
+				<isNotEmpty property="ordStatCd">			 
+					 AND ORD_STAT_CD = #ordStatCd#
+				</isNotEmpty>
+				 
+				 
+		ORDER BY ORD_NO DESC
+		LIMIT #start#,#row#
+	
+	</select>
+	
+		<update id="smsMsOrdDAO.updateSmsMsOrdInOrderManagementView"  parameterClass="smsMsOrdVO">
+		<![CDATA[
+			UPDATE SMS_MS_ORD
+				SET 	
+				ORD_SUM_AMT = #ordSumAmt#
+				,BACT_PRVD_DT = #bactPrvdDt#
+				,BACT_PRVD_AMT = #bactPrvdAmt#
+			    ,PAPT_DPST_DT = #paptDpstDt#
+			    ,PAPT_DPST_AMT = #paptDpstAmt#
+			    ,PAPT_DPST_RATE  = #paptDpstRate#
+			    ,WRHS_DLV_DT = #wrhsDlvDt#
+			    ,WRHS_DLV_DEST_CD = #wrhsDlvDestCd#
+			    ,DPTR_DLV_DT = #dptrDlvDt#
+			    ,DPTR_DLV_DEST_CD = #dptrDlvDestCd#
+				,ARVL_DLV_DT = #arvlDlvDt#
+			    ,ARVL_DLV_DEST_CD = #arvlDlvDestCd#
+			    ,PO_DLV_DT = #poDlvDt#
+			    ,PO_DLV_DEST_CD = #poDlvDestCd#
+			    ,RAPT_DPST_DT = #raptDpstDt#
+			    ,RAPT_DPST_AMT = #raptDpstAmt#
+			    ,RAPT_DPST_RATE = #raptDpstRate#
+			    ,B5M_BUY_CONT = #b5mBuyCont#
+				
+				WHERE ORD_NO=#ordNo#
+			]]>
+	</update>
+	
+	<update id="smsMsOrdDAO.updateSmsMsOrdStatCd" parameterClass="smsMsOrdVO">
+		<![CDATA[
+				UPDATE SMS_MS_ORD
+					SET 	
+					 ORD_STAT_CD=#ordStatCd#
+					WHERE ORD_NO=#ordNo#
+		]]>
+	</update>
+
+	<select id="smsMsOrdDAO.selectSmsMsOrdOrdStatCdColumn"  resultClass="String">
+		SELECT DISTINCT ORD_STAT_CD FROM  SMS_MS_ORD
+	</select>
+</sqlMap>

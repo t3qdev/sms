@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsOrdGuds">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="smsMsOrdGudsVO" type="com.b5m.sms.vo.SmsMsOrdGudsVO"/>
+
+	<resultMap id="smsMsOrdGuds" class="com.b5m.sms.vo.SmsMsOrdGudsVO">
+		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
+		<result property="ordGudsSeq" column="ORD_GUDS_SEQ" columnIndex="2"/>
+		<result property="gudsId" column="GUDS_ID" columnIndex="3"/>
+		<result property="ordGudsMpngYn" column="ORD_GUDS_MPNG_YN" columnIndex="4"/>
+		<result property="ordGudsKorNm" column="ORD_GUDS_KOR_NM" columnIndex="5"/>
+		<result property="ordGudsCnsNm" column="ORD_GUDS_CNS_NM" columnIndex="6"/>
+		<result property="ordGudsOrgPrc" column="ORD_GUDS_ORG_PRC" columnIndex="7"/>
+		<result property="ordGudsSalePrc" column="ORD_GUDS_SALE_PRC" columnIndex="8"/>
+		<result property="ordGudsQty" column="ORD_GUDS_QTY" columnIndex="9"/>
+		<result property="ordGudsOprEml" column="ORD_GUDS_OPR_EML" columnIndex="10"/>
+		<result property="ordGudsSizeVal" column="ORD_GUDS_SIZE_VAL" columnIndex="11"/>
+		<result property="ordGudsUrlAddr" column="ORD_GUDS_URL_ADDR" columnIndex="12"/>
+		<result property="ordGudsUpcId" column="ORD_GUDS_UPC_ID" columnIndex="13"/>
+		<!-- <result property="gudsUpcId" column="GUDS_UPC_ID" />
+		<result property="gudsInbxQty" column="GUDS_INBX_QTY" /> -->
+	</resultMap>
+	
+	<insert id="smsMsOrdGudsDAO.insertSmsMsOrdGuds_S" parameterClass="smsMsOrdGudsVO">
+		<![CDATA[
+			INSERT INTO sms_ms_ord_guds 
+				( ORD_NO
+				  , ORD_GUDS_SEQ
+				  , GUDS_ID
+				  , ORD_GUDS_MPNG_YN
+				  , ORD_GUDS_KOR_NM
+				  , ORD_GUDS_CNS_NM
+				  , ORD_GUDS_ORG_PRC
+				  , ORD_GUDS_SALE_PRC
+				  , ORD_GUDS_QTY
+				  , ORD_GUDS_OPR_EML
+				  , ORD_GUDS_SIZE_VAL
+				  , ORD_GUDS_URL_ADDR )
+			VALUES ( #ordNo#
+				  , #ordGudsSeq#
+				  , #gudsId#
+				  , #ordGudsMpngYn#
+				  , #ordGudsKorNm#
+				  , #ordGudsCnsNm#
+				  , #ordGudsOrgPrc#
+				  , #ordGudsSalePrc#
+				  , #ordGudsQty#
+				  , #ordGudsOprEml#
+				  , #ordGudsSizeVal#
+				  , #ordGudsUrlAddr# )
+		]]>
+	</insert>
+	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsSeqCount"  parameterClass="String" resultClass="String">
+		SELECT
+				COUNT(ORD_GUDS_SEQ)+1 AS ORD_GUDS_SEQ
+		FROM 
+				SMS_MS_ORD_GUDS
+		WHERE 
+				ORD_NO = #ordNo#
+				
+	</select>
+	
+	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount"  resultClass="String">
+		SELECT 
+				COUNT(GUDS_ID) + 1 AS GUDS_ID
+		FROM
+				SMS_MS_ORD_GUDS
+	</select>
+	<update id="smsMsOrdGudsDAO.updateSmsMsOrdGuds_S">
+		<![CDATA[
+			UPDATE sms_ms_ord_guds
+			SET ORD_NO=#ordNo#
+				, ORD_GUDS_SEQ=#ordGudsSeq#
+				, GUDS_ID=#gudsId#
+				, ORD_GUDS_MPNG_YN=#ordGudsMpngYn#
+				, ORD_GUDS_KOR_NM=#ordGudsKorNm#
+				, ORD_GUDS_CNS_NM=#ordGudsCnsNm#
+				, ORD_GUDS_ORG_PRC=#ordGudsOrgPrc#
+				, ORD_GUDS_SALE_PRC=#ordGudsSalePrc#
+				, ORD_GUDS_QTY=#ordGudsQty#
+				, ORD_GUDS_OPR_EML=#ordGudsOprEml#
+				, ORD_GUDS_SIZE_VAL=#ordGudsSizeVal#
+				, ORD_GUDS_URL_ADDR=#ordGudsUrlAddr#
+			]]>
+	</update>
+	
+	<delete id="smsMsOrdGudsDAO.deleteSmsMsOrdGuds_S">
+		<![CDATA[
+			DELETE FROM sms_ms_ord_guds 
+			]]>
+	</delete>
+	
+	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsByOrdNo" parameterClass="String" resultMap="smsMsOrdGuds">
+			SELECT
+								ORD_NO
+								, ORD_GUDS_SEQ
+								, GUDS_ID
+								, ORD_GUDS_MPNG_YN
+								, ORD_GUDS_KOR_NM
+								, ORD_GUDS_CNS_NM
+								, ORD_GUDS_ORG_PRC
+								, ORD_GUDS_SALE_PRC
+								, ORD_GUDS_QTY
+								, ORD_GUDS_OPR_EML
+								, ORD_GUDS_SIZE_VAL
+								, ORD_GUDS_URL_ADDR
+								, ORD_GUDS_UPC_ID
+					FROM sms_ms_ord_guds
+			WHERE ORD_NO=#ordNo#
+	</select>	
+	
+	<update id="smsMsOrdGudsDAO.updateSmsMsOrdGudsMpng" parameterClass="smsMsOrdGudsVO">
+			<![CDATA[
+			UPDATE sms_ms_ord_guds
+			SET 
+				GUDS_ID = #gudsId#
+				,ORD_GUDS_MPNG_YN = 'Y'
+			WHERE ORD_NO=#ordNo# AND ORD_GUDS_SEQ=#ordGudsSeq#
+			]]>
+	</update>
+	
+	<update id="smsMsOrdGudsDAO.updateSmsMsOrdGudsDetail" parameterClass="smsMsOrdGudsVO">
+			UPDATE sms_ms_ord_guds
+			SET 
+				ORD_GUDS_UPC_ID = #ordGudsUpcId#
+				,ORD_GUDS_CNS_NM = #ordGudsCnsNm#
+				<isNotEmpty property="ordGudsQty" >
+				,ORD_GUDS_QTY = #ordGudsQty#
+				</isNotEmpty>
+				,ORD_GUDS_SIZE_VAL = #ordGudsSizeVal#
+				<isNotEmpty property="ordGudsOrgPrc" >
+				,ORD_GUDS_ORG_PRC = #ordGudsOrgPrc#
+				</isNotEmpty>
+				<isNotEmpty property="ordGudsSalePrc" >
+				,ORD_GUDS_SALE_PRC = #ordGudsSalePrc#
+				</isNotEmpty>
+				,ORD_GUDS_URL_ADDR = #ordGudsUrlAddr#
+				<isNotEmpty property="ordGudsMpngYn" >
+					 ,ORD_GUDS_MPNG_YN=  #ordGudsMpngYn#
+			    </isNotEmpty>
+
+			WHERE ORD_NO=#ordNo# AND ORD_GUDS_SEQ=#ordGudsSeq#
+			
+	</update>
+	
+	
+</sqlMap>

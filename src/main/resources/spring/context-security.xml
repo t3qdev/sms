@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+    	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+         
+    <!-- 
+	login-page : 로그인 페이지 
+	default-target-url : 로그인 성공후 이동될 페이지 
+	authentication-failure-url : 로그인 실패시 이동될 페이지 
+	logout-success-url : 로그아웃 후 이동될 페이지 
+	<security:intercept-url pattern="/main.do" access="ROLE_USER" /> 
+	이 부분은 main.do 페이지는 권한이 "ROLE_USER" 로 로그인 한 사용자만 접근 가능하다는 의미 이다. 
+	memberService 는 DB에서 아이디 정보로 패스워드정보를 알기 위해 만들었다. 
+    -->
+    
+
+
+     <http auto-config="true" use-expressions="true" >
+     
+		 <intercept-url pattern="/userManagementView.do" access="hasAnyRole('N000580100')" />     
+         <intercept-url pattern="/passwordChangeView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderManagementView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderDetailView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderGoodsMappingView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderPOView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderCalculateView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/orderHistoryView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+
+      
+           <form-login
+         login-page="/login.do"
+          username-parameter="sllrId" 
+          password-parameter="sllrPwd"
+          default-target-url="/login.do"
+          always-use-default-target="false"
+          authentication-failure-url="/login.do?login_error=ture"
+           />
+		
+		     <logout
+		     invalidate-session="true"
+		     logout-success-url="/login.do"
+		     logout-url="/logOut.do" />
+    		
+    		 <session-management>
+				<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+			 </session-management>
+
+     </http>
+
+	<beans:bean id="bcrypt" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<beans:bean id="customAuthenticationProvider" class="com.b5m.sms.common.security.CustomAuthenticationProvider" />
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="customAuthenticationProvider" />
+		
+		<authentication-provider user-service-ref="loginService">
+			<password-encoder ref="bcrypt">
+
+			</password-encoder>
+		</authentication-provider>
+		 
+	</authentication-manager> 
+</beans:beans>

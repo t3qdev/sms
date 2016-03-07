@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsGuds">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="smsMsGudsVO" type="com.b5m.sms.vo.SmsMsGudsVO"/>
+	
+	<resultMap id="smsMsGuds" class="com.b5m.sms.vo.SmsMsGudsVO">
+		<result property="gudsId" column="GUDS_ID" columnIndex="1"/>
+		<result property="brndId" column="BRND_ID" columnIndex="2"/>
+		<result property="gudsKorNm" column="GUDS_KOR_NM" columnIndex="3"/>
+		<result property="gudsCnsNm" column="GUDS_CNS_NM" columnIndex="4"/>
+		<result property="gudsUpcId" column="GUDS_UPC_ID" columnIndex="5"/>
+		<result property="gudsVatRfndYn" column="GUDS_VAT_RFND_YN" columnIndex="6"/>
+		<result property="gudsInbxQty" column="GUDS_INBX_QTY" columnIndex="7"/>
+		<result property="gudsUrlAddr" column="GUDS_URL_ADDR" columnIndex="8"/>
+	</resultMap>
+	
+
+	<select id="smsMsGudsDAO.selectSmsMsGuds" parameterClass="String" resultMap="smsMsGuds">
+		<![CDATA[
+			SELECT
+									GUDS_ID
+								, BRND_ID
+								, GUDS_KOR_NM
+								, GUDS_CNS_NM
+								, GUDS_UPC_ID
+								, GUDS_VAT_RFND_YN
+								, GUDS_INBX_QTY
+								, GUDS_URL_ADDR
+					FROM sms_ms_guds
+			WHERE GUDS_ID=#gudsId#
+		]]>
+	
+	</select>	
+	<insert id="smsMsGudsDAO.insertSmsMsGuds_S" parameterClass="smsMsGudsVO">
+		<![CDATA[
+			INSERT INTO sms_ms_guds 
+				( GUDS_ID
+				  , BRND_ID
+				  , GUDS_KOR_NM
+				  , GUDS_CNS_NM
+				  , GUDS_UPC_ID
+				  , GUDS_VAT_RFND_YN
+				  , GUDS_INBX_QTY
+				  , GUDS_URL_ADDR )
+			VALUES ( 
+					#gudsId#
+				  , #brndId#
+				  , #gudsKorNm#
+				  , #gudsCnsNm#
+				  , #gudsUpcId#
+				  , #gudsVatRfndYn#
+				  , #gudsInbxQty#
+				  , #gudsUrlAddr# )
+		]]>
+	</insert>
+	
+	<update id="smsMsGudsDAO.updateSmsMsGuds_S">
+		<![CDATA[
+			UPDATE sms_ms_guds
+			SET GUDS_ID=#gudsId#
+				, BRND_ID=#brndId#
+				, GUDS_KOR_NM=#gudsKorNm#
+				, GUDS_CNS_NM=#gudsCnsNm#
+				, GUDS_UPC_ID=#gudsUpcId#
+				, GUDS_VAT_RFND_YN=#gudsVatRfndYn#
+				, GUDS_INBX_QTY=#gudsInbxQty#
+				, GUDS_URL_ADDR=#gudsUrlAddr#
+			]]>
+	</update>
+	
+	<delete id="smsMsGudsDAO.deleteSmsMsGuds_S">
+		<![CDATA[
+			DELETE FROM sms_ms_guds 
+			]]>
+	</delete>
+
+	<select id="smsMsGudsDAO.selectSmsMsGudsByVO" parameterClass="smsMsGudsVO" resultMap="smsMsGuds">
+			SELECT
+									GUDS_ID
+								, BRND_ID
+								, GUDS_KOR_NM
+								, GUDS_CNS_NM
+								, GUDS_UPC_ID
+								, GUDS_VAT_RFND_YN
+								, GUDS_INBX_QTY
+								, GUDS_URL_ADDR
+				FROM sms_ms_guds
+				WHERE 1=1
+				   <isNotNull prepend="AND" removeFirstPrepend="true" open="(" close=")" >
+				      <isNotEmpty  prepend="OR" property="gudsCnsNm">
+				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsCnsNm#,'%') ]]>
+				      </isNotEmpty >
+				      <isNotEmpty  prepend="OR" property="gudsUpcId">
+				      		<![CDATA[	GUDS_UPC_ID LIKE CONCAT('%',#gudsUpcId#,'%') ]]>
+				      </isNotEmpty >
+				    </isNotNull>
+
+		</select>
+		
+		
+		<select id="smsMsGudsDAO.selectSmsMsGudsByUpcId" parameterClass="String" resultMap="smsMsGuds">
+			SELECT
+								GUDS_ID
+								, BRND_ID
+								, GUDS_KOR_NM
+								, GUDS_CNS_NM
+								, GUDS_UPC_ID
+								, GUDS_VAT_RFND_YN
+								, GUDS_INBX_QTY
+								, GUDS_URL_ADDR
+				FROM sms_ms_guds
+				WHERE GUDS_UPC_ID=#upcId#
+
+		</select>
+
+	
+		<update id="smsMsGudsDAO.updateSmsMsGudsByInbxQty"  parameterClass="smsMsGudsVO">
+			<![CDATA[
+				UPDATE sms_ms_guds
+					SET 	 GUDS_INBX_QTY=#gudsInbxQty#
+					WHERE GUDS_ID=#gudsId#
+				]]>
+		</update>
+		
+		<select id="smsMsGudsDAO.selectSmsMsGudsGudsId" resultClass="String">
+			SELECT 
+	      		IFNULL(MAX(GUDS_ID),0)
+	      	FROM 
+	      		sms_ms_guds
+		</select>
+		
+			<delete id="smsMsGudsDAO.deleteSmsMsGuds" parameterClass="smsMsGudsVO">
+		<![CDATA[
+			DELETE FROM sms_ms_guds 
+			WHERE GUDS_ID=#gudsId#
+			]]>
+	</delete>
+		
+
+</sqlMap>

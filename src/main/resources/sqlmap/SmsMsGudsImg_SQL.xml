@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsGudsImg">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="tbMsOrdBatchVO" type="com.b5m.sms.vo.TbMsOrdBatchVO" />
+	<typeAlias alias="smsMsGudsImgVO" type="com.b5m.sms.vo.SmsMsGudsImgVO" />
+		
+	<resultMap id="smsMsGudsImg" class="com.b5m.sms.vo.SmsMsGudsImgVO">
+		<result property="gudsId" column="GUDS_ID" columnIndex="1"/>
+		<result property="gudsImgCd" column="GUDS_IMG_CD" columnIndex="2"/>
+		<result property="gudsImgOrgtFileNm" column="GUDS_IMG_ORGT_FILE_NM" columnIndex="3"/>
+		<result property="gudsImgSysFileNm" column="GUDS_IMG_SYS_FILE_NM" columnIndex="4"/>
+		<result property="gudsImgCdnAddr" column="GUDS_IMG_CDN_ADDR" columnIndex="5"/>
+	</resultMap>
+		
+	<select id="smsMsGudsImgDAO.selectSmsMsGudsImg" parameterClass="String" resultMap="smsMsGudsImg">
+	<![CDATA[ 
+			SELECT
+								GUDS_ID
+								, GUDS_IMG_CD
+								, GUDS_IMG_ORGT_FILE_NM
+								, GUDS_IMG_SYS_FILE_NM
+								, GUDS_IMG_CDN_ADDR
+					FROM sms_ms_guds_img
+			WHERE GUDS_ID=#gudsId#
+		]]>
+		
+	</select>	
+	<insert id="smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg" parameterClass="tbMsOrdBatchVO">
+			INSERT INTO 
+							SMS_MS_GUDS_IMG(
+														GUDS_ID
+														, GUDS_IMG_CD
+														, GUDS_IMG_ORGT_FILE_NM
+														, GUDS_IMG_SYS_FILE_NM
+														, GUDS_IMG_CDN_ADDR
+														)
+							SELECT 
+											#gudsId#
+											, GUDS_IMG_CD
+											, GUDS_IMG_ORGT_FILE_NM
+											, GUDS_IMG_SYS_FILE_NM
+											, GUDS_IMG_CDN_ADDR
+							FROM 
+										TB_MS_GUDS_IMG
+							WHERE 
+									SLLR_ID= #brndId# 
+									AND
+									GUDS_ID= #gudsIdOfB5m#
+	
+	</insert>
+	
+	<insert id="smsMsGudsImgDAO.insertSmsMsGudsImg" parameterClass="smsMsGudsImgVO">
+				INSERT INTO sms_ms_guds_img 
+					( GUDS_ID
+					  , GUDS_IMG_CD
+					  , GUDS_IMG_ORGT_FILE_NM
+					  , GUDS_IMG_SYS_FILE_NM
+					  , GUDS_IMG_CDN_ADDR )
+				VALUES ( #gudsId#
+					  , #gudsImgCd#
+					  , #gudsImgOrgtFileNm#
+					  , #gudsImgSysFileNm#
+					  , #gudsImgCdnAddr# )
+	
+	</insert>
+	<delete id="smsMsGudsImgDAO.deleteSmsMsGudsImg" parameterClass="smsMsGudsImgVO">
+			DELETE FROM SMS_MS_GUDS_IMG
+			WHERE GUDS_ID= #gudsId#
+				AND GUDS_IMG_CD= #gudsImgCd#
+	
+	</delete>
+
+</sqlMap>
