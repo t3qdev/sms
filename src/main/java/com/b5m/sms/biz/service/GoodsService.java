@@ -2,6 +2,7 @@ package com.b5m.sms.biz.service;
 
 import java.util.List;
 
+import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
@@ -21,5 +22,11 @@ public interface GoodsService {
 	
 	//상품이름, 상품바코드로 상품검색
 	public List<SmsMsGudsVO> selectSmsMsGudsByVO(SmsMsGudsVO smsMsGudsVo) throws Exception;
+	//이미지 일괄검색
+	public List<SmsMsGudsImgVO> selectSmsMsGudsImgAll() throws Exception;
+	//PO상품 검색
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception;
+	//이미지 코드검색으로 가져오기 
+	public SmsMsGudsImgVO selectSmsMsGudsImgByCd(SmsMsGudsImgVO smsMsGudsImgVo) throws Exception;
 }
 

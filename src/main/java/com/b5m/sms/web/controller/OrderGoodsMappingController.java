@@ -101,6 +101,7 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		smsMsOrdGudsVO.setGudsId(gudsId);
 		smsMsOrdGudsVO.setOrdNo(ordNo);
 		smsMsOrdGudsVO.setOrdGudsSeq(ordGudsSeq);
+		System.out.println("orderGoodsMappingSave [smsMsOrdGudsVO] : "+smsMsOrdGudsVO);
 		orderService.updateSmsMsOrdGudsMpng(smsMsOrdGudsVO);
 		
 

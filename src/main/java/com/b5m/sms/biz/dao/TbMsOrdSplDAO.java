@@ -6,6 +6,7 @@ import egovframework.rte.psl.dataaccess.EgovAbstractDAO;
 
 import org.springframework.stereotype.Repository;
 
+import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
 
@@ -21,6 +22,11 @@ public class TbMsOrdSplDAO extends EgovAbstractDAO{
 	@SuppressWarnings("unchecked")
 	public List<TbMsOrdVO> selectTbMsOrdSplForSmsMsOrd() throws Exception{
 		return (List<TbMsOrdVO>) list ("tbMsOrdSplDAO.selectTbMsOrdSplForSmsMsOrd");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TbMsOrdBatchVO> selectTbMsOrdGudsOptForBatchSpecial(SmsMsOrdVO smsMsOrdVO)throws Exception{
+		return (List<TbMsOrdBatchVO> ) list ("tbMsOrdDAO.selectTbMsOrdGudsOptForBatchSpecial",smsMsOrdVO);
 	}
 
 }

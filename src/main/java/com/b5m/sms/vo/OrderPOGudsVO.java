@@ -4,23 +4,23 @@ public class OrderPOGudsVO {
 	private String imgSrcPath;		//이미지경로
 	
 	private String gudsUpcId;		//상품바코드
-	private String gudsCnsNm;		//중문상품명
-	private String gudsKorNm;			//한글상품명
-	private String ordGudsQty;		//상품주문수량
+	private String gudsCnsNm;		//중문상품명-
+	private String gudsKorNm;			//한글상품명-
+	private String ordGudsQty;		//상품주문수량-
 	
 	private String gudsInbxQty;		//인박스 수량
 	private String vatYn;		//부가세 적용여부
-	private String pcPrc;		//매입단가 purchase price (gudsOrgPrc)
+	private String pcPrc;		//매입단가 purchase price (gudsOrgPrc)-
 	private String pcPrcVat;		//매입단가 vat포함
 	private String pcPrcNoVat;		//매입단가 vat미포함
 	
-	private String poPrc;		//po단가	(gudsSalePrc)
+	private String poPrc;		//po단가	(gudsSalePrc)-
 	private String poPrcSum;		//po합계 (po단가*po주문수량)
 	private String poXchrPrc;		//po단가(환율) (po단가*환율) 
 	private String poXchrPrcSum;		//po합계 (po단가*환율)*po주문수량
-	private String pvdrnNm;		//공급자명
+	private String pvdrnNm;		//공급자명-
 	
-	private String crn;		//사업자등록
+	private String crn;		//사업자등록-
 	
 	public String getImgSrcPath() {
 		return imgSrcPath;

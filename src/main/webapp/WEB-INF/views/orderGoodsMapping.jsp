@@ -9,11 +9,13 @@
 
 <!--  Header Include   -->
 <!--jsp:include page="layout/header.jsp"/-->
-
+<style>
+body{min-width:760px; background:#fff}
+</style>
 <body>
 <article>
 	<h1>
-		<span>상품매칭</span>
+		<span>商品配对</span>
 	</h1>
     <div class="ui-layout-single">
     
@@ -26,7 +28,7 @@
                 <section class="ui-layout-action">
 					<div class="mr10">
                         <input type="text" id="searchText" name="searchText" size="50" style="height:30px; line-height:30px; box-sizing:border-box" />
-                        <button class="btn-search">검색</button>
+                        <button class="btn-search">搜索</button>
                     </div>
                 </section>
             </div>
@@ -47,19 +49,20 @@
                 <col style="width:80px">
                 <col style="width:50px">
                 </colgroup>
-                <tbody id="tbody">
-                	<tr>
-                    	<th>-</th>
-                        <th>이미지</th>
-                        <th>바코드</th>
-                        <th>상품명</th>
-                        <th>규격</th>
-                        <th>인박스수량</th>
-                    </tr>
-                    
                     <input type="hidden" id="index" name="index" value="${index }">
                     <input type="hidden" id="ordNo" name="ordNo" value="${ordNo }">
                     <input type="hidden" id="ordGudsSeq" name="ordGudsSeq" value="${ordGudsSeq }">
+                <tbody id="tbody">
+                	<tr>
+                    	<th>-</th>
+                        <th>图片</th>
+                        <th>条码</th>
+                        <th>商品名</th>
+                        <th>规格</th>
+                        <th>装箱数量</th>
+                    </tr>
+                    
+   
                     <c:forEach var="smsMsGuds" items="${smsMsGudsList }" varStatus="status">
               
 	                    <tr>
@@ -81,7 +84,7 @@
 				
 				 <c:if test="${fn:length(smsMsGudsList) ==0}">
                     <tr>
-                    	<td colspan="6" class="tac nodata">검색된 DATA가 없습니다.</td>
+                    	<td colspan="6" class="tac nodata">没有相关的数据。</td>
                     </tr>
                    </c:if>
                 </tbody>
@@ -99,8 +102,8 @@
             	<section class="ui-layout-action">
                 </section>
                 <section class="ui-layout-action">
-                    <button class="btn-cancel">취소</button>
-                    <button class="btn-submit mr10" id="check">확인</button>
+                    <button class="btn-cancel">取消</button>
+                    <button class="btn-submit mr10" id="check">确认</button>
                 </section> 
             </div>
         </section>
@@ -131,14 +134,18 @@ $(function(){
 			async: false,
 			cache : false,
 			success:function(result){
-		 		var tbodyHtml = 	"<tr>	<th>-</th><th>이미지</th><th>바코드</th> <th>상품명</th><th>규격</th><th>인박스수량</th></tr>";
+		 		var tbodyHtml = 	"<tr>	<th>-</th><th>图片</th><th>条码</th> <th>商品名</th><th>规格</th><th>装箱数量</th></tr>";
 				$(result).each(function(index,item){
+					if(item.gudsUpcId== null) {item.gudsUpcId="";}
+					if(item.gudsCnsNm== null) {item.gudsCnsNm="";}
+					if(item.gudsInbxQty== null) {item.gudsInbxQty="";}
 					tbodyHtml+= '<tr><td class="tac"><input type="radio" name="p_match" value=" '+(index+1)+' "></td>';
 					tbodyHtml+= '<td class="tac"><img src="${web_ctx}/orderDetailFileDownload.do?filePath='+item.imgSrcPath+'" width="60" height="60"></td>';
 					tbodyHtml+='<td class="tac">'+item.gudsUpcId+'</td>';
 					tbodyHtml+='<td>'+item.gudsCnsNm+'</td>';
 					tbodyHtml+='<td class="tac"></td>';
 					tbodyHtml+='<td class="tac">'+item.gudsInbxQty+'</td>';
+					tbodyHtml+='<input type="hidden" id="gudsId'+(index+1)+'" name="gudsId'+(index+1)+'" value="'+item.gudsId+'">';
 					tbodyHtml+='<input type="hidden" id="imgSrcPath'+(index+1)+'" name="imgSrcPath'+(index+1)+'" value="'+item.imgSrcPath+'">';
 					tbodyHtml+='<input type="hidden" id="gudsKorNm'+(index+1)+'" name="gudsKorNm'+(index+1)+'" value="'+item.gudsKorNm+'">';
 					tbodyHtml+='<input type="hidden" id="gudsCnsNm'+(index+1)+'" name="gudsCnsNm'+(index+1)+'" value="'+item.gudsCnsNm+'">';	                       
@@ -146,7 +153,7 @@ $(function(){
 					tbodyHtml+='<input type="hidden" id="gudsInbxQty'+(index+1)+'" name="gudsInbxQty'+(index+1)+'" value="'+item.gudsInbxQty+'"> </tr>';
 				})
 				if(result.length==0){
-					tbodyHtml+=' <tr><td colspan="6" class="tac nodata">검색된 DATA가 없습니다.</td></tr>';
+					tbodyHtml+=' <tr><td colspan="6" class="tac nodata">没有相关的数据。</td></tr>';
 				}
 				$('#tbody').html(tbodyHtml);
 			}
@@ -161,7 +168,7 @@ $(function(){
 		var ordNo =$('#ordNo').val(); 
 		var ordGudsSeq=$('#ordGudsSeq').val();
 		
-		if(radioIndex==null) alert("상품을 선택해 주세요");
+		if(radioIndex==null) alert("请选择商品");
 		else{			
 			var gudsUpcId =$('#gudsUpcId'+radioIndex).val();
 			var gudsId = $('#gudsId'+radioIndex).val();
@@ -184,7 +191,9 @@ $(function(){
 					$(opener.document).find("img[name=imgSrcPath]").eq(${index }).val(imgSrcPath);
 					$(opener.document).find("input[name=gudsInbxQty]").eq(${index }).val(gudsInbxQty);
 					
-					alert("상품이 정상적으로 매핑되었습니다");
+					
+					alert("商品以正常配对");
+					opener.document.orderDetailSaveForm.submit(); 
 					window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
 				}
 			});//end $.ajax	

@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Select;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
@@ -53,10 +54,12 @@ import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.util.StringUtil;
+import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.OrderPOGudsVO;
 import com.b5m.sms.vo.OrderPOVO;
 import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
+import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
@@ -77,49 +80,189 @@ public class OrderPOController extends AbstractFileController{
 	@RequestMapping(value="/orderPOView")
 	public String orderPO(Model model, String ordNo) throws Exception{
 		String yes="YES";
-		//화면에 표시될 내용 (정보+상품)
+		
+		//0.화면에 표시될 내용 (정보+상품) 해당 VO를 모두 채워넣으면 화면에 값 표시 완료 
 		OrderPOVO poVo = new OrderPOVO();
 		List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
+		//계산을 위해 필요한 변수들
+		
+		//PO상품정보 표시용
+		Double pcPrcNoVat=0.0;
+		Double pcPrcVat=0.0;
+		Double poPrcSum=0.0;
+		Double poXchrPrc=0.0;
+		Double poXchrPrcSum=0.0;
+		//PO정보 표시용
+		Double poXchrAmt=0.0;
+		Double pcSum=0.0;
+		Double pcSumNoVat=0.0;
+		Double dlvPcSum=0.0;
+		Double dlvPcSumNoVat=0.0;
+		
+		Double pf=0.0;
+		Double pfNoVat=0.0;
+		Double pfDlvAmt=0.0;
+		Double pfDlvAmtNoVat=0.0;
+		
+	
+		//1-1. SmsMsEstmVO와 SmsMsOrdVO(custId)를 DB에서 읽어온다.
+		SmsMsEstmVO estmVo = orderService.selectSmsMsEstmVO(ordNo);
+		
+		//1-2. 바로 가져올수 있는 값
+		poVo.setOrdNo(ordNo);
+		poVo.setPoNo(estmVo.getPoNo());
+		poVo.setDlvModeCd(estmVo.getDlvModeCd());		//배송방식코드
+		poVo.setDlvDestCd(estmVo.getDlvDestCd());		//견적서에 존재하지 않는값 DB에만 존재중
+		poVo.setDlvAmt(estmVo.getDlvAmt());				//물류비
+		
+		poVo.setPoDt(estmVo.getPoDt());						//요청일자
+		poVo.setPoRegrEml(estmVo.getPoRegrEml());		//PO등록자이메일
+		poVo.setPoAmt(estmVo.getPoSumAmt());		//PO총금액 usd
+		poVo.setStdXchrKindCd(estmVo.getStdXchrKindCd());		//환율종류코드 :환율종류코드는 환율테이블을 참조해서 값으로 변경해야함 
+		poVo.setStdXchrAmt(estmVo.getStdXchrAmt());				//환율금액
+
+		poVo.setOrdArvlDt(estmVo.getOrdArvlDt());			//주문도착일자
+		poVo.setPoMemoCont(estmVo.getPoMemoCont());	//PO메모
+	
+		
+		//계산에 사용될 변수  : null가능성
+		Double poAll= Double.parseDouble(estmVo.getPoSumAmt());
+		Double xchr = Double.parseDouble(estmVo.getStdXchrAmt());
+		Double dlv = Double.parseDouble(estmVo.getDlvAmt());
+		System.out.println("계산 사용변수1 :" +poAll+"               "+xchr);
+		
+		//1-4.주문테이블에서 얻어와야 할값
+		OrderDetailVO ordVo = orderService.selectSmsMsOrdDetail(ordNo);
+		poVo.setCustId(ordVo.getCustId());
 		
 		
-		//1-1. SmsMsEstmVO와 SmsMsOrdVO를 DB에서 읽어온다.
-		SmsMsEstmVO EstmVo = new SmsMsEstmVO();		//ordNo로 검색
-		SmsMsOrdVO ordVo = new SmsMsOrdVO();			//ordNo로 검색
+		//2-1. SmsMsEstmGudsVO를 가져온다
+		List<SmsMsEstmGudsVO>  estmGudsList = goodsService.selectSmsMsEstmGuds(ordNo);
 		
-		//1-2.해당값들을 이용하여 OrderPOVO를 만든다
+		//2-2. po상품 개수 만큼 OrderPOGudsVO를 생성한다
+		for(SmsMsEstmGudsVO vo:estmGudsList){
+			System.out.println(vo);
+			OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
+			//2-2-1.단순삽입데이터
+			poGudsVo.setGudsKorNm(vo.getOrdGudsKorNm());
+			poGudsVo.setGudsCnsNm(vo.getOrdGudsCnsNm());
+			poGudsVo.setOrdGudsQty(vo.getOrdGudsQty());
+			poGudsVo.setPcPrc(vo.getOrdGudsOrgPrc());			//매입단가 orgPrc
+			poGudsVo.setPoPrc(vo.getOrdGudsSalePrc());			//po단가  saleprc
+			poGudsVo.setPvdrnNm(vo.getOrdGudsPrvdNm());		//사업자 이름
+			poGudsVo.setCrn(vo.getOrdGudsPrvdCrn());			//사업자등록번호
+			
+			//계산에 사용될 변수 : null가능성 
+			Double qty = Double.parseDouble(vo.getOrdGudsQty());
+			Double pcPrc = Double.parseDouble(vo.getOrdGudsOrgPrc());	
+			Double poPrc = Double.parseDouble(vo.getOrdGudsSalePrc());
+			//System.out.println("계산 사용변수2 :" +qty+"               "+orgPrc+"               "+salePrc);
+
+			
+			
+			
+			//2-2-2. SmsMsGuds 테이블에서 가져온다
+			SmsMsGudsVO smsMsGudsVo =goodsService.selectSmsMsGuds(vo.getGudsId());
+			System.out.println("vo.getGudsId()123125 : "+vo.getGudsId());
+			System.out.println("smsMsGudsVo123125346 : "+smsMsGudsVo);
+			if(smsMsGudsVo!=null){
+				poGudsVo.setGudsInbxQty(smsMsGudsVo.getGudsInbxQty());
+				poGudsVo.setGudsUpcId(smsMsGudsVo.getGudsUpcId());
+				poGudsVo.setVatYn(smsMsGudsVo.getGudsVatRfndYn());
+			}
+			//2-2-3. SmsMsGudsImg 테이블에서 가져온다 (목록 이미지 코드(N000080200)를 가져온다)
+			SmsMsGudsImgVO smsMsGudsImgVo =new SmsMsGudsImgVO();
+			smsMsGudsImgVo.setGudsId(vo.getGudsId());
+			smsMsGudsImgVo.setGudsImgCd("N000080200");
+			System.out.println("orderpocontroller : "+smsMsGudsImgVo);
+			smsMsGudsImgVo=goodsService.selectSmsMsGudsImgByCd(smsMsGudsImgVo);
+			System.out.println("orderpocontroller : "+smsMsGudsImgVo);
+			String imgSrc =smsMsGudsImgVo.getGudsImgSysFileNm();
+			poGudsVo.setImgSrcPath(imgSrc);
+			
+			
+			
+			
+			
+		
+
+			//2-2-4. 계산을 통해 얻는 값
+			pcPrcVat=pcPrcNoVat *1.1;					//매입합계(부가세포함)
+			pcPrcNoVat=pcPrc*qty;							//매입합계(부가세 제외)
+			poPrcSum=poPrc*qty;							//po합계
+			poXchrPrc=poPrc*xchr;							//po단가
+			poXchrPrcSum=poPrcSum*xchr;				//po합계
+			
+			pcSum+=pcPrcVat;		
+			pcSumNoVat+=pcPrcNoVat;
+			
+			
+			poGudsVo.setPcPrcNoVat(Double.toString(pcPrcNoVat));		//setPcPrc * OrdGudsQty
+			poGudsVo.setPcPrcVat(Double.toString(pcPrcVat));				//pcPrcNoVat *1.1
+			poGudsVo.setPoPrcSum(Double.toString(poPrcSum));			//setPoPrc * OrdGudsQty
+			poGudsVo.setPoXchrPrc(Double.toString(poXchrPrc));		//setPoPrc * estmVo.getStdXchrAmt()
+			poGudsVo.setPoXchrPrcSum(Double.toString(poXchrPrcSum));		//poPrcSum* estmVo.getStdXchrAmt()
+					
+			
+			//OrderPOGudsList에 VO삽입
+			poGudsList.add(poGudsVo);
+					
+			
+		}
+		
+	
+		
+		poXchrAmt=poAll*xchr;
 		
 		
+		dlvPcSum=pcSum+dlv;
+		dlvPcSumNoVat=pcSumNoVat+dlv;
 		
-		List<SmsMsEstmGudsVO> EstmGudsList = new ArrayList<SmsMsEstmGudsVO>();
+		pf=(poXchrAmt-pcSum)/pcSum;
+		pfNoVat=(poXchrAmt-pcPrcNoVat)/pcPrcNoVat;
+		pfDlvAmt=(poXchrAmt-dlvPcSum)/dlvPcSum;
+		pfDlvAmtNoVat=(poXchrAmt-dlvPcSumNoVat)/dlvPcSumNoVat;
+		
+		//1-3. 계산을 통해서 얻어야 하는 값 (9)
+		poVo.setPoXchrAmt(Double.toString(poXchrAmt));		//po총금액 krw	=estmVo.getPoSumAmt()*estmVo.getStdXchrAmt()
+		poVo.setPcSum(Double.toString(pcSum));		//매입합계 부가세포함			+=pcprcvat
+		poVo.setPcSumNoVat(Double.toString(pcSumNoVat));		//매입합계 부가세 제외		+=pcprcNoVat
+		poVo.setDlvPcSum(Double.toString(dlvPcSum));			//물류비_매입합계				=pcSum+estmVo.getDlvAmt()
+		poVo.setDlvPcSumNoVat(Double.toString(dlvPcSumNoVat));	//물류비_매입합계 부가세제외 =pcSumNoVat +estmVo.getDlvAmt()
+		
+		poVo.setPf(Double.toString(pf));			//수익 vat포함						=(poXchrAmt-(+=pcprcvat))/poXchrAmt
+		poVo.setPfNoVat(Double.toString(pfNoVat));		//수익 vat제외			=((poXchrAmt-(+=pcprcNoVat))/poXchrAmt
+		poVo.setPfDlvAmt(Double.toString(pfDlvAmt));		//수익 vat포함 +물류비	=((poXchrAmt-(dlvPcSum))/poXchrAmt
+		poVo.setPfDlvAmtNoVat(Double.toString(pfDlvAmtNoVat));	//수익 vat제외+물류비	=((poXchrAmt-(dlvPcSumNoVat))/poXchrAmt
+	
+
 		
 		
-		//2. 화면에 데이터를 뿌려준다
-		
-		
-		
-		
+		//3.화면에 해당값등 표시 
 		//페이지에서 들어온 경로가 view일경우에는 확인 버튼을 사용하지 못하도록
-		
 		model.addAttribute("view", yes);
 		model.addAttribute("poVo", poVo);
 		model.addAttribute("poGudsList", poGudsList);
 		model.addAttribute("gudsCnt", poGudsList.size());
+		
 		return "orderPO";		
 	}
 	
 	
 	
 	
+	
 	@ResponseBody
 	@RequestMapping(value="/orderPOSave")
-	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt, String wrtrEml) throws Exception{
-		orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt,wrtrEml);
+	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt) throws Exception{
+		orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt);
 		
 	}
 	
 	@RequestMapping(value="/orderPOInsert")
-	public String orderPOInsert(@RequestParam("file") MultipartFile[] fileArray, Model model, HttpServletRequest req) throws Exception{
+	public String orderPOInsert(@RequestParam("file") MultipartFile[] fileArray, Model model, HttpServletRequest req, String ordNo) throws Exception{
 			System.out.println(req.getContextPath());
+			System.out.println("orderPoInsert ordNo : " +ordNo);
 			List<String> imgFileNameList = new ArrayList<String>();
 			
 			List<MultipartFile> imgFileList = new ArrayList<MultipartFile>();
@@ -177,7 +320,7 @@ public class OrderPOController extends AbstractFileController{
 			
 			String pfDlvAmtNoVat=StringUtil.excelGetCell(sheet.getRow(7).getCell(6));
 			String poMemoCont=StringUtil.excelGetCell(sheet.getRow(9).getCell(1));
-			String ordNo=StringUtil.excelGetCell(sheet.getRow(3).getCell(13));
+			//String ordNo=StringUtil.excelGetCell(sheet.getRow(3).getCell(13));	//엑셀값은 사용안함
 			String poNo=StringUtil.excelGetCell(sheet.getRow(4).getCell(13));
 			String custId=StringUtil.excelGetCell(sheet.getRow(5).getCell(13));
 		
@@ -234,25 +377,26 @@ public class OrderPOController extends AbstractFileController{
 				OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
 				
 				//poGudsVo.setImgSrcPath("file:///"+imgName+ordNo+i+".jpg");
+				Row getRow=sheet.getRow(i);
 				poGudsVo.setImgSrcPath(ordNo+i+".jpg");
-				poGudsVo.setGudsUpcId(StringUtil.excelGetCell(sheet.getRow(i).getCell(2)));
-				poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(sheet.getRow(i).getCell(3)));
-				poGudsVo.setGudsKorNm(StringUtil.excelGetCell(sheet.getRow(i).getCell(4)));
-				poGudsVo.setOrdGudsQty(StringUtil.excelGetCell(sheet.getRow(i).getCell(5)));
+				poGudsVo.setGudsUpcId(StringUtil.excelGetCell(getRow.getCell(2)));
+				poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
+				poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
+				poGudsVo.setOrdGudsQty(StringUtil.excelGetCell(getRow.getCell(5)));
 				
-				poGudsVo.setGudsInbxQty(StringUtil.excelGetCell(sheet.getRow(i).getCell(6)));
-				poGudsVo.setVatYn(StringUtil.excelGetCell(sheet.getRow(i).getCell(7)));
-				poGudsVo.setPcPrc(StringUtil.excelGetCell(sheet.getRow(i).getCell(8)));
-				poGudsVo.setPcPrcVat(StringUtil.excelGetCell(sheet.getRow(i).getCell(9)));
-				poGudsVo.setPcPrcNoVat(StringUtil.excelGetCell(sheet.getRow(i).getCell(10)));
+				poGudsVo.setGudsInbxQty(StringUtil.excelGetCell(getRow.getCell(6)));
+				poGudsVo.setVatYn(StringUtil.excelGetCell(getRow.getCell(7)));
+				poGudsVo.setPcPrc(StringUtil.excelGetCell(getRow.getCell(8)));
+				poGudsVo.setPcPrcVat(StringUtil.excelGetCell(getRow.getCell(9)));
+				poGudsVo.setPcPrcNoVat(StringUtil.excelGetCell(getRow.getCell(10)));
 				
-				poGudsVo.setPoPrc(StringUtil.excelGetCell(sheet.getRow(i).getCell(11)));
-				poGudsVo.setPoPrcSum(StringUtil.excelGetCell(sheet.getRow(i).getCell(12)));
-				poGudsVo.setPoXchrPrc(StringUtil.excelGetCell(sheet.getRow(i).getCell(13)));
-				poGudsVo.setPoXchrPrcSum(StringUtil.excelGetCell(sheet.getRow(i).getCell(14)));
-				poGudsVo.setPvdrnNm(StringUtil.excelGetCell(sheet.getRow(i).getCell(15)));
+				poGudsVo.setPoPrc(StringUtil.excelGetCell(getRow.getCell(11)));
+				poGudsVo.setPoPrcSum(StringUtil.excelGetCell(getRow.getCell(12)));
+				poGudsVo.setPoXchrPrc(StringUtil.excelGetCell(getRow.getCell(13)));
+				poGudsVo.setPoXchrPrcSum(StringUtil.excelGetCell(getRow.getCell(14)));
+				poGudsVo.setPvdrnNm(StringUtil.excelGetCell(getRow.getCell(15)));
 			
-				poGudsVo.setCrn(StringUtil.excelGetCell(sheet.getRow(i).getCell(16)));
+				poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
 				
 				if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
 					poGudsList.add(poGudsVo);

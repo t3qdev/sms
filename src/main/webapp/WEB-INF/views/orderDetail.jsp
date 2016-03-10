@@ -5,6 +5,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!--  Header Include   -->
 <!--jsp:include page="layout/header.jsp"/-->
@@ -14,7 +15,7 @@
 
 <article>
 	<h1>
-		<span>상세보기</span>
+		<span>详细情报</span>
 	</h1>
 	
 	<div class="ui-layout-single">
@@ -27,16 +28,18 @@
                 </section>
                 <section class="ui-layout-action">
 
-	         	<button class="mr10" id="btn_01">P/O업로드</button>
-                <a class="btn-proc ml10" id="btn_proc01" href="./orderPOView.do?ordNo=${ordNo }" target="_blank">P/O확인</a>
-                    <button class="btn-proc btn_pop" id="btn_proc02" data-href="./orderCalculateView.do?ordNo=${ordNo }" data-popw="570" data-poph="280">정산</button>
-                	<a href="" id="excelDownload"><button class="btn-excel mr10">order Excel 다운받기</button></a>
-                    
+	         	<button  id="btn_01">P/O上传</button> 
+               <a class="btn-proc btn_pop" id="btn_proc01" data-href="./orderPOView.do?ordNo=${ordNo }" data-popw="1500" data-poph="800">P/O确认</a>
+                    <button class="btn-proc btn_pop" id="btn_proc02" data-href="./orderCalculateView.do?ordNo=${ordNo }" data-popw="570" data-poph="280">结算</button>
+                    <a href="" id="poExcelDownload"><button class="btn-excel mr10">采购P/O(excel) 下载</button></a>
+                	<a href="" id="excelDownload"><button class="btn-excel mr10">下载订单(excel)</button></a>
+                     
                 </section>
             </div>
 			<div class="ui-layout-single">
 			
 				<form method="post" action="${web_ctx}/orderDetailSave.do" id="orderDetailSaveForm" name="orderDetailSaveForm">
+				<input type="hidden" id="ordstatCd" name="ordstatCd" value="${orderDetail.ordStatCd }">
 				<input type="hidden" id="wrtrEml" name="wrtrEml" value="${user.username }"/>
 				<input type="hidden" id="ordNo" name="ordNo" value="${ordNo }">
             	<input type="hidden" id="gudsListSize" name="gudsListSize" value="${gudsListSize }">
@@ -53,77 +56,77 @@
                 </colgroup>
                 <thead>
                 	<tr>
-                    	<th colspan="8">클라이언트 견적문의서(${orderDetail.ordNm })</th>
+                    	<th colspan="8">客户询盘单(${orderDetail.ordNm })</th>
                     </tr>
                 </thead>
                 
                 <tbody>
 				
                 	<tr>
-                    	<th>상해담당자</th>
+                    	<th>上海负责人</th>
                         <td><div> <select id="oprCns" name="oprCns">
                         				<c:forEach var="cnsOpr" items="${cnsOprList}">
 											<option  value="${cnsOpr.userEml}">${cnsOpr.userAlasCnsNm}(${cnsOpr.userAlasEngNm})</option>											
 										</c:forEach>
 						</select> </div></td>
-                        <th>한국담당자</th>
+                        <th>韩国负责人</th>
                         <td><div><select id="oprKr" name="oprKr">
                         				<c:forEach var="krOpr" items="${krOprList}">
 											<option  value="${krOpr.userEml}">${krOpr.userAlasCnsNm}(${krOpr.userAlasEngNm})</option>
 										</c:forEach>
 						</select></div></td>
-                        <th>클라이언트</th>
+                        <th>客户</th>
                         <td><div><input type="text" id="custId" name="custId" value="${orderDetail.custId }"></div></td>
-                        <th>문의일자</th>
+                        <th>询盘日期</th>
                         <td><div><input type="text" class="ui-calendar" id="ordReqDt" name="ordReqDt" /></div></td>
                     </tr>
                     <tr>
-                    	<th>희망인도일자</th>
+                    	<th>期望交货日期</th>
                         <td><div><input type="text" class="ui-calendar" id="ordHopeArvlDt" name="ordHopeArvlDt"/></div></td>
-                        <th>기준환율</th>
+                        <th>标准汇率</th>
                         <td><div><input type="text" id="stdXchrAmt" name="stdXchrAmt" value="${orderDetail.stdXchrAmt }"></div></td>
-                    	<th>기준화페</th>
+                    	<th>报价货币</th>
                       <td><div><select id="stdXchrKindCd" name="stdXchrKindCd">
                         				<c:forEach var="stdXchrKindCd" items="${stdXchrKindCdList}">
 											<option  value="${stdXchrKindCd.cd}">${stdXchrKindCd.cdVal}</option>
 										</c:forEach>
 						</select></div></td>
-  						<th>대금지불방식</th>
+  						<th>付款方式</th>
                         <td><div><input type="text" id="pymtPrvdModeCont" name="pymtPrvdModeCont" value="${orderDetail.pymtPrvdModeCont }"></div></td>
                     </tr>
                     <tr>
-                    	<th>견적조건</th>
+                    	<th>报价条款</th>
                         <td><div><select id="dlvModeCd" name="dlvModeCd">
                         				<c:forEach var="dlvModeCd" items="${dlvModeCdList}">
 											<option  value="${dlvModeCd.cd}">${dlvModeCd.cdVal}</option>
 										</c:forEach>
 						</select></div></td> 
-                        <th>항구</th>
+                        <th>港口</th>
                         <td><div><select id="dlvDestCd" name="dlvDestCd">
                         				<c:forEach var="dlvDestCd" items="${dlvDestCdList}">
 											<option  value="${dlvDestCd.cd}">${dlvDestCd.cdVal}</option>
 										</c:forEach>
 						</select></div></td> 
-						<th>견적일자</th>
+						<th>订单日期</th>
                         <td><div><input type="text" class="ui-calendar" id="ordEstmDt" name="ordEstmDt"/></div></td>
-                        <th>견적유효</th>
+                        <th>订单有效日期</th>
                         <td><div><input type="text" class="ui-calendar" id="ordExpDt" name="ordExpDt"/></div></td>                        
                     </tr>
                     <tr>
-                    	<th>계약서 템플릿 유무</th>
+                    	<th>是否有框架合同</th>
                         <td><div><select id="ctrtTmplYn" name="ctrtTmplYn">
-                        <option value="Y">유</option><option value="N">무</option></select></div></td>
-                        <th>샘플요청유무</th>
+                        <option value="Y">有</option><option value="N">无</option></select></div></td>
+                        <th>是否有样品需求</th>
                         <td><div><select id="smplReqYn" name="smplReqYn">
-                        <option value="Y">유</option><option value="N">무</option></select></div></td>
-                    	<th>PO예상일자</th>
+                        <option value="Y">有</option><option value="N">无</option></select></div></td>
+                    	<th>预估PO日期</th>
                         <td><div><input type="text" class="ui-calendar" id="poSchdDt" name="poSchdDt"/></div></td>
-                    	<th>자격요청유무</th>
+                    	<th>是否有自制需求</th>
                         <td><div><select id="qlfcReqYn" name="qlfcReqYn">
-                        <option value="Y">유</option><option value="N">무</option></select></div></td>
+                        <option value="Y">有</option><option value="N">无</option></select></div></td>
                     </tr>
                     <tr>
-                    	<th>주문프로세스</th>
+                    	<th>客户下单流程</th>
                         <td colspan="7"><div><input type="text" id="custOrdProcCont" name="custOrdProcCont" value="${orderDetail.custOrdProcCont }"></div></td>
                     </tr>
                 </tbody>
@@ -155,20 +158,30 @@
                 <tbody>
                 	<tr>
                     	<th>NO.</th>
-                        <th>이미지</th>
-                        <th>바코드</th>
-                        <th>상품명</th>
-                        <th>예상요청수량</th>
-                        <th>규격</th>
-                        <th>가격(단가)</th>
-                        <th>인박스수량</th>
-                        <th>상품링크</th>
-                        <th>검색</th>
+                        <th>图片</th>
+                        <th>条码</th>
+                        <th>商品名称</th>
+                        <th>预计需求数量</th>
+                        <th>规格</th>
+                        <th>价格(单价)</th>
+                        <th>装箱数量</th>
+                        <th>商品链接</th>
+                        <th>搜索</th>
                     </tr>
                       <c:forEach var="smsMsOrdGuds" items="${smsMsOrdGudsList }" varStatus="status">
                       <tr>
                     	<td class="tac">${status.count }</td>
-                    	<td class="tac"><img src="${web_ctx}/orderDetailFileDownload.do?filePath=${smsMsOrdGuds.imgSrcPath }" id="imgSrcPath_src"  width="60" height="60"></td>
+                    	<c:choose>
+                    		<c:when test="${smsMsOrdGuds.imgSrcPath ne null }">
+                    			<td class="tac"><img src="${web_ctx}/orderDetailFileDownload.do?filePath=${smsMsOrdGuds.imgSrcPath }" id="imgSrcPath_src"  width="60" height="60"></td>	
+                    		</c:when>
+                    		<c:otherwise>
+                    			<td class="tac"><img src="" id="imgSrcPath_src"  width="60" height="60"></td>
+                    		</c:otherwise>
+                    	
+                    	</c:choose>
+                    	
+
                     	<input type="hidden" id="imgSrcPath" name="imgSrcPath" value="${smsMsOrdGuds.imgSrcPath}">
                     	<input type="hidden" id="ordGudsSeq" name="ordGudsSeq" value="${smsMsOrdGuds.ordGudsSeq}">
                     	<input type="hidden" id="gudsId" name="gudsId" value="${smsMsOrdGuds.gudsId}">                                	
@@ -176,10 +189,11 @@
                         <td><div><input type="text" id="ordGudsCnsNm" name="ordGudsCnsNm" value="${smsMsOrdGuds.ordGudsCnsNm}"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsQty" name="ordGudsQty" value="${smsMsOrdGuds.ordGudsQty}" class="tac"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsSizeVal" name="ordGudsSizeVal" value="${smsMsOrdGuds.ordGudsSizeVal}" class="tac"></div></td>
-                        <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td>
-<%--                         <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
-                        <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}"></div></td>
+<%--                         <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
+                        <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="汇率&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td>
+                        <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsUrlAddr" name="ordGudsUrlAddr" value="${smsMsOrdGuds.ordGudsUrlAddr}"></div></a></td>
+                        
                         <td class="tac"><a href="#" class="btn-search btn_pop" data-href="orderGoodsMappingView.do?gudsNm=${smsMsOrdGuds.ordGudsCnsNm}&UpcId=${smsMsOrdGuds.ordGudsUpcId}&index=${status.index}&ordNo=${smsMsOrdGuds.ordNo }&ordGudsSeq=${smsMsOrdGuds.ordGudsSeq }" data-popw="1000" data-poph="600"></a></td>
                         </tr> 
                     </c:forEach> 
@@ -187,7 +201,7 @@
                 </tbody>
                 <tfoot>
                 	<tr>
-                    	<th>비고</th>
+                    	<th>备注</th>
                         <th colspan="9">
                         	<div>
 								<textarea id="ordMemoCont" name="ordMemoCont" form="orderDetailSaveForm">${orderDetail.ordMemoCont }</textarea>
@@ -210,7 +224,7 @@
                 </section>
                 <section class="ui-layout-action">
 <!--                     <button class="btn-proc btn_pop" id="btn_proc01" data-href="./orderPo.html" data-popw="1300" data-poph="800">P/O확정</button> -->
-                    <button class="btn-save mr10" >저장</button>
+                    <button class="btn-save mr10" >保存</button>
                 </section> 
             </div>
         </section>
@@ -224,7 +238,7 @@
             	<section class="ui-layout-form-b">
                 	<div class="ml10 tar">
                         <i class="file"><input id="orderFile" name="orderFile" type="file"><em>No file selected...</em></i>
-                        <button class="btn-add mr10" id="orderFileUpload">등록</button>
+                        <button class="btn-add mr10" id="orderFileUpload">登录</button>
                     </div>
 				</section>    
             </div>
@@ -239,10 +253,10 @@
                 </colgroup>
                 <tbody>
                 	<tr>
-                    	<th>날짜</th>
-                        <th>화명</th>
-                        <th>파일명</th>
-                        <th>다운로드</th>
+                    	<th>日期</th>
+                        <th>花名</th>
+                        <th>文件名</th>
+                        <th>下载</th>
                     </tr>
 
 
@@ -263,21 +277,21 @@
     
     
     
-    <div id="dialog_upload" title="P/O파일 업로드">
-		<form id="dialog_upload_form" action="${web_ctx}/orderPOInsert.do" method="post" enctype="multipart/form-data">
+    <div id="dialog_upload" title="P/O文件上传">
+		<form id="dialog_upload_form" action="${web_ctx}/orderPOInsert.do?ordNo=${ordNo }" method="post" enctype="multipart/form-data">
 			<section class="ui-layout-form-b">
 				<ul>
 					<li>
-						<label for="">엑셀 양식 파일</label>
+						<label for="">excel样式文件</label>
 						<input type="file" name="file">
 					</li>
 					<li>
-						<label for="">이미지 파일</label>
+						<label for="">图片</label>
 						<input type="file" name="file" multiple accept="image/*">
 					</li>
 					<li>
 						<label for=""></label>
-						이미지 파일은 복수 등록이 가능합니다.
+						图片可重复登录。
 					</li>
 				</ul>
 			</section>
@@ -316,10 +330,21 @@ $(function(){
 	$("#qlfcReqYn").val("${orderDetail.qlfcReqYn}");	//자격요청 유무
 	
 	
+	//버튼제어를 위한 변수 
+	var ordStatCd = '${orderDetail.ordStatCd }';
 	
 	//버튼핸들링
-	//$("#btn_proc02").button( "disable" );
-	
+	if(ordStatCd=='N000550400' ){
+		$('#btn_01').hide();	//PO업로드
+	}
+	if(ordStatCd=='N000550100' || ordStatCd=='N000550200'){
+		$("#btn_proc01").hide();	//PO확인
+		$('#poExcelDownload').hide();
+	}
+	if(ordStatCd!='N000550400'){
+		$("#btn_proc02").hide();	//정산
+	}
+		
 	
 	$('#dialog_upload').dialog({
 				modal: true,
@@ -327,11 +352,11 @@ $(function(){
 				width: 500,
 				height: 240,
 				buttons: {
-					'P/O 관련 파일 업로드': function(evt){
-					/* 	$(evt.target).button({
-							disabled : true
-						}); */
-						  $("#dialog_upload_form").attr('target', '_blank').submit();
+					'上传P/O 相关文件': function(evt){
+
+						$("#dialog_upload_form").attr('target', 'popUp');
+						var newWindow=window.open("",'popUp',1500,800);
+						$("#dialog_upload_form").submit();
 						  $('#dialog_upload').dialog('close');
 						//$('#dialog_upload_form').submit();
 					}
@@ -369,13 +394,13 @@ $(function(){
 				console.log(result.savedRealFileNm);
 				console.log(result.savedFileNm);
 					
-				alert("파일 업로드 성공 ");
+				alert("成功上传文件");
 				window.location.reload(true);
 			}//success function
 			,
 			error : function(jqXHR, textStatus, errorThrown) {
 				//Error시, 처리
-				alert("파일업로드 에러");
+				alert("上传文件失败");
 			}
 		});//ajax
 	});

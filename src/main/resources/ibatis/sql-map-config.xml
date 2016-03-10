@@ -18,5 +18,6 @@
 	<sqlMap resource="sqlmap/TbMsOrd_SQL.xml" />
 	<sqlMap resource="sqlmap/TbMsOrdSpl_SQL.xml" />
 	<sqlMap resource="sqlmap/SmsMsOrdUser_SQL.xml" />
+	<sqlMap resource="sqlmap/TbMsGudsImg_SQL.xml" />
 
 </sqlMapConfig>

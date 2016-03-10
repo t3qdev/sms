@@ -27,5 +27,13 @@ public class SmsMsGudsImgDAO extends EgovAbstractDAO {
 	public void deleteSmsMsGudsImg(SmsMsGudsImgVO smsMsGudsImgVO){
 		delete("smsMsGudsImgDAO.deleteSmsMsGudsImg",smsMsGudsImgVO);
 	}
-
+	//이미지 일괄로 가져오기
+	@SuppressWarnings("unchecked")
+	public List<SmsMsGudsImgVO> selectSmsMsGudsImgAll(){
+		return (List<SmsMsGudsImgVO>)list("smsMsGudsImgDAO.selectSmsMsGudsImgAll");
+	}
+	//이미지 코드검색으로 가져오기 
+	public SmsMsGudsImgVO selectSmsMsGudsImgByCd(SmsMsGudsImgVO smsMsGudsImgVo){
+		return (SmsMsGudsImgVO)select("smsMsGudsImgDAO.selectSmsMsGudsImgByCd",smsMsGudsImgVo);
+	}
 }

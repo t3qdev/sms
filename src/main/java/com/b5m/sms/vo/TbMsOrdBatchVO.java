@@ -19,6 +19,8 @@ public class TbMsOrdBatchVO {
 	private String gudsIdOfB5m;        // b5m 에서의 gudsId 를 가져오기 위함. - 원래는 opt id가 필요한데, IMG 는 gudsID + sllrID 가 필요.
 	private String gudsId;                //  SMS 에서 넣을 새로운 gudsId
 	private String custId;				 // TB_MS_ORD 의 custID 를 가져온다.
+	private String dlvModeCd;          // TB_MS_ORD 의 dlvModeCd를 가져온다.
+	private String gudsDlvcDesnVal5;    // TB_MS_ORD 의 인박스수량
 	public String getOrdNo() {
 		return ordNo;
 	}
@@ -115,6 +117,18 @@ public class TbMsOrdBatchVO {
 	public void setCustId(String custId) {
 		this.custId = custId;
 	}
+	public String getDlvModeCd() {
+		return dlvModeCd;
+	}
+	public void setDlvModeCd(String dlvModeCd) {
+		this.dlvModeCd = dlvModeCd;
+	}
+	public String getGudsDlvcDesnVal5() {
+		return gudsDlvcDesnVal5;
+	}
+	public void setGudsDlvcDesnVal5(String gudsDlvcDesnVal5) {
+		this.gudsDlvcDesnVal5 = gudsDlvcDesnVal5;
+	}
 	@Override
 	public String toString() {
 		return "TbMsOrdBatchVO [ordNo=" + ordNo + ", b5cOrdNo=" + b5cOrdNo
@@ -125,8 +139,11 @@ public class TbMsOrdBatchVO {
 				+ gudsCnsNm + ", gudsVatRfndYn=" + gudsVatRfndYn + ", brndId="
 				+ brndId + ", brndStrNm=" + brndStrNm + ", brndStrEngNm="
 				+ brndStrEngNm + ", gudsIdOfB5m=" + gudsIdOfB5m + ", gudsId="
-				+ gudsId + ", custId=" + custId + "]";
+				+ gudsId + ", custId=" + custId + ", dlvModeCd=" + dlvModeCd
+				+ ", gudsDlvcDesnVal5=" + gudsDlvcDesnVal5 + "]";
 	}
+	
+	
 	
 	
 	

@@ -6,12 +6,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.b5m.sms.biz.dao.SmsMsEstmGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsGudsImgDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdGudsDAO;
 import com.b5m.sms.biz.dao.TbMsOrdDAO;
 import com.b5m.sms.biz.service.GoodsService;
+import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
@@ -34,6 +36,9 @@ public class GoodsServiceImpl implements GoodsService {
 	
 	@Resource(name="smsMsOrdDAO")
 	private SmsMsOrdDAO smsMsOrdDAO;
+	
+	@Resource(name="smsMsEstmGudsDAO")
+	private SmsMsEstmGudsDAO smsMsEstmGudsDAO;
 	
 	@Override
 	public List<SmsMsOrdGudsVO> selectSmsMsOrdGudsByOrdNo(String ordNo) throws Exception {
@@ -66,6 +71,21 @@ public class GoodsServiceImpl implements GoodsService {
 	public List<SmsMsGudsVO> selectSmsMsGudsByVO(SmsMsGudsVO smsMsGudsVo) throws Exception {
 
 		return smsMsGudsDAO.selectSmsMsGudsByVO(smsMsGudsVo);
+	}
+
+	@Override
+	public List<SmsMsGudsImgVO> selectSmsMsGudsImgAll() throws Exception {
+		return smsMsGudsImgDAO.selectSmsMsGudsImgAll();
+	}
+
+	@Override
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception {
+		return smsMsEstmGudsDAO.selectSmsMsEstmGuds(ordNo);
+	}
+
+	@Override
+	public SmsMsGudsImgVO selectSmsMsGudsImgByCd(SmsMsGudsImgVO smsMsGudsImgVo) 	throws Exception {
+		return smsMsGudsImgDAO.selectSmsMsGudsImgByCd(smsMsGudsImgVo);
 	}
 
 

@@ -10,6 +10,7 @@ import com.b5m.sms.vo.SmsMsOrdGudsVO;
 
 
 
+
 import egovframework.rte.psl.dataaccess.EgovAbstractDAO;
 
 @Repository("smsMsGudsDAO")
@@ -18,6 +19,19 @@ public class SmsMsGudsDAO extends EgovAbstractDAO {
 	public SmsMsGudsVO selectSmsMsGuds(String gudsId) throws Exception{
 		return (SmsMsGudsVO) select("smsMsGudsDAO.selectSmsMsGuds",gudsId);
 	}
+	
+	//바코드(후보키)로 해당상품을 검색한다  but  Return LIST
+	@SuppressWarnings("unchecked")
+	public List<SmsMsGudsVO> selectSmsMsGudsByUpcIDforBatch(SmsMsGudsVO smsMsGudsVO) throws Exception{
+		return (List<SmsMsGudsVO>) list("smsMsGudsDAO.selectSmsMsGudsByUpcIDforBatch",smsMsGudsVO);
+	}
+	
+	//B5cSkuId 로 해당상품을 검색한다  Return LIST
+	@SuppressWarnings("unchecked")
+	public List<SmsMsGudsVO> selectSmsMsGudsByB5cSkuIdforBatch(SmsMsGudsVO smsMsGudsVO) throws Exception{
+		return (List<SmsMsGudsVO>) list("smsMsGudsDAO.selectSmsMsGudsByB5cSkuIdforBatch",smsMsGudsVO);
+	}
+	
 	public void insertSmsMsGuds_S(SmsMsGudsVO smsMsGudsVO) throws Exception{
 		insert("smsMsGudsDAO.insertSmsMsGuds_S", smsMsGudsVO);
 	}

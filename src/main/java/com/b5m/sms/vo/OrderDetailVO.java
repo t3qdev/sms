@@ -28,6 +28,7 @@ public class OrderDetailVO {
 	
 	private String ordMemoCont;			//비고 
 	private String ordNm;					//주문명(견적서이름)
+	private String ordStatCd;				//주문상태코드
 	public String getOrdNo() {
 		return ordNo;
 	}
@@ -148,6 +149,12 @@ public class OrderDetailVO {
 	public void setOrdNm(String ordNm) {
 		this.ordNm = ordNm;
 	}
+	public String getOrdStatCd() {
+		return ordStatCd;
+	}
+	public void setOrdStatCd(String ordStatCd) {
+		this.ordStatCd = ordStatCd;
+	}
 	@Override
 	public String toString() {
 		return "OrderDetailVO [ordNo=" + ordNo + ", oprCns=" + oprCns
@@ -160,10 +167,10 @@ public class OrderDetailVO {
 				+ ", ctrtTmplYn=" + ctrtTmplYn + ", smplReqYn=" + smplReqYn
 				+ ", poSchdDt=" + poSchdDt + ", qlfcReqYn=" + qlfcReqYn
 				+ ", custOrdProcCont=" + custOrdProcCont + ", ordMemoCont="
-				+ ordMemoCont + ", ordNm=" + ordNm + "]";
+				+ ordMemoCont + ", ordNm=" + ordNm + ", ordStatCd=" + ordStatCd
+				+ "]";
 	}
-	
-	
+
 	
 	
 	

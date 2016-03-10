@@ -12,7 +12,9 @@ public class SmsMsEstmDAO extends EgovAbstractDAO {
 		insert("smsMsEstmDAO.insertSmsMsEstm",smsMsEstmVo);
 	}
 	public void deleteSmsMsEstm(String ordNo) throws Exception{
-		delete("smsMsEstmDAO.deleteSmsMsEstm",ordNo);
-		
+		delete("smsMsEstmDAO.deleteSmsMsEstm",ordNo);	
+	}
+	public SmsMsEstmVO selectSmsMsEstmVO(String ordNo) throws Exception{
+		return (SmsMsEstmVO)select("smsMsEstmDAO.selectSmsMsEstmVO",ordNo);
 	}
 }

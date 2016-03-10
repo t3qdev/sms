@@ -20,6 +20,20 @@ public class SmsMsOrdHistVO {
 	
 	//주문이력내용
 	String ordHistHistCont;
+	
+	
+	//SMS_MS_USER
+	//영문화명
+	String userAlasEngNm;
+	
+	//중국화명
+	String userAlasCnsNm;
+	
+	//소속
+	String ognzDivCd;
+	
+	//재직상태
+	String userStatCd;
 
 	public String getOrdNo() {
 		return ordNo;
@@ -69,13 +83,49 @@ public class SmsMsOrdHistVO {
 		this.ordHistHistCont = ordHistHistCont;
 	}
 
+	public String getUserAlasEngNm() {
+		return userAlasEngNm;
+	}
+
+	public void setUserAlasEngNm(String userAlasEngNm) {
+		this.userAlasEngNm = userAlasEngNm;
+	}
+
+	public String getUserAlasCnsNm() {
+		return userAlasCnsNm;
+	}
+
+	public void setUserAlasCnsNm(String userAlasCnsNm) {
+		this.userAlasCnsNm = userAlasCnsNm;
+	}
+
+	public String getOgnzDivCd() {
+		return ognzDivCd;
+	}
+
+	public void setOgnzDivCd(String ognzDivCd) {
+		this.ognzDivCd = ognzDivCd;
+	}
+
+	public String getUserStatCd() {
+		return userStatCd;
+	}
+
+	public void setUserStatCd(String userStatCd) {
+		this.userStatCd = userStatCd;
+	}
+
 	@Override
 	public String toString() {
 		return "SmsMsOrdHistVO [ordNo=" + ordNo + ", ordHistSeq=" + ordHistSeq
 				+ ", ordStatCd=" + ordStatCd + ", ordHistWrtrEml="
 				+ ordHistWrtrEml + ", ordHistRegDttm=" + ordHistRegDttm
-				+ ", ordHistHistCont=" + ordHistHistCont + "]";
+				+ ", ordHistHistCont=" + ordHistHistCont + ", userAlasEngNm="
+				+ userAlasEngNm + ", userAlasCnsNm=" + userAlasCnsNm
+				+ ", ognzDivCd=" + ognzDivCd + ", userStatCd=" + userStatCd
+				+ "]";
 	}
+	
 	
 	
 	

@@ -101,7 +101,7 @@ public class UserManagementController {
 	
 	@ResponseBody
 	@RequestMapping("/userManagementSave.ajax")
-	public List<SmsMsUserVO> userManagementSave(HttpSession session, Model model, SmsMsUserVO smsMsUserVO) throws Exception {
+	public String userManagementSave(HttpSession session, Model model, SmsMsUserVO smsMsUserVO) throws Exception {
 		System.out.println("controller로  들어온  vo : ");
 		System.out.println(smsMsUserVO.toString());
 		// 화면상에서는 [저장]만 누르기 때문에, 이 값이 (가입)인지 (수정)인지 구분할 필요가 있다.
@@ -129,7 +129,7 @@ public class UserManagementController {
 		
 		tempMsUserByUserEmlVO.setUserEml(smsMsUserVO.getUserEml());
 		if(smsMsUserVO.getUserPwd()!=null){						      				
-			if("".equals(smsMsUserVO.getUserPwd())==false){					//   if : 비밀번호가 수정 되었는가?   true -> 비밀번호도 vo에 넣어주고 update
+			if("".equals(smsMsUserVO.getUserPwd())==false && "**********".equals(smsMsUserVO.getUserPwd())==false){					//   if : 비밀번호가 수정 되었는가?   true -> 비밀번호도 vo에 넣어주고 update
 				System.out.println("4");
 				// 변경할 비밀번호를 암호화 해서 vo에 세팅
 				tempMsUserByUserEmlVO.setUserPwd(bcrypt.encode(smsMsUserVO.getUserPwd().trim()));

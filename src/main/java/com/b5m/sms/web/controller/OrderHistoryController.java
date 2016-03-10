@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.biz.service.UserService;
 import com.b5m.sms.vo.SmsMsOrdHistVO;
+import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
 
 @Controller
@@ -70,14 +71,19 @@ public class OrderHistoryController {
 		    ordHistSeq=Integer.toString(tempSeq);
 			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq);
 			orderService.insertSmsMsOrdHist(smsMsOrdHistVO);
-			
 		}
 		//2. DB에 ordNo, ordHistSeq로 검색해서 검색이 된다?  -> update 현재날짜, 상태, 작성자, 상세 내용
 		else{  		
 			System.out.println(2);
 			orderService.updateSmsMsOrdHist(smsMsOrdHistVO);
 		}
-
+		SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
+		System.out.println("getOrdNo: " +smsMsOrdHistVO.getOrdNo());
+		System.out.println("getOrdStatCd : " + smsMsOrdHistVO.getOrdStatCd());
+		smsMsOrdVO.setOrdNo(smsMsOrdHistVO.getOrdNo());
+		smsMsOrdVO.setOrdStatCd(smsMsOrdHistVO.getOrdStatCd());
+		orderService.updateSmsMsOrdStatCd(smsMsOrdVO);
+//		updateSmsMsOrdStatCd
 		System.out.println("컨틀롤러의 마지막 VO : "+smsMsOrdHistVO.toString());
 
 		return null;

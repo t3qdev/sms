@@ -102,7 +102,25 @@
 	
 	</insert>
 
+	<select id="smsMsEstmDAO.selectSmsMsEstmVO" parameterClass="String" resultMap="smsMsEstm">
+			
+			SELECT
+				ORD_NO
+				, PO_NO
+				, DLV_MODE_CD
+				, DLV_DEST_CD
+				, DLV_AMT
+				, PO_DT
+				, PO_REGR_EML
+				, PO_SUM_AMT
+				, STD_XCHR_KIND_CD
+				, STD_XCHR_AMT
+				, ORD_ARVL_DT
+				, PO_MEMO_CONT
+			FROM sms_ms_estm
+			WHERE ORD_NO=#ordNo#
 	
+	</select>
 	
 
 </sqlMap>

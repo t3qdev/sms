@@ -73,9 +73,9 @@ $(function(){
         colModel:[
             {name:'userEml',align:'center',editable:true, editrules:{required:true,email:true},editoptions:{readonly:'true'}},
             {name:'userAlasCnsNm',align:'center',width:80, editable: true },
-			{name:'userAlasEngNm',align:'center',width:50, editable: true},
-            {name:'userPwd',align:'center',editable: true,editrules:{required:false}, edittype: "password"},
-            {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'한국팀',N000530200:'상해팀'}}},
+			{name:'userAlasEngNm',align:'center',width:80, editable: true},
+            {name:'userPwd',align:'center',formatter : formatterUserPwd, editable: true,editrules:{required:false}, edittype: "password"},
+            {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'상해팀',N000530200:'한국팀'}}},
             {name:'roleGrpDivCd1',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},
             {name:'roleGrpDivCd2',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
             {name:'roleGrpDivCd3',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
@@ -120,11 +120,19 @@ $(function(){
 		}).trigger('reloadGrid');
     });
 
+
+    // jqgrid의 password컬럼에 대한 formatter
+    function formatterUserPwd(cellvalue,options,rowObject){
+    		// 이유 : 서버에서 보안상 password 를 화면으로 전송하지 않는데, 고객 요구는 form 에 * 라도 있어야 한다고 요구.
+    		// 컨트롤러에서는 "**********" 가 들어오면 비밀번호 변경으로 인식하지 않는다.
+			return "**********";
+    }
+    
     // jqgrid의 ognzDivCd 컬럼에 대한 formatter
     function formatterOgnzDivCd(cellvalue,options,rowObject){
-		if(cellvalue == 'N000530100'){
+		if(cellvalue == 'N000530200'){
 			return "한국팀";
-		}else if(cellvalue == 'N000530200'){
+		}else if(cellvalue == 'N000530100'){
 			return "상해팀";
 		}else{
 			return "";

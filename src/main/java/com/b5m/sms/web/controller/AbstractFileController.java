@@ -38,7 +38,7 @@ public class AbstractFileController {
 	 */
 	final static int BUFFER_SIZE = 4096;
 	//final static String OPT_B5C_DISK = File.separator + "opt" + File.separator + "b5c-disk" + File.separator;
-	static String OPT_B5C_DISK;
+	protected static String OPT_B5C_DISK;
 	
 	
 	

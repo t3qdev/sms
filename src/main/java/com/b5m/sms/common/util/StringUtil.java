@@ -999,6 +999,7 @@ public class StringUtil {
 					if("".equals(sReturn)) sReturn=null;     // 공백("") 일 떄에는 Null 로 리턴 수정    - 20160226 주엽
 					break;
 				}
+				
 				sReturn = Long.toString((long)cell.getNumericCellValue());
 				break;
 				
@@ -1011,9 +1012,13 @@ public class StringUtil {
 		case Cell.CELL_TYPE_FORMULA :
 				
 				try{
-					sReturn = Long.toString((long)cell.getNumericCellValue());		//수식일 경우 해당 값으로 출력하기 위함
+
+					sReturn=String.format("%.4f", cell.getNumericCellValue());										//2자리까지표시_	long으로 설정시 소수점이하가 버림됨
+
+					//sReturn = Long.toString((long)cell.getNumericCellValue());		//수식일 경우 해당 값으로 출력하기 위함
 					
 				}catch(Exception e){
+					e.printStackTrace();
 					sReturn = cell.getCellFormula().trim();			//수식이 그대로 출력된다 
 				}
 				if("".equals(sReturn)) sReturn=null;			// 공백("") 일 떄에는 Null 로 리턴 수정    - 20160226 주엽	
@@ -1032,11 +1037,35 @@ public class StringUtil {
 		
 	}
 	
-	//날짜형태의 데이터에 -를 제거 _김다빈
+	/**
+	 * 날짜형태의 데이터에 -를 제거 _김다빈
+	 * @param date
+	 * @return
+	 */
 	public static String dateToDt(String date){
 		String dt=date.replaceAll("-", "");
 		dt.trim();
 		return dt;
 	}
+	/**
+	 * 
+	 * 변경된 테그형태를 원래 태그형태로 변경
+	 * @param tagStr
+	 * @return
+	 */
+	public static String tagStrToText(String tagStr){
+	
+		tagStr=tagStr.replaceAll("&amp;", "&");
+		tagStr=tagStr.replaceAll("&shy;", "-");
+		tagStr=tagStr.replaceAll("&lt;", "<");
+		tagStr=tagStr.replaceAll("&gt;", ">");
+		tagStr=tagStr.replaceAll("&nbsp;", " ");
+		tagStr=tagStr.replaceAll("%20;", " ");
+		tagStr=tagStr.replaceAll("&amp;", "&");
+		
+		
+		return tagStr;
+	}
+	
 }
 

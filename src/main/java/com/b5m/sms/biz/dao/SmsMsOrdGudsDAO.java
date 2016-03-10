@@ -34,5 +34,8 @@ public class SmsMsOrdGudsDAO extends EgovAbstractDAO {
 	public void updateSmsMsOrdGudsDetail(SmsMsOrdGudsVO smsMsOrdGudsVo){
 		update("smsMsOrdGudsDAO.updateSmsMsOrdGudsDetail",smsMsOrdGudsVo);
 	}
+	public void insertSmsMsOrdGudsFromExcel(SmsMsOrdGudsVO smsMsOrdGudsVO) throws Exception{
+		insert("smsMsOrdGudsDAO.insertSmsMsOrdGudsFromExcel", smsMsOrdGudsVO);
+	}
 	
 }

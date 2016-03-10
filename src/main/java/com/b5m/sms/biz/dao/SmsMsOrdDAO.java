@@ -61,6 +61,7 @@ public class SmsMsOrdDAO extends EgovAbstractDAO {
 	}
 	//ordertable statcd 변경
 	public void updateSmsMsOrdStatCd(SmsMsOrdVO smsMsOrdVO){
+		System.out.println("다오까지 왔다 : "+smsMsOrdVO.toString());
 		update("smsMsOrdDAO.updateSmsMsOrdStatCd",smsMsOrdVO);
 	}
 	

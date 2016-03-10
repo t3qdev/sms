@@ -12,7 +12,7 @@
 <sec:authentication var="user" property="principal" />
 <article>
 	<h1>
-		<span>히스토리</span>
+		<span>历史记录</span>
 	</h1>
 	<div class="ui-layout-single">
         <section>
@@ -21,7 +21,7 @@
                 <section class="ui-layout-action">
                 </section>
                 <section class="ui-layout-action">
-                    <button class="btn-add mr10" id="history_add">히스토리 추가</button>
+                    <button class="btn-add mr10" id="history_add">添加历史记录</button>
                 </section>
             </div>
             <div class="ui-layout-jqgrid">
@@ -35,7 +35,7 @@
         </section>
         <section class="ui-layout-action">
 
-            <button class="btn-save">저장</button>
+            <button class="btn-save">保存</button>
         </section>
     </div>
 
@@ -56,12 +56,13 @@ $(function(){
     	width: 1200,
     	postData :{ordNo : ${ordNo}},
         //height: 250,
-        colNames:['주문번호','주문이력일련번호','날짜','상태','작성자','상세내용'],
+        colNames:['订单编号','历史订单号','日期','状态','提交人','详细内容'],
         colModel:[
+                  
             {name:'ordNo',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistSeq',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistRegDttm',align:'center',width:100,resizable:false,editable:true,editoptions:{readonly:'true'}},
-            {name:'ordStatCd',align:'center',width:70,resizable:false, formatter : formatterordStatCd, editable: true, edittype:"select",editoptions:{value:{N000550100:'접수',N000550200:'진행',N000550300:'확정',N000550400:'DROP'}} },
+            {name:'ordStatCd',align:'center',width:70,resizable:false, formatter : formatterordStatCd, editable: true, edittype:"select",editoptions:{value:{N000550200:'进行',N000560100:'DROP'}} },
             {name:'ordHistWrtrEml',align:'center',width:70,resizable:false, editable:true,editoptions:{readonly:'true'}},
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
@@ -106,12 +107,14 @@ $(function(){
     // jqgrid의 ognzDivCd 컬럼에 대한 formatter
     function formatterordStatCd(cellvalue,options,rowObject){
 		if(cellvalue == 'N000550100'){
-			return "접수";
+			return "接受";
 		}else if(cellvalue == 'N000550200'){
-			return "진행";
+			return "进行";
 		}else if(cellvalue == 'N000550300'){
-			return "확정";
+			return "确定";
 		}else if(cellvalue == 'N000550400'){
+			return "结算";
+		}else if(cellvalue == 'N000560100'){
 			return "DROP";
 		}else{
 			return "";
@@ -134,7 +137,7 @@ $(function(){
 			rowdata = {
 					ordNo:"${ordNo}",
 				ordHistRegDttm:s,
-				ordHistWrtrEml:"${user.userAlasCnsNm}(${user.userAlasEngNm})"
+				ordHistWrtrEml:"${user.username}"
 			};
 			$("#jqgrid_a").jqGrid('addRowData','new_'+cli_num,rowdata,'first');
 			$("#jqg_jqgrid_a_new_"+cli_num).attr("checked","checked").click().parent().parent().addClass("ui-state-highlight");

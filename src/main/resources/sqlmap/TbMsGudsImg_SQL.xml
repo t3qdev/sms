@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbMsGudsImg">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsEstmVO" type="com.b5m.sms.vo.SmsMsEstmVO" />
+	<typeAlias alias="tbMsOrdBatchVO" type="com.b5m.sms.vo.TbMsOrdBatchVO" />
+	
+	<resultMap id="smsMsGudsImg" class="com.b5m.sms.vo.SmsMsGudsImgVO">
+		<result property="gudsId" column="GUDS_ID" columnIndex="1"/>
+		<result property="gudsImgCd" column="GUDS_IMG_CD" columnIndex="2"/>
+		<result property="gudsImgOrgtFileNm" column="GUDS_IMG_ORGT_FILE_NM" columnIndex="3"/>
+		<result property="gudsImgSysFileNm" column="GUDS_IMG_SYS_FILE_NM" columnIndex="4"/>
+		<result property="gudsImgCdnAddr" column="GUDS_IMG_CDN_ADDR" columnIndex="5"/>
+	</resultMap>
+	
+	
+	<select id="tbMsGudsImgDAO.selectTbMsGudsImgForFileCopy" parameterClass="tbMsOrdBatchVO" resultMap="smsMsGudsImg">
+			SELECT
+														GUDS_ID
+														, GUDS_IMG_CD
+														, GUDS_IMG_ORGT_FILE_NM
+														, GUDS_IMG_SYS_FILE_NM
+														, GUDS_IMG_CDN_ADDR
+			FROM TB_MS_GUDS_IMG
+			WHERE 1=1
+						AND
+
+									SLLR_ID= #brndId# 
+									AND
+									GUDS_ID= #gudsIdOfB5m#
+
+		
+	</select>	
+	
+
+</sqlMap>

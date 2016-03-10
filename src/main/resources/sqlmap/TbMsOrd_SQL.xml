@@ -5,7 +5,8 @@
 
 	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
 	<typeAlias alias="tbMsOrdBatchVO" type="com.b5m.sms.vo.TbMsOrdBatchVO" />
-
+	<typeAlias alias="smsMsOrdVO" type="com.b5m.sms.vo.SmsMsOrdVO" />
+	
 	<resultMap id="tbMsOrdBatch" class="com.b5m.sms.vo.TbMsOrdBatchVO">
 		<result property="b5cOrdNo" column="B5C_ORD_NO"/>
 		<result property="ordNo" column="ORD_ID"  />
@@ -22,6 +23,8 @@
 		<result property="brndStrEngNm" column="BRND_STR_ENG_NM"  />
 		<result property="gudsIdOfB5m" column="GUDS_ID_OF_B5M" />
 		<result property="custId" column="CUST_ID" />
+		<result property="dlvModeCd" column="DLV_MODE_CD" />
+		<result property="gudsDlvcDesnVal5" column="GUDS_DLVC_DESN_VAL_5" />
 		
 		
 	</resultMap>
@@ -30,16 +33,29 @@
 		<result property="b5cOrdNo" column="B5C_ORD_NO" />
 		<result property="sysReqDttm" column="SYS_REG_DTTM" />
 		<result property="custId" column="CUST_ID" />
+		<result property="dlvModeCd" column="DLV_MODE_CD" />
+		<result property="ordEstmDt" column="ORD_ESTM_DT" />
+		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" />
+		<result property="stdXchrAmt" column="STD_XCHR_AMT" />
+		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" />
 	</resultMap>
 	
 	<select id="tbMsOrdDAO.selectTbMsOrdForSmsMsOrd"  resultMap="tbMsOrd">
 		SELECT
- 				ORD_ID  AS B5C_ORD_NO
- 				,DATE_FORMAT(SYS_REG_DTTM,"%Y%m%d") AS SYS_REG_DTTM 
- 				,CUST_ID
-		FROM TB_MS_ORD
+					ORD_ID  AS B5C_ORD_NO
+					,DATE_FORMAT(SYS_REG_DTTM,"%Y%m%d") AS SYS_REG_DTTM 
+					,CUST_ID AS CUST_ID
+					,DLV_MODE_CD AS DLV_MODE_CD
+					,DATE_FORMAT(SYS_REG_DTTM,"%Y%m%d") AS ORD_ESTM_DT
+					,'N000590100' AS STD_XCHR_KIND_CD
+					, USD_XCHR_AMT AS STD_XCHR_AMT
+					, A.ESTM_RCP_REQ_DT AS ORD_HOPE_ARVL_DT
+	  
+	  FROM TB_MS_ORD A LEFT OUTER JOIN TB_MS_XCHR B
+  			  ON XCHR_STD_DT = period_add(date_format(now(), "%Y%m"), -1)
+		
 		WHERE 
-				ORD_ID
+				A.ORD_ID
 				NOT IN (
 							SELECT 
 									B5C_ORD_NO 
@@ -93,7 +109,43 @@
 		       	)
 	</select>
 	
-
+	<select id="tbMsOrdDAO.selectTbMsOrdGudsOptForBatch"  parameterClass="smsMsOrdVO"  resultMap="tbMsOrdBatch">
+		SELECT 
+			  A.ORD_ID  AS B5C_ORD_NO
+			, B.ORD_ID AS ORD_ID
+		    , B.SLLR_ID AS BRND_ID
+		    , B.GUDS_OPT_ID AS GUDS_OPT_ID
+		    , B.ORD_GUDS_QTY AS ORD_GUDS_QTY
+		    , B.ORD_GUDS_SALE_PRC AS ORD_GUDS_SALE_PRC
+		    , C.GUDS_OPT_UPC_ID AS GUDS_OPT_UPC_ID
+		    , C.GUDS_OPT_ORG_PRC AS GUDS_OPT_ORG_PRC
+		    , D.GUDS_NM AS GUDS_NM
+		    , D.GUDS_CNS_NM AS GUDS_CNS_NM
+		    , D.GUDS_VAT_RFND_YN AS GUDS_VAT_RFND_YN
+		    , F.BRND_STR_NM AS BRND_STR_NM
+		    , F.BRND_STR_ENG_NM AS BRND_STR_ENG_NM
+		    , C.GUDS_ID AS GUDS_ID_OF_B5M
+		    , A.CUST_ID AS CUST_ID
+		    , A.DLV_MODE_CD AS DLV_MODE_CD
+		    , D.GUDS_DLVC_DESN_VAL_5 AS GUDS_DLVC_DESN_VAL_5
+		FROM 
+			TB_MS_ORD 					A
+			, TB_MS_ORD_GUDS_OPT  B
+			, TB_MS_GUDS_OPT			C
+			, TB_MS_GUDS 				D
+			,  TB_MS_BRND_STR 		F
+		WHERE 1=1
+		AND A.CUST_ID = B.CUST_ID
+		AND A.ORD_ID = B.ORD_ID
+		AND B.SLLR_ID = C.SLLR_ID
+		AND B.GUDS_ID = C.GUDS_ID
+		AND B.GUDS_OPT_ID = C.GUDS_OPT_ID
+		AND C.SLLR_ID = D.SLLR_ID
+		AND C.GUDS_ID = D.GUDS_ID
+		AND D.SLLR_ID = F.SLLR_ID
+		AND B.ORD_ID = #b5cOrdNo#
+	</select>
+	
 
 
 </sqlMap>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.b5m.sms.common.security.User;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.ExcelClientReqGudsVO;
 import com.b5m.sms.vo.OrderCalculateVO;
@@ -64,7 +65,7 @@ public interface OrderService {
 	public void updateSmsMsOrdGudsMpng(SmsMsOrdGudsVO smsMsOrdGudsVO) throws Exception;
 
 	// orderManagment 에서 사용, 클라이언트 요청 견적서를(EXCEL) 이용해서 주문이 새로 들어왔을 때, SMS_MS_ORD, SMS_MS_ORD_GUDS 에 INSERT
-	public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet) throws Exception;
+	public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception;
 	
 	// orderManament 의 main Select
 	public List<SmsMsOrdVO> selectSmsMsOrdForOrderManamentView(SmsMsOrdVO smsMsOrdVO) throws Exception;
@@ -73,7 +74,7 @@ public interface OrderService {
 	public void updateSmsMsOrdGudsDetail(OrderDetailVO orderDetailVo, List<SmsMsOrdGudsVO> smsMsOrdGudsList,String wrtrEml) throws Exception;
 	
 	//orderPO를 저장
-	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt,String wrtrEml) throws Exception;
+	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt) throws Exception;
 	
 	// orderManagementView 에서 [저장]을 눌렀을 떄, 한 row update 하는 SQL
 	public void updateSmsMsOrdInOrderManagementView(SmsMsOrdVO smsMsOrdVO);
@@ -86,5 +87,11 @@ public interface OrderService {
 	
 	//주문 관련 파일 시퀀스를 
 	public void insertSmsMsOrdFile(SmsMsOrdFileVO smsMsOrdFileVO) throws Exception;
+	
+	//정산정보를 검색
+	public SmsMsEstmVO selectSmsMsEstmVO(String ordNo) throws Exception;
+	
+	//ordertable statcd 변경
+	public void updateSmsMsOrdStatCd(SmsMsOrdVO smsMsOrdVO) throws Exception;
 }
 

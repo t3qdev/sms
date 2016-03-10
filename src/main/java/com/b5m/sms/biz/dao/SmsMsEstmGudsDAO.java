@@ -1,7 +1,8 @@
 package com.b5m.sms.biz.dao;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
+import org.springframework.stereotype.Repository;
 import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
 
@@ -17,4 +18,9 @@ public class SmsMsEstmGudsDAO extends EgovAbstractDAO {
 		delete("smsMsEstmGudsDAO.deleteSmsMsEstmGudsByOrdNm",ordNo);
 		
 	}
+	@SuppressWarnings("unchecked")
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception{
+		return (List<SmsMsEstmGudsVO>)list("smsMsEstmGudsDAO.selectSmsMsEstmGuds",ordNo);
+	}
+	
 }

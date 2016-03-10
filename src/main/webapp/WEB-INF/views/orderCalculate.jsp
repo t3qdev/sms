@@ -9,26 +9,29 @@
 <!--  Header Include   -->
 <!--jsp:include page="layout/header.jsp"/-->
 <sec:authentication var="user" property="principal" />
+<style>
+body{min-width:560px; background:#fff;}
+</style>
 <article>
 
 
 	<h1>
-		<span>정산</span>
+		<span>结算</span>
 	</h1>
     <form method="POST" action="${web_ctx}/orderCalculateSave.do" id="orderCalculateForm" name="orderCalculateForm">
 		<div class="ui-layout-single">
 	        <section class="ui-layout-form-b">
 	            <ul>
 	                <li>
-	                    <label>날짜</label>
+	                    <label>日期</label>
 	                    <input type="text" size="20" class="ui-calendar" id="bactPrvdDt" name="bactPrvdDt" value="${ordcalc.bactPrvdDt }"/>
 	                </li>
 	                <li>
-	                    <label>금액</label>
+	                    <label>金额</label>
 	                    <input type="text" size="20" id="bactPrvdAmt" name="bactPrvdAmt" value="${ordcalc.bactPrvdAmt }"/>
 	                </li>
 	                <li>
-	                    <label>메모</label>
+	                    <label>留言</label>
 	                    <input type="text" size="40" id="bactPrvdMemoCont" name="bactPrvdMemoCont" value="${ordcalc.bactPrvdMemoCont }"/>
 	                    <input type="hidden" id="bactRegrEml" name="bactRegrEml" value="${user.username }"/>
 	                    <input type="hidden" id="first" name="first" value="${fisrt }"/>
@@ -44,8 +47,8 @@
 	            	<section class="ui-layout-action">
 	                </section>
 	                <section class="ui-layout-action">
-	                    <button class="btn-cancel">취소</button>
-	                    <button class="btn-submit mr10" id="check">확인</button>
+	                    <button class="btn-cancel">取消</button>
+	                    <button class="btn-submit mr10" id="check">确认</button>
 	                </section> 
 	            </div>
 	        </section>
@@ -69,8 +72,8 @@ $(function(){
 			async: false,
 			cache : false,
 			success:function(result){
-				alert("성공적으로 저장 되었습니다.");
-				
+				alert("成功保存");
+				opener.parent.location.reload();
 				window.open("about:blank","_self").close();
 			}
 		});//end $.ajax	

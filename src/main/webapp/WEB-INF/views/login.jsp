@@ -13,21 +13,21 @@
 	<form id="loginForm" name="loginForm" action="${web_ctx}/j_spring_security_check" method="POST">
 <%-- 	<form id="loginForm" name="loginForm" action="${web_ctx}/j_spring_security_check" method="POST"> --%>
 		<article>
-        <h1><span>로그인</span></h1>
+        <h1><span>登录</span></h1>
 			<section class="ui-layout-form-b">
-				<h2>SMS 관리자 화면에 오신 것을 환영합니다.</h2>
+				<h2>欢迎来到SMS管理者页面</h2>
 				<ul>
 					<li>
-						<label>아이디</label>
+						<label>帐号</label>
 						<input id="sllrId" name="sllrId" type="text" value="${cookieId }" maxlength="20" />
 						<input type="checkbox" id="cb_remember_id" name="cb_remember_id" />
-						<label for="cb_remember_id">아이디 저장</label>
+						<label for="cb_remember_id">记住帐号</label>
 					</li>
 					<li>
-						<label>비밀번호</label>
+						<label>密码</label>
 						<!--  보안상 문제로 AUTOCOMPLETE="OFF" 추가 - 주엽 -->
 						<input id="sllrPwd" name="sllrPwd" type="password" maxlength="20" AUTOCOMPLETE="OFF"/>
-						<button id="btnLogin" name="btnLogin" class="btn-login">로그인</button>
+						<button id="btnLogin" name="btnLogin" class="btn-login">登录</button>
 					</li>
 				</ul>
 			</section>
@@ -35,7 +35,7 @@
 				<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
 					<font color="red">
 						<%-- Your login attempt was not successful due to --%>
-						ID/PW를 확인해주세요.
+						请确认帐号和密码。
 						<%-- <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" /> --%>
 						<%--<spring:message code="AbstractUserDetailsAuthenticationProvider.badCredentials" /> --%>
 					</font>
@@ -45,7 +45,7 @@
 		</article>
 		<footer>
 			<p>
-            로그인 정보를 잊으셨다면 관리자에게 문의해 주시기 바랍니다.
+            忘记登录帐号或密码时请联系管理者。
       	   </p>
 		</footer>
 	</form>

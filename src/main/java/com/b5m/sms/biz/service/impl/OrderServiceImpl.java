@@ -1,5 +1,10 @@
 package com.b5m.sms.biz.service.impl;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +26,12 @@ import com.b5m.sms.biz.dao.SmsMsOrdGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdHistDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdUserDAO;
 import com.b5m.sms.biz.dao.SmsMsUserDAO;
+import com.b5m.sms.biz.dao.TbMsGudsImgDAO;
 import com.b5m.sms.biz.dao.TbMsOrdDAO;
 import com.b5m.sms.biz.dao.TbMsOrdSplDAO;
 import com.b5m.sms.biz.service.OrderService;
+import com.b5m.sms.common.file.FileUtil;
+import com.b5m.sms.common.security.User;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.ExcelClientReqGudsVO;
@@ -43,10 +51,11 @@ import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
+import com.b5m.sms.web.controller.AbstractFileController;
 
 
 @Service("orderService")
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends AbstractFileController implements OrderService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Resource(name="smsMsOrdHistDAO")
@@ -84,6 +93,11 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Resource(name="smsMsEstmGudsDAO")
 	private SmsMsEstmGudsDAO smsMsEstmGudsDAO;
+	
+	@Resource(name="tbMsGudsImgDAO")
+	private TbMsGudsImgDAO tbMsGudsImgDAO;
+	
+	
 	
 	@Override
 	public List<SmsMsOrdHistVO> selectSmsMsOrdHist(SmsMsOrdHistVO smsMsOrdHistVO)
@@ -157,17 +171,31 @@ public class OrderServiceImpl implements OrderService {
 		String ordHistRegDttm=null;
 		String ordHistHistCont="주문 접수";
 		String ordReqDt=null;     //주문등록일
+		String dlvModeCd = null;
+		
+		String ordEstmDt = null;			// 견적일자 - 주문발생일자 - B5C(일반)의 경우 견적일자 = 문의일자
+		String stdXchrKindCd = null;      //  기준화폐종류코드 - B5C의 경우 무조건 USD 사용
+		BigDecimal stdXchrAmt = null;			//  기준환율 - 기준환율 테이블 참조
+		String ordHopeArvlDt = null;      //  희망인도일자 - B5C의 ESTM_RCP_REQ_DT
+		
 //		if("N000620100".equals(ordTypeCd)){
 //			b5cOrdNoList = tbMsOrdDAO.selectTbMsOrdForSmsMsOrd();
 //		}else if("N000620200".equals(ordTypeCd)){
 //			b5cOrdNoList = tbMsOrdSplDAO.selectTbMsOrdSplForSmsMsOrd();
 //		}
-		
+
 		for(int i=0; i<tbMsOrdVOList.size();i++){
 			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
 			b5cOrdNo = tbMsOrdVOList.get(i).getB5cOrdNo();
 			ordReqDt = tbMsOrdVOList.get(i).getSysReqDttm();
-			custId = tbMsOrdVOList.get(i).getCustId();					
+			custId = tbMsOrdVOList.get(i).getCustId();		
+			dlvModeCd = tbMsOrdVOList.get(i).getDlvModeCd();
+			ordEstmDt = tbMsOrdVOList.get(i).getOrdEstmDt();
+			stdXchrKindCd = tbMsOrdVOList.get(i).getStdXchrKindCd();
+			if(tbMsOrdVOList.get(i).getStdXchrAmt() !=null) stdXchrAmt = new BigDecimal(tbMsOrdVOList.get(i).getStdXchrAmt());
+			ordHopeArvlDt = tbMsOrdVOList.get(i).getOrdHopeArvlDt();
+			
+			
 			SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
 			smsMsOrdVO.setOrdNo(ordNo);
 			smsMsOrdVO.setB5cOrdNo(b5cOrdNo);
@@ -175,14 +203,35 @@ public class OrderServiceImpl implements OrderService {
 			smsMsOrdVO.setOrdTypeCd(ordTypeCd);
 			smsMsOrdVO.setOrdReqDt(ordReqDt);
 			smsMsOrdVO.setCustId(custId);
+			smsMsOrdVO.setDlvModeCd(dlvModeCd);
+			smsMsOrdVO.setOrdEstmDt(ordEstmDt);
+			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
+			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
+			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
+			
 			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  
 
+
+			// SMS_MS_ORD_GUDS 추가.
+			System.out.println("----------------------------------");
+			System.out.println(smsMsOrdVO.toString());
+//			N000620100
+			if(ordTypeCd.equals("N000620100")){
+				List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
+				tbMsOrdBatchVOList = tbMsOrdDAO.selectTbMsOrdGudsOptForBatch(smsMsOrdVO);
+				batch2(tbMsOrdBatchVOList);
+			}else{
+				List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
+				tbMsOrdBatchVOList = tbMsOrdSplDAO.selectTbMsOrdGudsOptForBatchSpecial(smsMsOrdVO);
+				batch2(tbMsOrdBatchVOList);
+			}
+			
 			// SMS_MS_ORD_HIST 추가.
 			SmsMsOrdHistVO smsMsOrdHistVO = new SmsMsOrdHistVO();
 			smsMsOrdHistVO.setOrdNo(ordNo);
 			ordHistSeq = smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(smsMsOrdHistVO);
-			 int tempSeq = Integer.parseInt(ordHistSeq)+1;
-			 ordHistSeq=Integer.toString(tempSeq);
+			int tempSeq = Integer.parseInt(ordHistSeq)+1;
+			ordHistSeq=Integer.toString(tempSeq);
 			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq+1);
 			smsMsOrdHistVO.setOrdStatCd(ordStatCd);       // 주문상태 코드 : 접수(N000550100)
 			smsMsOrdHistVO.setOrdHistWrtrEml(ordHistWrtrEml);
@@ -192,6 +241,8 @@ public class OrderServiceImpl implements OrderService {
 			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);
 			LOGGER.debug("이동한 smsMsOrdHistVO : "+smsMsOrdHistVO.toString());
 			LOGGER.debug("insertSmsMsOrdHist 등록 ");
+	
+			
 		}
 		LOGGER.debug("이동한 SMS_MS_ORD 개수 : "+tbMsOrdVOList.size());
 	}
@@ -206,15 +257,16 @@ public class OrderServiceImpl implements OrderService {
 		String ordGudsOrgPrc = null;
 		String ordGudsSalePrc = null;
 		String ordGudsQty = null;
-		
+		String dlvModeCd = null;
 		String brndId = null;
 		String gudsKorNm = null;
 		String gudsCnsNm = null;
 		String gudsUpcId = null;
 		String gudsVatRfndYn = null;
-		
+		String gudsOptId = null;       // b5m 에서 이걸 가져와서, SMS_MS_GUDS.B5C_SKU_ID 에 집어 넣는다.
 		String gudsIdOfB5m = null;    // b5m 에서의 gudsId 를 가져오기 위함. - 원래는 opt id가 필요한데, IMG 는 gudsID + sllrID 가 필요.
 		
+		String gudsInbxQty= null;		//상품인박스수량
 		for(int i=0; i<tbMsOrdBatchVOList.size();i++){
 			System.out.println(tbMsOrdBatchVOList.get(i).toString());
 			b5cOrdNo = tbMsOrdBatchVOList.get(i).getB5cOrdNo();
@@ -229,6 +281,8 @@ public class OrderServiceImpl implements OrderService {
 			ordGudsOrgPrc = tbMsOrdBatchVOList.get(i).getGudsOptOrgPrc();  // b5c 의 opt = sms 의 guds
 			ordGudsSalePrc = tbMsOrdBatchVOList.get(i).getOrdGudsSalePrc();
 			ordGudsQty = tbMsOrdBatchVOList.get(i).getOrdGudsQty();
+			dlvModeCd = tbMsOrdBatchVOList.get(i).getDlvModeCd();
+			gudsInbxQty = tbMsOrdBatchVOList.get(i).getGudsDlvcDesnVal5();  // 인박스 수량 : B5C 의 GUDS_DLVC_DESN_VAL_5
 			
 			SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();
 			smsMsOrdGudsVO.setOrdNo(ordNo);
@@ -240,10 +294,13 @@ public class OrderServiceImpl implements OrderService {
 			smsMsOrdGudsVO.setOrdGudsOrgPrc(ordGudsOrgPrc);
 			smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 			smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
-	
+			smsMsOrdGudsVO.setGudsInbxQty(gudsInbxQty);
+
+			
+			System.out.println("smsMsOrdGudsVO : " + smsMsOrdGudsVO);
 			smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);               
 			System.out.println(smsMsOrdGudsVO.toString());
-			System.out.println("Insert   SmsMsOrdGuds  성공 : " +i);
+			System.out.println("Insert   SmsMsOrdGuds  성공 : " +i+1);
 			
 			SmsMsGudsVO smsMsGudsVO = new SmsMsGudsVO();
 			gudsId = gudsId;
@@ -252,6 +309,7 @@ public class OrderServiceImpl implements OrderService {
 			gudsCnsNm = tbMsOrdBatchVOList.get(i).getGudsCnsNm();
 			gudsUpcId = tbMsOrdBatchVOList.get(i).getGudsOptUpcId();
 			gudsVatRfndYn = tbMsOrdBatchVOList.get(i).getGudsVatRfndYn();
+			gudsOptId = tbMsOrdBatchVOList.get(i).getGudsOptId();					
 			
 			smsMsGudsVO.setGudsId(gudsId);
 			smsMsGudsVO.setBrndId(brndId);
@@ -259,10 +317,24 @@ public class OrderServiceImpl implements OrderService {
 			smsMsGudsVO.setGudsCnsNm(gudsCnsNm);
 			smsMsGudsVO.setGudsUpcId(gudsUpcId);
 			smsMsGudsVO.setGudsVatRfndYn(gudsVatRfndYn);
-	
-			smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
- 			System.out.println(smsMsGudsVO.toString());
-			System.out.println("Insert    SmsMsOrdGuds 성공 : " +i);
+			smsMsGudsVO.setB5cSkuId(gudsOptId);					// b5m 에서 gudsOptId 가져와서, SMS_MS_GUDS.B5C_SKU_ID 에 집어 넣는다.
+			
+			List<SmsMsGudsVO> tempSmsMsGudsVO = null;
+			tempSmsMsGudsVO = (List<SmsMsGudsVO>) smsMsGudsDAO.selectSmsMsGudsByB5cSkuIdforBatch(smsMsGudsVO);
+			if(tempSmsMsGudsVO==null){
+				
+					smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
+					System.out.println("smsMsGudsVO" + smsMsGudsVO);
+				
+			}else if(tempSmsMsGudsVO.size()==0){
+				smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
+				System.out.println("smsMsGudsVO" + smsMsGudsVO);
+			}
+			
+			else{
+				System.out.println("상품 upc 가 존재합니다.");
+			}
+			System.out.println("Insert    SmsMsGuds 성공 : " +i);
 			
 
 	///////////////////////////////////////////////////////////////////////////////////////////		
@@ -275,11 +347,35 @@ public class OrderServiceImpl implements OrderService {
 			gudsId = gudsId;
 			brndId = brndId;
 			gudsIdOfB5m = tbMsOrdBatchVOList.get(i).getGudsIdOfB5m();
-			
 			tbMsOrdBatchVO.setGudsId(gudsId);
 			tbMsOrdBatchVO.setBrndId(brndId);
 			tbMsOrdBatchVO.setGudsIdOfB5m(gudsIdOfB5m);
-			smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);            
+			smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);      
+			
+	//     이미지 파일 복사.		
+			List<SmsMsGudsImgVO> smsMsGudsImgVO = null;
+			smsMsGudsImgVO = tbMsGudsImgDAO.selectTbMsGudsImgForFileCopy(tbMsOrdBatchVO);
+			for(SmsMsGudsImgVO vo : smsMsGudsImgVO){
+				if(vo.getGudsImgCdnAddr()!=null){
+					URL url = new URL(vo.getGudsImgCdnAddr());
+					String destName = OPT_B5C_DISK +vo.getGudsImgSysFileNm();
+					System.out.println(destName);
+					System.out.println(destName);
+					 
+					   InputStream is = url.openStream();
+					   OutputStream os = new FileOutputStream(destName);
+					 
+					   byte[] b = new byte[2048];
+					   int length;
+					 
+					   while ((length = is.read(b)) != -1) {
+					      os.write(b, 0, length);
+					   }
+					 
+					   is.close();
+					   os.close();
+				}
+			}
 			
 		}
 	}
@@ -296,12 +392,6 @@ public class OrderServiceImpl implements OrderService {
 		batch1(tbMsOrdVOList1,"N000620100");
 		batch1(tbMsOrdVOList2,"N000620200");
 
-		List <TbMsOrdBatchVO> tbMsOrdBatchVOList1 = null;
-		List <TbMsOrdBatchVO> tbMsOrdBatchVOList2 = null;
-		tbMsOrdBatchVOList1 = tbMsOrdDAO.selectTbMsOrdGudsOptForSmsMsOrdGuds();
-		tbMsOrdBatchVOList2 = tbMsOrdSplDAO.selectTbMsOrdGudsOptForSmsMsOrdGuds();
-		batch2(tbMsOrdBatchVOList1);
-		batch2(tbMsOrdBatchVOList2);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,7 +440,7 @@ public class OrderServiceImpl implements OrderService {
 				 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
 			 }
 			 
-			 vo.setBactRegDt(StringUtil.dateToDt(vo.getBactRegDt()));
+			 vo.setBactPrvdDt(StringUtil.dateToDt(vo.getBactPrvdDt()));
 			 smsMsOrdDAO.updateSmsMsOrdCalculate(vo);
 			 System.out.println("굳");
 		}
@@ -362,7 +452,7 @@ public class OrderServiceImpl implements OrderService {
 
 		// orderManagment 에서 사용, 클라이언트 요청 견적서를(EXCEL) 이용해서 주문이 새로 들어왔을 때, SMS_MS_ORD, SMS_MS_ORD_GUDS 에 INSERT
 		@Override
-		public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet) throws Exception {
+		public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception {
 			// TODO Auto-generated method stub
 			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
 			// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO
@@ -372,14 +462,14 @@ public class OrderServiceImpl implements OrderService {
 			String ordHopeArvlDt = null;					// 희망 인도일자
 			String	 dlvModeCdPlusdlvDestCd = null;		// 견적조건 + 항구 
 			String ctrtTmplYn = null;						// 계약서 템플릿 유무
+			String poSchdDt = null;							// PO예상일자
 			String smplReqYn = null;						// 샘플요청유무
 			String qlfcReqYn = null;							// 자격 요청 유무
 			String custOrdProcCont = null;				 // 주문 프로세스
-			
 			String dlvModeCd = null;	 					// 견적조건
 			String dlvDestCd = null;						// 항구
-			
 			String ordTypeCd = null;
+			String ordMemoCont = null;                   //비고
 			// 엑셀에서 ExcelClientReqGudsVO 변수들 가져와서 대입.
 			userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//담당자
 			custId = StringUtil.excelGetCell(sheet.getRow(1).getCell(4));    						// 클라이언트
@@ -388,10 +478,11 @@ public class OrderServiceImpl implements OrderService {
 				ordReqDt = ordReqDt.replace("-", "");
 				if("".equals(ordReqDt)) ordReqDt=null;
 				if(ordReqDt.length()>8) ordReqDt=null;
-				ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// 희망 인도일자
-				ordHopeArvlDt = ordHopeArvlDt.replace("-", "");
 			}
+			ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// 희망 인도일자
 			if(ordHopeArvlDt!=null){
+				ordHopeArvlDt = ordHopeArvlDt.replace("-", "");
+				if("".equals(ordHopeArvlDt)) ordHopeArvlDt=null;
 				if(ordHopeArvlDt.length()>8) ordHopeArvlDt=null;	
 			}
 			dlvModeCdPlusdlvDestCd = StringUtil.excelGetCell(sheet.getRow(2).getCell(4));	// 견적조건 + 항구 	
@@ -415,6 +506,13 @@ public class OrderServiceImpl implements OrderService {
 			else{
 				ctrtTmplYn=null;
 			}
+			poSchdDt = StringUtil.excelGetCell(sheet.getRow(3).getCell(6));     							// PO예상일자
+			if(poSchdDt!=null){
+				poSchdDt = poSchdDt.replace("-", "");
+				if("".equals(poSchdDt)) poSchdDt=null;
+				if(poSchdDt.length()>8) poSchdDt=null;
+			}
+			
 			smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// 샘플요청유무
 			if("Y".equalsIgnoreCase(smplReqYn)) {smplReqYn="Y";}
 			else if("N".equalsIgnoreCase(smplReqYn)) {smplReqYn="N";}
@@ -428,7 +526,8 @@ public class OrderServiceImpl implements OrderService {
 				qlfcReqYn=null;
 			}
 			custOrdProcCont = StringUtil.excelGetCell(sheet.getRow(4).getCell(4));  			// 주문 프로세스
-
+			int tempRows = sheet.getPhysicalNumberOfRows();
+			ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//비고
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
 			System.out.println("클라이언트 : " + custId);
@@ -439,6 +538,7 @@ public class OrderServiceImpl implements OrderService {
 			System.out.println("샘플요청유무 : " + smplReqYn);
 			System.out.println("자격 요청 유무 : " + qlfcReqYn);
 			System.out.println("주문 프로세스 : " + custOrdProcCont);
+			System.out.println("비고 : " + ordMemoCont);
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			// 변수들을 SMS_MS_ORD 에 집어 넣는다.
@@ -449,11 +549,12 @@ public class OrderServiceImpl implements OrderService {
 			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
 			smsMsOrdVO.setDlvModeCd(dlvModeCd);
 			smsMsOrdVO.setDlvDestCd(dlvDestCd);
+			smsMsOrdVO.setPoSchdDt(poSchdDt);
 			smsMsOrdVO.setCtrtTmplYn(ctrtTmplYn);
 			smsMsOrdVO.setSmplReqYn(smplReqYn);
 			smsMsOrdVO.setQlfcReqYn(qlfcReqYn);
 			smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
-		
+			smsMsOrdVO.setOrdMemoCont(ordMemoCont);
 			String ordNo = null;
 			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
 			smsMsOrdVO.setOrdNo(ordNo);
@@ -483,7 +584,7 @@ public class OrderServiceImpl implements OrderService {
 			ordHistSeq=Integer.toString(tempSeq);
 			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq);
 			smsMsOrdHistVO.setOrdStatCd("N000550100");       // 주문상태 코드 : 접수(N000550100)
-			smsMsOrdHistVO.setOrdHistWrtrEml(custId);  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
+			smsMsOrdHistVO.setOrdHistWrtrEml(user.getUsername());  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
 //				smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
 			smsMsOrdHistVO.setOrdHistHistCont("주문 접수");
 			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
@@ -500,7 +601,7 @@ public class OrderServiceImpl implements OrderService {
 			ordNo = ordNo;						//ordNo
 			String ord_guds_seq=null;   		//NO
 			String gudsId=null;					//상품id   -   b5c gudsId 와는 별개.   이 테이블 자체의 유일키 개념
-			String gudsUpcId=null;       		//상품바코드		
+			String ordGudsUpcId=null;       		//상품바코드		
 			String ordGudsCnsNm=null;  		//중문 상품명
 			String ordGudsQty=null;     		//상품 수량, (예상요청)수량
 			String ordGudsSizeVal=null;		//주문상품크기값 ,규격
@@ -511,7 +612,7 @@ public class OrderServiceImpl implements OrderService {
 			for(int i=6; i<rows-1; i++){
 				
 				
-				gudsUpcId = StringUtil.excelGetCell(sheet.getRow(i).getCell(1));
+				ordGudsUpcId = StringUtil.excelGetCell(sheet.getRow(i).getCell(1));
 				ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
 				ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
 				ordGudsSizeVal =  StringUtil.excelGetCell(sheet.getRow(i).getCell(4)); 
@@ -520,23 +621,23 @@ public class OrderServiceImpl implements OrderService {
 				ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
 				
 				// 상품 정보 중에서, (gudsUpcId) 가 빠지면 의미가 없다.
-				if(gudsUpcId!=null && "".equals(gudsUpcId)!=true){
+				if(ordGudsUpcId!=null && "".equals(ordGudsUpcId)!=true){
 					gudsExist = true;
 					ord_guds_seq =  String.valueOf(tempNum++);
 					SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
 					smsMsOrdGudsVO.setOrdNo(ordNo);
 					smsMsOrdGudsVO.setOrdGudsSeq(ord_guds_seq);
-//					gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
-//					smsMsOrdGudsVO.setGudsId(gudsId);
+					gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
+					smsMsOrdGudsVO.setGudsId(gudsId);
 					smsMsOrdGudsVO.setOrdGudsMpngYn("N");
-					smsMsOrdGudsVO.setGudsUpcId(gudsUpcId);
+					smsMsOrdGudsVO.setOrdGudsUpcId(ordGudsUpcId);
 					smsMsOrdGudsVO.setOrdGudsCnsNm(ordGudsCnsNm);
 					smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
 					smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 					smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
 					
-					System.out.println(ord_guds_seq+"-"+gudsUpcId+"-"+ordGudsCnsNm+"-"+ordGudsQty+"-"+ordGudsSizeVal+"-"+ordGudsSalePrc+"-"+ordGudsUrlAddr);
-					
+					System.out.println(ord_guds_seq+"-"+ordGudsUpcId+"-"+ordGudsCnsNm+"-"+ordGudsQty+"-"+ordGudsSizeVal+"-"+ordGudsSalePrc+"-"+ordGudsUrlAddr);
+					System.out.println(smsMsOrdGudsVO.toString());
 					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);
 					LOGGER.debug(smsMsOrdGudsVO.toString());
 				}
@@ -580,17 +681,28 @@ public class OrderServiceImpl implements OrderService {
 			}
 			
 			
-			
+			String nextNum =smsMsOrdGudsDAO.selectSmsMsOrdGudsSeqCount(orderDetailVo.getOrdNo());		//엑셀에서 생성된 주문상품은 해당값이 1로 들어온다(주문상품이없다) 
+			int seq_cnt=0;		//		
 			//3.주문상품List 업데이트
-			for(SmsMsOrdGudsVO vo :smsMsOrdGudsList){
+			for(SmsMsOrdGudsVO vo :smsMsOrdGudsList){		//smsMsOrdGudsList : 주문에 등록된 상품리스트
 				//바코드를 임의로 변경한경우 매핑해제
 				SmsMsGudsVO tempVo = new SmsMsGudsVO();					//상품명+upc아이디로 해당상품을 조회후 존재하지 않는 경우 매핑을 해제
 				tempVo.setGudsId(vo.getGudsId());
 				tempVo.setGudsUpcId(vo.getGudsUpcId());
+				vo.setOrdGudsCnsNm(StringUtil.tagStrToText(vo.getOrdGudsCnsNm()));
+				System.out.println("태그처리된 cnsNm : "+vo.getOrdGudsCnsNm());
 				if(smsMsGudsDAO.selectSmsMsGudsByVO(tempVo)==null){
 					vo.setOrdGudsMpngYn("N");
 				}
-				smsMsOrdGudsDAO.updateSmsMsOrdGudsDetail(vo);		//상품정보업데이트
+				
+				seq_cnt++;
+				if(nextNum.equals("1")){
+					vo.setOrdGudsSeq(Integer.toString(seq_cnt));
+					smsMsOrdGudsDAO.insertSmsMsOrdGudsFromExcel(vo);
+				}else{
+					smsMsOrdGudsDAO.updateSmsMsOrdGudsDetail(vo);		//상품정보업데이트
+				}
+				
 			}
 			
 			
@@ -609,7 +721,7 @@ public class OrderServiceImpl implements OrderService {
 			 histVo.setOrdHistSeq(seq);
 			 histVo.setOrdHistWrtrEml(wrtrEml);
 			 
-			 histVo.setOrdHistHistCont("진행");			//자동생성되는 진행코멘트
+			 histVo.setOrdHistHistCont("주문이 변경되었습니다.");			//자동생성되는 진행코멘트
 			 histVo.setOrdStatCd("N000550200");		//주문상태코드 : N000550200 진행
 			 System.out.println(histVo);
 			 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
@@ -625,7 +737,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		@Override
-		public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo, int gudsCnt,String wrtrEml) throws Exception {
+		public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo, int gudsCnt) throws Exception {
 
 			
 			//1.po정보를 DB에 삽입
@@ -681,7 +793,7 @@ public class OrderServiceImpl implements OrderService {
 				//3-0.현재 주문번호로 생성되어있는 기존의 상품정보를 삭제한다.
 				smsMsEstmGudsDAO.deleteSmsMsEstmGudsByOrdNm(orderPoVo.getOrdNo());
 				
-				
+
 				List<SmsMsEstmGudsVO> smsMsEstmGudsList = new ArrayList<SmsMsEstmGudsVO>();
 				String newGudsId = smsMsGudsDAO.selectSmsMsGudsGudsId();
 				for(int i=0; i<gudsCnt; i++){
@@ -705,7 +817,7 @@ public class OrderServiceImpl implements OrderService {
 							 smsMsGudsVo.setGudsKorNm(gudsKorNm[i].trim());
 							 smsMsGudsVo.setGudsCnsNm(gudsCnsNm[i].trim());
 							 smsMsGudsVo.setGudsUpcId(gudsUpcId[i].trim());
-							 smsMsGudsVo.setGudsVatRfndYn(vatYn[i].trim());
+							 smsMsGudsVo.setGudsVatRfndYn(vatYn[i].trim().equals("과세")?"Y":"N");
 							 //smsMsGudsVo.setGudsUrlAddr(gudsUrlAddr[i].trim());		항목이없음
 							 smsMsGudsVo.setGudsInbxQty(gudsInbxQty[i].trim());
 							
@@ -717,8 +829,9 @@ public class OrderServiceImpl implements OrderService {
 							SmsMsGudsImgVO smsMsGudsImgVO= new SmsMsGudsImgVO();																			
 							smsMsGudsImgVO.setGudsId(newGudsId);
 							smsMsGudsImgVO.setGudsImgCd("N000080200");//상품이미지코드 N000080100(대표이미지) N000080200(목록이미지) 목록이미지로 사용
-							smsMsGudsImgVO.setGudsImgOrgtFileNm(imgSrcPath[i]);
-							smsMsGudsImgVO.setGudsImgSysFileNm(imgSrcPath[i]);
+							smsMsGudsImgVO.setGudsImgOrgtFileNm(imgSrcPath[i].trim());
+							smsMsGudsImgVO.setGudsImgSysFileNm(imgSrcPath[i].trim());
+//							smsMsGudsImgVO.setGudsImgSysFileNm(FileUtil.getBRSaveFileNameForCurrentTime()+".jpg");		//이렇게 사용하기 위해서는 엑셀이미지를 받아올때이미 설정을 했어야함
 							
 							smsMsGudsImgDAO.deleteSmsMsGudsImg(smsMsGudsImgVO);			//매핑이 잘못되어져 이미지가 들어오는 경우 해당이미지를 삭제
 							smsMsGudsImgDAO.insertSmsMsGudsImg(smsMsGudsImgVO);
@@ -772,7 +885,7 @@ public class OrderServiceImpl implements OrderService {
 			 System.out.println("ordNo :"+orderPoVo.getOrdNo());
 			 
 			 histVo.setOrdHistSeq(seq);
-			 histVo.setOrdHistWrtrEml(wrtrEml);
+			 histVo.setOrdHistWrtrEml(orderPoVo.getPoRegrEml());
 			 
 			 histVo.setOrdHistHistCont("P/O확정");			//자동생성되는 확정코멘트
 			 histVo.setOrdStatCd("N000550300");		//주문상태코드 : N000550300 확정
@@ -806,6 +919,15 @@ public class OrderServiceImpl implements OrderService {
 		public void insertSmsMsOrdFile(SmsMsOrdFileVO smsMsOrdFileVO) throws Exception {
 			smsMsOrdFileDAO.insertSmsMsOrdFile(smsMsOrdFileVO);
 			
+		}
+
+		@Override
+		public SmsMsEstmVO selectSmsMsEstmVO(String ordNo) throws Exception {
+			return smsMsEstmDAO.selectSmsMsEstmVO(ordNo);
+		}
+		//ordertable statcd 변경
+		public void updateSmsMsOrdStatCd(SmsMsOrdVO smsMsOrdVO){
+			smsMsOrdDAO.updateSmsMsOrdStatCd(smsMsOrdVO);
 		}
 		
 }//end class

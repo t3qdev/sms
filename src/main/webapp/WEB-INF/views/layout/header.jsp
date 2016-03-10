@@ -16,10 +16,10 @@
     </ul>
 	<nav>
 		<ul>
-	   		<li><a href="${web_ctx}/orderManagementView.do" id="orderManagement" ><span>주문/딜관리</span></a></li>
+	   		<li><a href="${web_ctx}/orderManagementView.do" id="orderManagement" ><span>订单/交易管理</span></a></li>
         
         <sec:authorize access="hasRole('N000580100')">
-        	 <li><a href="${web_ctx}/userManagementView.do" id="userManagement"><span>사용자관리</span></a></li>
+        	 <li><a href="${web_ctx}/userManagementView.do" id="userManagement"><span>用户管理</span></a></li>
 		</sec:authorize>
        
 		</ul>
@@ -27,8 +27,8 @@
 	<nav>
 		<ul>
 		<sec:authentication var="user" property="principal" />
-		<li><a href="${web_ctx}/passwordChangeView.do"><span>${user.userAlasCnsNm}(${user.userAlasEngNm})</span><span>님 환영합니다.</span></a></li>
-		<li><a href="${web_ctx}/logOut.do" title="로그아웃" class="icon-left"><span class="ic-logout">로그아웃</span></a></li>
+		<li><a href="${web_ctx}/passwordChangeView.do">你好<span>${user.userAlasCnsNm}(${user.userAlasEngNm})</span><span>，欢迎来到SMS管理者页面</span></a></li>
+		<li><a href="${web_ctx}/logOut.do" title="退出登录" class="icon-left"><span class="ic-logout">退出登录</span></a></li>
 		</ul>
 	</nav>
   </header>

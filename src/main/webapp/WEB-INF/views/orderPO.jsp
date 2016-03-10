@@ -5,14 +5,18 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!--  Header Include   -->
 <!--jsp:include page="layout/header.jsp"/-->
 <sec:authentication var="user" property="principal" />
+<style>
+body{min-width:1900px}
+</style>
 <article>
 
 	<h1>
-		<span>P/O확정</span>
+		<span>P/O确定</span>
 	</h1>
 <form method="POST" action="${web_ctx}/orderPOSave.do" id="orderPOForm" name="orderPOForm">    
     <div class="po_area">
@@ -29,12 +33,12 @@
                     </colgroup>
                     <tbody>
                     <tr>
-                    <th>P/O총금액<br>(USD)</th>
-                    <th>P/O총금액<br>(KRW)</th>
-                    <th>매입합계<br>(VAT포함)</th>
-                    <th>매입합계<br>(VAT제외)</th>
-                    <th>물류비+매입합계<br>(VAT포함)</th>
-                    <th>물류비+매입합계<br>(VAT제외)</th>
+                    <th>P/O总金额<br>(USD)</th>
+                    <th>P/O总金额<br>(KRW)</th>
+                    <th>采购合计<br>(包含VAT)</th>
+                    <th>采购合计<br>(VAT除外)</th>
+                    <th>物流费+采购合计<br>(包含VAT)</th>
+                    <th>物流费+采购合计<br>(VAT除外)</th>
                     </tr>
                     <tr>
                     <input type="hidden" id="poRegrEml" name="poRegrEml" value="${user.username }"/>
@@ -59,15 +63,15 @@
 <!--                     <td><span title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222">₩17,809,840</span></td> -->
                     </tr>
                     <tr>
-                    <th colspan="2" rowspan="2">물류비 (KRW)</th>
-                    <th colspan="2">수익률 (물류비 제외) </th>
-                    <th colspan="2">수익률 (물류비 포함)</th>
+                    <th colspan="2" rowspan="2">物流费 (KRW)</th>
+                    <th colspan="2">收益率 (物流费除外)</th>
+                    <th colspan="2">收益率 (包含物流费)</th>
                     </tr>
                     <tr>
-                    <th>VAT포함</th>
-                    <th>VAT제외</th>
-                    <th>VAT포함</th>
-                    <th>VAT제외</th>
+                    <th>包含VAT</th>
+                    <th>VAT除外</th>
+                    <th>包含VAT</th>
+                    <th>VAT除外</th>
                     </tr>
                     <tr>
                     	<td colspan="2">${poVo.dlvAmt }</td>
@@ -88,7 +92,7 @@
 <!--                     <td>8.31%</td> -->
                     </tr>
                     <tr>
-                  	  <th colspan="6">비 고</th>
+                  	  <th colspan="6">备注</th>
                     </tr>
                     <tr>
                  	   <td colspan="6">${poVo.poMemoCont }</td>
@@ -118,32 +122,32 @@
                     	<input type="hidden" id="poNo" name="poNo" value="${poVo.poNo}">
                     </tr>
                     <tr>
-                    <th>클라이언트</th>
+                    <th>客户名称</th>
                     	<td>${poVo.custId}</td>
                     	<input type="hidden" id="custId" name="custId" value="${poVo.custId}">
                     </tr>
                     <tr>
-                    <th>기준환율</th>
+                    <th>标准汇率</th>
                     	<td>${poVo.stdXchrAmt}</td>
                     	<input type="hidden" id="stdXchrAmt" name="stdXchrAmt" value="${poVo.stdXchrAmt}">
                     </tr>
                     <tr>
-                    <th>견적화폐</th>
+                    <th>报价货币</th>
                     	<td>${poVo.stdXchrKindCd}</td>
                     	<input type="hidden" id="stdXchrKindCd" name="stdXchrKindCd" value="${poVo.stdXchrKindCd}">
                     </tr>
                     <tr>
-                    <th>견적조건</th>
+                    <th>报价条件</th>
                     	<td>${poVo.dlvModeCd}</td>
                     	<input type="hidden" id="dlvModeCd" name="dlvModeCd" value="${poVo.dlvModeCd}">
                     </tr>
                     <tr>
-                    <th>P/O일자</th>
+                    <th>P/O日期</th>
                     	<td>${poVo.poDt}</td>
                     	<input type="hidden" id="poDt" name="poDt" value="${poVo.poDt}">
                     </tr>
                     <tr>
-                    <th>상품인도일자</th>
+                    <th>提货日期</th>
                     	<td>${poVo.ordArvlDt}</td>
                     	<input type="hidden" id="ordArvlDt" name="ordArvlDt" value="${poVo.ordArvlDt}">
                     </tr>
@@ -175,20 +179,20 @@
                     </colgroup>
                     <tbody>
                     <tr>
-                    <th>이미지</th>
-                    <th>바코드</th>
-                    <th>상품명(中)</th>
-                    <th>상품명(한)</th>
-                    <th>주문수량</th>
-                    <th>인박스수량</th>
-                    <th>부가세 적용여부</th>
-                    <th>매입단가 (KRW)</th>
-                    <th>매입합계 (VAT포함)</th>
-                    <th>매입합계 (VAT제외)</th>
-                    <th>P/O단가 (USD)</th>
-                    <th>P/O합계 (USD)</th>
-                    <th>P/O단가 (KRW)</th>
-                    <th>P/O합계 (KRW)</th>
+                    <th>图片</th>
+                    <th>条码</th>
+                    <th>商品名(中)</th>
+                    <th>商品名(韩)</th>
+                    <th>订购数量</th>
+                    <th>装箱数量</th>
+                    <th>是否包含VAT</th>
+                    <th>采购单价 (KRW)</th>
+                    <th>采购合计 (包含VAT)</th>
+                    <th>采购合计 (VAT除外)</th>
+                    <th>P/O单价 (USD)</th>
+                    <th>P/O合计 (USD)</th>
+                    <th>P/O单价 (KRW)</th>
+                    <th>P/O合计 (KRW)</th>
                     </tr>
                     
                     <input type="hidden" id="gudsCnt" name="gudsCnt" value="${gudsCnt }">
@@ -236,13 +240,13 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                    <th colspan="7">총 계</div></th>
-                    <th><div>매입합계 (KRW)</div></th>
+                    <th colspan="7">总计</div></th>
+                    <th><div>采购合计 (KRW)</div></th>
                     <th class="tar"><div>${poVo.pcSum }</div></th>
                     <th class="tar"><div>${poVo.pcSumNoVat } </div></th>
-                    <th><div>P/O총계 (USD)</div></th>
+                    <th><div>P/O总计 (USD)</div></th>
                     <th class="tar"><div>${poVo.poAmt }</div></th>
-                    <th><div>P/O총계 (KRW)</div></th>
+                    <th><div>P/O总计 (KRW)</div></th>
                     <th class="tar"><div>${poVo.poXchrAmt }</div></th>
                     </tr>
                     </tfoot>
@@ -259,8 +263,9 @@
             	<section class="ui-layout-action">
                 </section>
                 <section class="ui-layout-action">
-                    <button class="btn-cancel">취소</button>
-                    <button class="btn-submit mr10" id="check">확인</button>
+                	
+                    <button class="btn-cancel">取消</button>
+                    <button class="btn-submit" id="check">确认</button>
                 </section> 
             </div>
         </section>
@@ -284,8 +289,9 @@ $(function(){
 	//2.확인(po확정)버튼 (파일을 유지하고 업로드한 데이터들을 DB에 넣는다)
 	
 	if("YES"=="${view}"){
-		$("#check").button( "disable" );
+		$("#check").hide();
 	}
+		
 	
 		$('#check').click(function(){
 		var formData = $("#orderPOForm").serialize();
@@ -296,8 +302,8 @@ $(function(){
 			async: false,
 			cache : false,
 			success:function(result){
-				alert("성공적으로 저장 되었습니다.");
-				
+				alert("保存成功");
+				opener.parent.location.reload();
 				window.open("about:blank","_self").close();
 			}
 		});//end $.ajax	

@@ -72,5 +72,29 @@
 				AND GUDS_IMG_CD= #gudsImgCd#
 	
 	</delete>
-
+	
+	<select id="smsMsGudsImgDAO.selectSmsMsGudsImgAll" resultMap="smsMsGudsImg">
+	<![CDATA[ 
+			SELECT
+								GUDS_ID
+								, GUDS_IMG_CD
+								, GUDS_IMG_ORGT_FILE_NM
+								, GUDS_IMG_SYS_FILE_NM
+								, GUDS_IMG_CDN_ADDR
+					FROM sms_ms_guds_img
+		]]>
+		
+	</select>	
+	
+	<select id="smsMsGudsImgDAO.selectSmsMsGudsImgByCd" parameterClass="smsMsGudsImgVO" resultMap="smsMsGudsImg">
+			SELECT 	GUDS_ID
+						, GUDS_IMG_CD
+						, GUDS_IMG_ORGT_FILE_NM
+						, GUDS_IMG_SYS_FILE_NM
+						, GUDS_IMG_CDN_ADDR
+			FROM		SMS_MS_GUDS_IMG
+			WHERE	GUDS_ID =#gudsId#
+				AND 	GUDS_IMG_CD=#gudsImgCd#
+	
+	</select>
 </sqlMap>

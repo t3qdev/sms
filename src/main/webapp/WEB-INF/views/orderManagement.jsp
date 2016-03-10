@@ -25,7 +25,7 @@
 
 
 	<h1>
-		<span>주문/딜관리</span>
+		<span>订单/交易管理</span>
 	</h1>
     <div class="ui-layout-single">
     
@@ -36,15 +36,15 @@
 	                <section class="ui-layout-action tar">
 	                	<div class="file_upoad_area">
 	                        <span class="bulk_tit"></span>
-	                        <button class="btn-add" type="button">신규주문등록</button>
+	                        <button class="btn-add" type="button">订单上传</button>
 	                    </div>
-	                	<button class="btn-excel">양식다운로드</button>
-	                    <button class="btn-excel">리스트다운로드</button>
+	                	<button class="btn-excel">模版下载</button>
+	                    <button class="btn-excel">列表下载</button>
 	                    <select class="ui-selector mr10", id="rownum">
-	                    <option value="10">페이지당 노출개수</option>
-	                    <option value="50">50개</option>
-	                    <option value="100">100개</option>
-	                    <option value="150">150개</option>
+	                    <option value="50">每页显示数量</option>
+	                    <option value="50">50个</option>
+	                    <option value="100">100个</option>
+	                    <option value="150">150个</option>
 	                    </select>
 	                </section>
                 
@@ -83,16 +83,16 @@
 <!--                     <a href="#" class="direction next">Next <span></span></a> -->
 <!--                     <a href="#" class="direction next">Next End <span></span><span></span></a> -->
                 </div>
-                <button class="btn-save">저장</button>
+                <button class="btn-save">保存</button>
             </div>
         </section>
     </div>
-        <div id="dialog_upload" title="클라이언트 요청 견적서 Excel 파일 업로드">
+        <div id="dialog_upload" title="上传客户询盘单">
 		 	<form id="dialog_upload_form" action="${web_ctx}/orderManagementInsert.do" method="post" enctype="multipart/form-data">
 				<section class="ui-layout-form-b">
 					<ul>
 						<li>
-							<label for="">엑셀 양식 파일</label>
+							<label for="">excel样式文件</label>
 	                        <input name="file" id="inputExcelFile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
 						</li>
 					</ul>
@@ -100,15 +100,15 @@
 			</form>
 		</div>
 		
-		<div id="dialog_upload_special" title="Special Order 클라이언트 요청 견적서 Excel 파일 업로드">
+		<div id="dialog_upload_special" title="上传特殊订单客户询价单">
 		 	<form id="dialog_upload_form_special" action="${web_ctx}/orderDetailSpecialView.do" method="post" enctype="multipart/form-data">
 				<section class="ui-layout-form-b">
 					<ul>
 					<li>
-					<label for="">주문번호</label><input name="ordNo" id="ordNoSpecial" value="" readonly/>
+					<label for="">订单编号</label><input name="ordNo" id="ordNoSpecial" value="" readonly/>
 					</li>
 						<li>
-							<label for="">엑셀 양식 파일</label>
+							<label for="">excel样式文件</label>
 	                        <input name="file" id="inputExcelFileSpecial" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
 						</li>
 					</ul>
@@ -142,11 +142,11 @@ $(function(){
 		width: 500,
 		height: 240,
 		buttons: {
-			'파일 업로드': function(evt){
+			'上传文件': function(evt){
 		 		if($('#inputExcelFile').val()==""){
-	 				alert("업로드 할 엑셀파일을 선택하세요");
+	 				alert("请选择要上传的EXCEL文件。");
 	 			}else{
-	 				if (confirm("선택한 파일을 업로드 하시겠습니까?")) {
+	 				if (confirm("确认要上传所选中的文件?")) {
 		 				$('#dialog_upload_form').submit();
 						$('#dialog_upload').dialog('close');
 						$('#inputExcelFile').val('');
@@ -163,13 +163,15 @@ $(function(){
 		width: 500,
 		height: 240,
 		buttons: {
-			'파일 업로드': function(evt){
+			'文件上传': function(evt){
 		 		if($('#inputExcelFileSpecial').val()==""){
-	 				alert("업로드 할 엑셀파일을 선택하세요");
+	 				alert("请选择要上传的EXCEL文件。");
 	 			}else{
-	 				if (confirm("선택한 파일을 업로드 하시겠습니까?")) {
+	 				if (confirm("确认要上传所选中的文件?")) {
 // 		 				$('#dialog_upload_form_special').submit();
-						$("#dialog_upload_form_special").attr('target', '_blank').submit();
+						$("#dialog_upload_form_special").attr('target', 'popUp');
+						var newWindow=window.open("",'popUp',1500,800);
+						$("#dialog_upload_form_special").submit();
 						$('#dialog_upload_special').dialog('close');
 						$('#inputExcelFileSpecial').val('');
 	 				} else {
@@ -180,6 +182,8 @@ $(function(){
 		}
 	});
 
+	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
+							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
 	$('#jqgrid_a').jqGrid({
         url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
@@ -188,26 +192,27 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','요청일자','클라이언트','오더상품', '상세보기','딜규모','상해팀담당자','한국팀담당자','오더영입여부','현재상태','현재상태 상세내용','최종상태','공급상 물품대금입금','선금입금일자','선금입금금액','선금입금율','입고 배송일자','입고배송도착지코드','출항배송일자','출항배송도착지코드','도착배송일자','도착배송도착지코드','po배송일자','po배송목적지코드','잔금입금일자','잔금입금금액','잔금입금율','방한핀 구매여부','COUNT','PAGE','ROW'],
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买','COUNT','PAGE','ROW'],
         colModel:[
-            {name:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
+            {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
             {name:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
-            {name:'clientNm',align:'center',width:100,resizable:false ,
-            	formatter: 'select',
-				 edittype:'select', editoptions:{
-					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
-					 defaultValue:'none',
-					 multiple: true
-				 },
-				 stype:'select', searchoptions: {
-					 sopt: ['eq','ne'],
-					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
-					 //dataInit: dataInitMultiselect
-				 }
+            {name:'clientNm',align:'center',width:100,resizable:false
+//             	,
+//             	formatter: 'select',
+// 				 edittype:'select', editoptions:{
+// 					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
+// 					 defaultValue:'none',
+// 					 multiple: true
+// 				 },
+// 				 stype:'select', searchoptions: {
+// 					 sopt: ['eq','ne'],
+// 					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
+// 					 //dataInit: dataInitMultiselect
+// 				 }
 			},
             {name:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input'},
             {name:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input'},
-            {name:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:'currency'},		
+            {name:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
             {name:'cnsMng',align:'center',width:100,resizable:false 
 //             ,	formatter: 'select',
 // 				 edittype:'select', editoptions:{
@@ -236,76 +241,115 @@ $(function(){
 					 },
 			{name:'ordTypeCd',align:'center',width:100, formatter: 'select',
 				 edittype:'select', editoptions:{
-					 value:'N000620100:B5C(일반);N000620200:B5C(스페셜);N000620300:오프라인',
+					 value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',
 					 defaultValue:'none',
 					 multiple: true
 				 },
 				 stype:'select', searchoptions: {
 					 
-					 value:'N000620100:B5C(일반);N000620200:B5C(스페셜);N000620300:오프라인'
+					 value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
 					,	 sopt: ['eq','ne']
 					 //dataInit: dataInitMultiselect
 				 }},
             {name:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{
-					 value:'N000550100:접수;N000550200:진행;N000550300:확정;N000550400:정산;N000560100:DROP',
+					 value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
 					 defaultValue:'none',
 					 multiple: true
 				 },
 				 stype:'select', searchoptions: {
-					 value:'N000550100:접수;N000550200:진행;N000550300:확정;N000550400:정산;N000560100:DROP',
+					 value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
 					 sopt: ['eq','ne']
 					 //dataInit: dataInitMultiselect
 				 }},	
             {name:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
             {name:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{
-					 value:'N000550300:확정;N000550400:정산;N000560100:DROP',
+					 value:'N000550300:确定;N000550400:结算;N000560100:DROP',
 					 defaultValue:'none',
 					 multiple: true
 				 }, stype:'input'
             },		
-            {name:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
-            {name:'paptDpstDt',align:'center',width:80,resizable:false, stype:'input',editable:true, formatter:formatterDate,
+            {name:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input',  formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
+            {name:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',align:'center',width:80,resizable:false, stype:'input',editable:true},		
-            {name:'paptDpstRate',align:'center',width:80,resizable:false, stype:'input',editable:true,editrules:{number:true}},		
-            {name:'wrhsDlvDt',align:'center',width:80,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
+            {name:'paptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
+            {name:'wrhsDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                  }	},		
-            {name:'wrhsDlvDestCd',align:'center',width:80,resizable:false, stype:'input',editable:true},
-            {name:'dptrDlvDt',align:'center',width:80,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'wrhsDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd },
+            {name:'dptrDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'dptrDlvDestCd',align:'center',width:80,resizable:false, stype:'input',editable:true},
-            {name:'arvlDlvDt',align:'center',width:80,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'dptrDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'arvlDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'arvlDlvDestCd',align:'center',width:80,resizable:false, stype:'input',editable:true},
-            {name:'poDlvDt',align:'center',width:80,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'arvlDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'poDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'poDlvDestCd',align:'center',width:80,resizable:false, stype:'input',editable:true},
-            {name:'raptDpstDt',align:'center',width:80,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'poDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'raptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',align:'center',width:80,resizable:false, stype:'input',editable:true,editrules:{number:true}},
-            {name:'raptDpstRate',align:'center',width:80,resizable:false, stype:'input',editable:true,editrules:{number:true}},
+            {name:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} },
+            {name:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
             {name:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
             {name:'count',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'page',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'row',align:'center',width:160,resizable:false,hidden:"true"}
         ],
     	onSelectRow: function(id){
-			jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+
+    		var ordStatCd =  $('#jqgrid_a').getCell(id, 'ordStatCd');
+			if(ordStatCd=="N000550300" || ordStatCd=="N000550300" || ordStatCd=="N000560100"){
+				//PO확정 이후, 선금, 잔금, 입고일, 출항일, 도착일, P/O도착일 등 수정가능
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:true});
+				jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+			}else{
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:false});
+				jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+			}
 		},
 		pagination:true,
         multiselect: true,
+        editurl:'${web_ctx}/orderManagementSave.ajax',
+
         gridComplete : function(e){
 
 //         	jQuery("#jqgrid_a").jqGrid('setColProp','ordNo',{frozen:true});
@@ -331,7 +375,7 @@ $(function(){
 		shrinkToFit: false
         
   	  });
-    
+
 	// jqgrid가 로딩완료 되면, 이 pager로 jqgrid 아래에 pager를 지우고 새로 그린다.
 	// 이 페이저에는 goToSelectedPage() 함수가 링크 걸려 있다.
 	function customPager(totalDbCount, page, row){
@@ -376,7 +420,7 @@ $(function(){
 		var data = $("#jqgrid_a").jqGrid("getRowData");
 		var list = [];
 		saveparameters = {
-			    "successfunc" : function(){},
+			    "successfunc" : function(){alert("成功")},
 			    "url" : '${web_ctx}/orderManagementSave.ajax',
 			    "extraparam" : {},
 			    "aftersavefunc" : function( response ) {
@@ -417,6 +461,7 @@ $(function(){
 		}
 	});	
 
+	
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowDetail(cellvalue,options,rowObject){
 		if(rowObject.ordTypeCd=="N000620200" && rowObject.ordStatCd=="N000550100"){
@@ -444,39 +489,80 @@ $(function(){
 		}else{
 			return "";
 		}
-
 	}  
- 
+
+    // jqgrid의 DlvDestCd 컬럼에 대한 formatter
+    function formatterDlvDestCd(cellvalue,options,rowObject){
+//     	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
+// 			+'N000511000:TSN;N000511100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
+    	
+    	if(cellvalue == 'N000510100'){
+			return "ICN";
+		}else if(cellvalue == 'N000510200'){
+			return "PUS";
+		}else if(cellvalue == 'N000510300'){
+			return "PTK";
+		}else if(cellvalue == 'N000510400'){
+			return "PVG";
+		}else if(cellvalue == 'N000510500'){
+			return "NGB";
+		}else if(cellvalue == 'N000510600'){
+			return "CGO";
+		}else if(cellvalue == 'N000510700'){
+			return "CKG";
+		}else if(cellvalue == 'N000510800'){
+			return "CAN";
+		}else if(cellvalue == 'N000510900'){
+			return "HGH";
+		}else if(cellvalue == 'N000511000'){
+			return "TSN";
+		}else if(cellvalue == 'N000511100'){
+			return "NKG";
+		}else if(cellvalue == 'N000511200'){
+			return "SZX";
+		}else if(cellvalue == 'N000511300'){
+			return "TAO";
+		}else if(cellvalue == 'N000511400'){
+			return "HKG";
+		}else{
+			return "";
+		}
+	};
+	
  	$("#jqgrid_a").jqGrid('setGroupHeaders', {
 		useColSpanStyle: true, 
 		groupHeaders:[
-			{startColumnName: 'paptDpstDt', numberOfColumns: 3, titleText: '선금'},
+			{startColumnName: 'paptDpstDt', numberOfColumns: 3, titleText: '首付'},
 // 			{startColumnName: 'wrhsDlvDt', numberOfColumns: 8, titleText: 'Shipping'},
-			{startColumnName: 'wrhsDlvDt', numberOfColumns: 2, titleText: '입고일'},
-			{startColumnName: 'dptrDlvDt', numberOfColumns: 2, titleText: '출항일'},
-			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '도착일'},
-			{startColumnName: 'poDlvDt', numberOfColumns: 2, titleText: 'P/O도착일'},
-			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '잔금'}
+			{startColumnName: 'wrhsDlvDt', numberOfColumns: 2, titleText: '入库'},
+			{startColumnName: 'dptrDlvDt', numberOfColumns: 2, titleText: '出港'},
+			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '到岸'},
+			{startColumnName: 'poDlvDt', numberOfColumns: 2, titleText: 'P/O'},
+			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '余款'}
 
 		]	
 	});
-// 	$("#jqgrid_a").jqGrid('filterToolbar');
-	$("#jqgrid_a").filterToolbar({
+	//$("#jqgrid_a").jqGrid('filterToolbar');
+//  	$("#jqgrid_a").filterToolbar({
+//  		//autosearch:true,
+//  	   //stringResult: true,
+//  	   //defaultSearch: 'cn',
+//  	   groupOp: 'AND',
 	
-	   stringResult: true,
+//  	   searchOnEnter: true,
 	
-	   groupOp: 'AND',
+//  	   beforeSearch: function() { //  검색전 액션이다.
 	
-	   searchOnEnter: true,
-	
-	   beforeSearch: function() { //  검색전 액션이다.
-	
-		   alert("ddd");
-	      $("#jqgrid_a").setGridParam({url:"{web_ctx}/orderManagementSearch.ajax"}); // 데이터 xml 주소를 지정할 수 있다.
+//  	      $("#jqgrid_a").setGridParam({url:"${web_ctx}/orderManagementSearch.ajax",datatype : "json"}); // 데이터 xml 주소를 지정할 수 있다.
 	      
-	   }
+//  	   }
+//  	   /* afterSearch : function(){
+//  		   $("#jqgrid_a").clearToolbar();
+//  	   }, */
 	
-	}); 
+//  	}); 
+	$("#jqgrid_a").jqGrid('filterToolbar', {stringResult: true, searchOnEnter: true, defaultSearch: "cn"});
+
 
 	$("#jqgrid_a").jqGrid('setFrozenColumns');
     $('#jqgrid_a').setGridWidth($(".ui-layout-jqgrid").width() - 2);
@@ -486,7 +572,7 @@ $(function(){
 	
 	$(".btn_pop").each(function(){
        $(this).click(function(){
-			window.open($(this).data("href"), "상세보기", "scrollbars=yes,width=" + $(this).data("popw") + ",height=" + $(this).data("poph") + ",top=10,left=20");
+			window.open($(this).data("href"), "查看详情", "scrollbars=yes,width=" + $(this).data("popw") + ",height=" + $(this).data("poph") + ",top=10,left=20");
 		}); 
     });
 	
@@ -520,7 +606,6 @@ function popUp(ordNo){
 // pager 링크 함수.    jqgrid 아래에 pager 가 클릭되면, 이 함수가 실행.
 // 선택한 page 로 DB 검색 후 jqgrid reload
 function goToSelectedPage(totalDbCount, page, row){
-	$('#paginate_complex')
 		jQuery("#jqgrid_a").setGridParam({
 		url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환

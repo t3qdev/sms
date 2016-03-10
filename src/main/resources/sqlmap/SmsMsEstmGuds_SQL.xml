@@ -87,6 +87,20 @@
 	
 	</insert>
 	
+	<select id="smsMsEstmGudsDAO.selectSmsMsEstmGuds" parameterClass="String" resultMap="smsMsEstmGuds">
+			SELECT
+				ORD_NO
+				, GUDS_ID
+				, ORD_GUDS_KOR_NM
+				, ORD_GUDS_CNS_NM
+				, ORD_GUDS_QTY
+				, ORD_GUDS_ORG_PRC
+				, ORD_GUDS_SALE_PRC
+				, ORD_GUDS_PRVD_NM
+				, ORD_GUDS_PRVD_CRN
+			FROM sms_ms_estm_guds
+			WHERE ORD_NO=#ordNo#
+	</select>
 	
 	
 	

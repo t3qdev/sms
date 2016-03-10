@@ -38,7 +38,9 @@
 				  , ORD_GUDS_QTY
 				  , ORD_GUDS_OPR_EML
 				  , ORD_GUDS_SIZE_VAL
-				  , ORD_GUDS_URL_ADDR )
+				  , ORD_GUDS_URL_ADDR
+				  , ORD_GUDS_UPC_ID
+				   )
 			VALUES ( #ordNo#
 				  , #ordGudsSeq#
 				  , #gudsId#
@@ -50,7 +52,9 @@
 				  , #ordGudsQty#
 				  , #ordGudsOprEml#
 				  , #ordGudsSizeVal#
-				  , #ordGudsUrlAddr# )
+				  , #ordGudsUrlAddr#
+				  , #ordGudsUpcId#
+				   )
 		]]>
 	</insert>
 	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsSeqCount"  parameterClass="String" resultClass="String">
@@ -65,7 +69,7 @@
 	
 	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount"  resultClass="String">
 		SELECT 
-				COUNT(GUDS_ID) + 1 AS GUDS_ID
+				IFNULL(      MAX(GUDS_ID)+1 , 1 ) AS GUDS_ID
 		FROM
 				SMS_MS_ORD_GUDS
 	</select>
@@ -146,5 +150,43 @@
 			
 	</update>
 	
-	
+	<insert id="smsMsOrdGudsDAO.insertSmsMsOrdGudsFromExcel" parameterClass="smsMsOrdGudsVO">
+		
+			INSERT INTO sms_ms_ord_guds 
+				( ORD_NO
+				  , ORD_GUDS_SEQ
+				  , GUDS_ID
+				  , ORD_GUDS_CNS_NM
+				  ,ORD_GUDS_MPNG_YN
+				  <isNotEmpty property="ordGudsOrgPrc" >
+				  , ORD_GUDS_ORG_PRC
+					</isNotEmpty>
+					<isNotEmpty property="ordGudsQty" >
+				  , ORD_GUDS_QTY
+					</isNotEmpty>
+					<isNotEmpty property="ordGudsSizeVal" >
+				  , ORD_GUDS_SIZE_VAL
+				  </isNotEmpty>
+				  , ORD_GUDS_URL_ADDR
+				  , ORD_GUDS_UPC_ID
+				   )
+			VALUES ( #ordNo#
+				  , #ordGudsSeq#
+				  , #gudsId#
+				  , #ordGudsCnsNm#
+				  , 'N'
+				 <isNotEmpty property="ordGudsOrgPrc" >
+				  , #ordGudsOrgPrc#
+				  </isNotEmpty>
+				<isNotEmpty property="ordGudsQty" >
+				  , #ordGudsQty#
+				  </isNotEmpty>
+				<isNotEmpty property="ordGudsSizeVal" >
+				  , #ordGudsSizeVal#
+				  </isNotEmpty>
+				  , #ordGudsUrlAddr#
+				  , #ordGudsUpcId#
+				   )
+		
+	</insert>
 </sqlMap>

@@ -53,7 +53,7 @@ public class LoginService implements UserDetailsService {
         	// 아직 DB에 pwd가 암호화 상태가 아니기 때문에, 가져와서 암호화.
             user.setUsername(username);
 
-
+            String userEml = userList.get(0).getUserEml();
             String password = userList.get(0).getUserPwd();
             String userAlasEngNm = userList.get(0).getUserAlasEngNm();
             String userAlasCnsNm = userList.get(0).getUserAlasCnsNm();
@@ -62,6 +62,7 @@ public class LoginService implements UserDetailsService {
 //			System.out.println(bcrypt.encode(password));
 			System.out.println("- 추후 삭제 필수 ");
 //        	String password = passwordEncoder.encodePassword(userList.get(0).getSllrPwd(), saltSource.getSalt(user));
+			user.setUsername(username);
         	user.setPassword(password);
         	user.setUserAlasCnsNm(userAlasCnsNm);
         	user.setUserAlasEngNm(userAlasEngNm);

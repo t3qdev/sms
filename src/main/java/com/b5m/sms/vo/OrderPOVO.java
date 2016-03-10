@@ -20,7 +20,7 @@ public class OrderPOVO {
 	private String custId;		//클라이언트
 	
 	private String stdXchrAmt;		//-기준환율
-	private String stdXchrKindCd;	//견적화폐
+	private String stdXchrKindCd;	//-견적화폐
 	private String dlvModeCd;		//-견적조건
 	private String poDt;		//-po일자
 	private String ordArvlDt;		//-상품인도일자(주문도착일자)

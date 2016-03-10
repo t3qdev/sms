@@ -15,6 +15,7 @@
 		<result property="gudsVatRfndYn" column="GUDS_VAT_RFND_YN" columnIndex="6"/>
 		<result property="gudsInbxQty" column="GUDS_INBX_QTY" columnIndex="7"/>
 		<result property="gudsUrlAddr" column="GUDS_URL_ADDR" columnIndex="8"/>
+		<result property="b5cSkuId" column="B5C_SKU_ID" columnIndex="9"/>
 	</resultMap>
 	
 
@@ -29,11 +30,47 @@
 								, GUDS_VAT_RFND_YN
 								, GUDS_INBX_QTY
 								, GUDS_URL_ADDR
-					FROM sms_ms_guds
+								, B5C_SKU_ID
+					FROM SMS_MS_GUDS
 			WHERE GUDS_ID=#gudsId#
 		]]>
 	
-	</select>	
+	</select>
+		<select id="smsMsGudsDAO.selectSmsMsGudsByUpcIDforBatch" parameterClass="smsMsGudsVO" resultMap="smsMsGuds">
+		<![CDATA[
+			SELECT
+								GUDS_ID
+								, BRND_ID
+								, GUDS_KOR_NM
+								, GUDS_CNS_NM
+								, GUDS_UPC_ID
+								, GUDS_VAT_RFND_YN
+								, GUDS_INBX_QTY
+								, GUDS_URL_ADDR
+								, B5C_SKU_ID
+					FROM SMS_MS_GUDS
+			WHERE GUDS_UPC_ID=#gudsUpcId#
+		]]>
+	
+	</select>
+	<select id="smsMsGudsDAO.selectSmsMsGudsByB5cSkuIdforBatch" parameterClass="smsMsGudsVO" resultMap="smsMsGuds">
+		<![CDATA[
+			SELECT
+								GUDS_ID
+								, BRND_ID
+								, GUDS_KOR_NM
+								, GUDS_CNS_NM
+								, GUDS_UPC_ID
+								, GUDS_VAT_RFND_YN
+								, GUDS_INBX_QTY
+								, GUDS_URL_ADDR
+								, B5C_SKU_ID
+					FROM sms_ms_guds
+			WHERE B5C_SKU_ID=#b5cSkuId#
+		]]>
+	
+	</select>		
+		
 	<insert id="smsMsGudsDAO.insertSmsMsGuds_S" parameterClass="smsMsGudsVO">
 		<![CDATA[
 			INSERT INTO sms_ms_guds 
@@ -44,7 +81,9 @@
 				  , GUDS_UPC_ID
 				  , GUDS_VAT_RFND_YN
 				  , GUDS_INBX_QTY
-				  , GUDS_URL_ADDR )
+				  , GUDS_URL_ADDR
+				  , B5C_SKU_ID
+				   )
 			VALUES ( 
 					#gudsId#
 				  , #brndId#
@@ -53,7 +92,9 @@
 				  , #gudsUpcId#
 				  , #gudsVatRfndYn#
 				  , #gudsInbxQty#
-				  , #gudsUrlAddr# )
+				  , #gudsUrlAddr#
+				  , #b5cSkuId#
+				   )
 		]]>
 	</insert>
 	
@@ -87,6 +128,7 @@
 								, GUDS_VAT_RFND_YN
 								, GUDS_INBX_QTY
 								, GUDS_URL_ADDR
+								, B5C_SKU_ID
 				FROM sms_ms_guds
 				WHERE 1=1
 				   <isNotNull prepend="AND" removeFirstPrepend="true" open="(" close=")" >
@@ -94,7 +136,7 @@
 				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsCnsNm#,'%') ]]>
 				      </isNotEmpty >
 				      <isNotEmpty  prepend="OR" property="gudsUpcId">
-				      		<![CDATA[	GUDS_UPC_ID LIKE CONCAT('%',#gudsUpcId#,'%') ]]>
+				      		GUDS_UPC_ID =#gudsUpcId#
 				      </isNotEmpty >
 				    </isNotNull>
 
@@ -111,6 +153,7 @@
 								, GUDS_VAT_RFND_YN
 								, GUDS_INBX_QTY
 								, GUDS_URL_ADDR
+								, B5C_SKU_ID
 				FROM sms_ms_guds
 				WHERE GUDS_UPC_ID=#upcId#
 
