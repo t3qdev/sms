@@ -31,7 +31,7 @@
 								, GUDS_INBX_QTY
 								, GUDS_URL_ADDR
 								, B5C_SKU_ID
-					FROM SMS_MS_GUDS
+					FROM sms_ms_guds
 			WHERE GUDS_ID=#gudsId#
 		]]>
 	
@@ -48,7 +48,7 @@
 								, GUDS_INBX_QTY
 								, GUDS_URL_ADDR
 								, B5C_SKU_ID
-					FROM SMS_MS_GUDS
+					FROM sms_ms_guds
 			WHERE GUDS_UPC_ID=#gudsUpcId#
 		]]>
 	

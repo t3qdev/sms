@@ -93,5 +93,11 @@ public interface OrderService {
 	
 	//ordertable statcd 변경
 	public void updateSmsMsOrdStatCd(SmsMsOrdVO smsMsOrdVO) throws Exception;
+	
+	
+	// orderManagementView 에서 excel 다운 로드할 때 사용.
+	public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO)throws Exception;
+	
+	public List<SmsMsOrdVO>orderManageMentExcelDownload(String jsonString) throws Exception;
 }
 

@@ -22,5 +22,9 @@ public class SmsMsEstmGudsDAO extends EgovAbstractDAO {
 	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception{
 		return (List<SmsMsEstmGudsVO>)list("smsMsEstmGudsDAO.selectSmsMsEstmGuds",ordNo);
 	}
+	@SuppressWarnings("unchecked")
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGudsGroupByPrvd(String ordNo) throws Exception{
+		return (List<SmsMsEstmGudsVO>)list("smsMsEstmGudsDAO.selectSmsMsEstmGudsGroupByPrvd",ordNo);
+	}
 	
 }

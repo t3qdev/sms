@@ -23,7 +23,7 @@
 														, GUDS_IMG_ORGT_FILE_NM
 														, GUDS_IMG_SYS_FILE_NM
 														, GUDS_IMG_CDN_ADDR
-			FROM TB_MS_GUDS_IMG
+			FROM tb_ms_guds_img
 			WHERE 1=1
 						AND
 

@@ -6,7 +6,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
+<style>
+body{min-width:550px; background:#fff;}
+.order_table th,.order_table td{ text-align:center;}
 
+</style>
 <!--  Header Include   -->
 <!--jsp:include page="layout/header.jsp"/-->
 <sec:authentication var="user" property="principal" />
@@ -14,6 +18,24 @@
 	<h1>
 		<span>历史记录</span>
 	</h1>
+	<c:choose>
+		<c:when test="${ordStatCd eq 'N000550100'}">
+			<div class="history_step history_step1"></div>
+		</c:when>
+		<c:when test="${ordStatCd eq 'N000550200'}">
+			<div class="history_step history_step2"></div>
+		</c:when>
+		<c:when test="${ordStatCd eq 'N000550300'}">
+			<div class="history_step history_step3"></div>
+		</c:when>
+		<c:when test="${ordStatCd eq 'N000550400'}">
+			<div class="history_step history_step4"></div>
+		</c:when>
+		<c:otherwise>
+			<div class="history_step history_step5"></div>
+		</c:otherwise>
+	</c:choose>
+	
 	<div class="ui-layout-single">
         <section>
             <h2><span>Order Number: ${ordNo} </span></h2>
@@ -35,7 +57,7 @@
         </section>
         <section class="ui-layout-action">
 
-            <button class="btn-save">保存</button>
+            <button class="btn-save" id="btn-save">保存</button>
         </section>
     </div>
 
@@ -45,6 +67,13 @@
 $(function(){
 	// 브라우저에 따라 caching 때문에 ajax 최신정보가 보이지 않게됨을 막음.
 	jQuery.ajaxSetup({cache:false}); 
+	
+	// SMS_MS_ORD 상태가 DROP(N000560100) 일 때에는, 본 화면은 기능하지 않는다.
+	var ordStatCd = "${ordStatCd}";
+	if(ordStatCd == "N000560100"){
+		$("#history_add").hide();
+		$("#btn-save").hide();
+	}
 	
 	// [+히스토리 추가] 버튼을 눌렀을 때, Jqgrid 에서 한 행 추가 하기 위해 생성한 변수
 	cli_num = 0;	
@@ -67,42 +96,61 @@ $(function(){
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
     	onSelectRow: function(id){
-			jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+    		// SMS_MS_ORD 상태가 DROP(N000560100) 일 때에는, 본 화면은 기능하지 않는다.
+    		if(ordStatCd != "N000560100"){
+    			//본인이 쓴 history 가 아니면 수정할 수 없다.
+    			var ordHistWrtrEml =  $('#jqgrid_a').getCell(id, 'ordHistWrtrEml');
+    			if(ordHistWrtrEml == "${user.username}"){
+    				jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+    			}
+    		}
 		},
+        editurl:'${web_ctx}/orderHistorySave.ajax',
         multiselect: true,
         //pager: '#pager_a',
         rowNum:100,
         viewrecords: true,
         
     });
+
     
     jQuery(".btn-save").click( function() {
-		id = jQuery("#jqgrid_a").jqGrid('getGridParam','selarrrow');
-		var data = $("#jqgrid_a").jqGrid("getRowData");
-		var list = [];
-		saveparameters = {
-			    "successfunc" : null,
-			    "url" : '${web_ctx}/orderHistorySave.ajax',
-			    "extraparam" : {},
-			    "aftersavefunc" : function( response ) {
-			                          alert('saved : '+response);
-			                      },
-			    "errorfunc": function( response ) {
-			                    	alert('error : '+response);
-			                    },
-			    "afterrestorefunc" : null,
-			    "restoreAfterError" : true,
-			    "mtype" : "POST"
+		// 상태가 Drop 일 때는 기능 하지 않는다.
+		if(ordStatCd != "N000560100"){
+			id = jQuery("#jqgrid_a").jqGrid('getGridParam','selarrrow');
+			var data = $("#jqgrid_a").jqGrid("getRowData");
+			var list = [];
+			saveparameters = {
+				    "successfunc" : null,
+				    "url" : '${web_ctx}/orderHistorySave.ajax',
+				    "extraparam" : {},
+				    "aftersavefunc" : function( response ) {
+// 				                          alert('saved : '+response);
+				                      },
+				    "errorfunc": function( response ) {
+				                    	alert('error : '+response);
+				                    },
+				    "afterrestorefunc" : null,
+				    "restoreAfterError" : true,
+				    "mtype" : "POST"
+				}
+			for(var i=0; i<id.length; i++){
+				var dataOrdStatCd = $('#jqgrid_a').getRowData(id[i]).ordStatCd;
+				alert("ordstatCd" + ordStatCd);
+				alert("dataOrdStatCd" + dataOrdStatCd);
+				if(ordStatCd > dataOrdStatCd){
+					alert("negative");
+					return;
+				}
+				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 			}
-		for(var i=0; i<id.length; i++){
-			jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+			jQuery("#jqgrid_a").setGridParam({
+				url : "${web_ctx}/orderHistoryLoad.ajax",
+				ajaxGridOptions : {async:false},    // 동기로 변환
+				datatype : "json",
+			}).trigger('reloadGrid');
 		}
-		jQuery("#jqgrid_a").setGridParam({
-			url : "${web_ctx}/orderHistoryLoad.ajax",
-			ajaxGridOptions : {async:false},    // 동기로 변환
-			datatype : "json",
-		}).trigger('reloadGrid');
-    });
+  });
     
     // jqgrid의 ognzDivCd 컬럼에 대한 formatter
     function formatterordStatCd(cellvalue,options,rowObject){

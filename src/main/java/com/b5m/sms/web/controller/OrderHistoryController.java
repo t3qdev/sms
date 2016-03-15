@@ -12,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.b5m.sms.biz.dao.SmsMsOrdDAO;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.biz.service.UserService;
+import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.SmsMsOrdHistVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
@@ -30,7 +32,20 @@ public class OrderHistoryController {
 	@RequestMapping(value = "/orderHistoryView")
 	public String orderHistory(HttpSession session, Model model, String ordNo) {
 		String result = "orderHistory";
+		String ordStatCd = null;
+		
 		model.addAttribute("ordNo", ordNo);
+		OrderDetailVO orderDetailVO = new OrderDetailVO();
+		
+		try {
+			orderDetailVO = orderService.selectSmsMsOrdDetail(ordNo);
+			ordStatCd = orderDetailVO.getOrdStatCd();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("ordStatCd",ordStatCd);
+
 		return result;
 	}
 

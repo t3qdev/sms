@@ -6,16 +6,19 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.b5m.sms.biz.dao.SmsMsEstmDAO;
 import com.b5m.sms.biz.dao.SmsMsEstmGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsGudsDAO;
@@ -52,6 +55,7 @@ import com.b5m.sms.vo.SmsMsUserVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
 import com.b5m.sms.web.controller.AbstractFileController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Service("orderService")
@@ -206,25 +210,39 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdVO.setDlvModeCd(dlvModeCd);
 			smsMsOrdVO.setOrdEstmDt(ordEstmDt);
 			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
-			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
+			smsMsOrdVO.setStdXchrKindCd(stdXchrKindCd);
 			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
 			
-			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  
+
 
 
 			// SMS_MS_ORD_GUDS 추가.
 			System.out.println("----------------------------------");
 			System.out.println(smsMsOrdVO.toString());
 //			N000620100
+			List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
 			if(ordTypeCd.equals("N000620100")){
-				List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
 				tbMsOrdBatchVOList = tbMsOrdDAO.selectTbMsOrdGudsOptForBatch(smsMsOrdVO);
-				batch2(tbMsOrdBatchVOList);
 			}else{
-				List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
 				tbMsOrdBatchVOList = tbMsOrdSplDAO.selectTbMsOrdGudsOptForBatchSpecial(smsMsOrdVO);
-				batch2(tbMsOrdBatchVOList);
 			}
+
+			
+			
+			// 아래에는, 오더의 딜규모 컬럼에,  관계된 상품들의 상품단가*가격  을 합산한 값을 넣어주는 로직이 들어가야 한다.
+			BigDecimal ordSumAmt = new BigDecimal("0");       // 딜규모
+			for(int k=0; k<tbMsOrdBatchVOList.size(); k++){
+				if(tbMsOrdBatchVOList.get(k).getOrdGudsQty()!= null && tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc()!=null){
+					BigDecimal ordGudsQty = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsQty());
+					BigDecimal ordGudsSalePrc = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc());
+					BigDecimal plus = ordGudsQty.add(ordGudsSalePrc);
+					ordSumAmt = ordSumAmt.add(plus);
+				}
+			}
+			smsMsOrdVO.setOrdSumAmt(ordSumAmt);
+			
+			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  														// order 이동 
+			batch2(tbMsOrdBatchVOList);																					// 상품 이동batch()
 			
 			// SMS_MS_ORD_HIST 추가.
 			SmsMsOrdHistVO smsMsOrdHistVO = new SmsMsOrdHistVO();
@@ -928,6 +946,32 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		//ordertable statcd 변경
 		public void updateSmsMsOrdStatCd(SmsMsOrdVO smsMsOrdVO){
 			smsMsOrdDAO.updateSmsMsOrdStatCd(smsMsOrdVO);
+		}
+		
+		// orderManagementView 에서 excel 다운 로드할 때 사용.
+		public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO){
+			return smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(smsMsOrdVO);
+		}
+
+		@Override
+		public List<SmsMsOrdVO> orderManageMentExcelDownload(String jsonString)
+				throws Exception {
+			JSONParser jsonParser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) jsonParser.parse(jsonString);
+	
+			List<SmsMsOrdVO> smsMsOrdVOList = new ArrayList<SmsMsOrdVO>();
+			if(jsonArray.size() > 0){
+				for (Object obj : jsonArray) {
+					HashMap<String, Object> rs = new ObjectMapper().readValue(obj.toString(), HashMap.class);
+					String ordNo = (String)rs.get("ordNo");
+					SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
+					smsMsOrdVOList.add(smsMsOrdVO);
+					SmsMsOrdVO smsMsOrdVO1 = new SmsMsOrdVO();
+					smsMsOrdVO1 = smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(smsMsOrdVO);
+					smsMsOrdVOList.add(smsMsOrdVO1);
+				}
+			}
+			return smsMsOrdVOList;
 		}
 		
 }//end class

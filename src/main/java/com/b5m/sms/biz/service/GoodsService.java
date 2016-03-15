@@ -28,5 +28,7 @@ public interface GoodsService {
 	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception;
 	//이미지 코드검색으로 가져오기 
 	public SmsMsGudsImgVO selectSmsMsGudsImgByCd(SmsMsGudsImgVO smsMsGudsImgVo) throws Exception;
+	//PO상품 사업자명으로 정렬
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGudsGroupByPrvd(String ordNo) throws Exception;
 }
 

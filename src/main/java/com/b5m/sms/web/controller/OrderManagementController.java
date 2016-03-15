@@ -1,8 +1,10 @@
 package com.b5m.sms.web.controller;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpRequest;
@@ -19,6 +23,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
 import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.common.security.User;
@@ -41,6 +49,7 @@ import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class OrderManagementController  extends AbstractFileController{
@@ -100,38 +109,7 @@ public class OrderManagementController  extends AbstractFileController{
 			String b = a.replaceAll(";", "");
 			System.out.println("filters : " + b);
 			
-//			{"groupOp":"AND","rules":[{"field":"ordNo","op":"bw","data":"1"},{"field":"ordReqDt","op":"bw","data":"2"}
-//			
-//			int start = b.indexOf("[") + 1;
-//			int length = b.length();
-//			int end = length - 2;
-//			System.out.println(b.substring(start, end));
-//			
-//			String value = b.substring(start, end);
-//			value = value.substring(1, value.length()-1);           //remove curly brackets
-//			value = value.replaceAll("\"", "");
-//			value = value.substring(0,value.length());
-//			String[] keyValuePairs = value.split(",");              //split the string to creat key-value pairs
-//			System.out.println("value : "+value);
-//			
-//			List<HashMap<String,String>> hashMaps = new ArrayList<HashMap<String,String>>();
-//			
-//			for(int i=0; i<keyValuePairs.length;i++)                        //iterate over the pairs
-//			{
-//				System.out.println("keyValuePairs "+i+" : "+keyValuePairs[i]);
-//				HashMap<String,String> map = new HashMap<>();
-//			    String[] entry = keyValuePairs[i].split(":");                   //split the pairs to get key and value 
-//			    map.put(entry[0].trim(), entry[1].trim());          //add them to the hashmap and trim whitespaces
-//			    hashMaps.add(map);
-//			    
-//			}
-//			System.out.println(hashMaps.get(1).get("field"));
-//			for(int i=0; i<hashMaps.size(); i++){
-//				System.out.println(hashMaps.get(i).get("field"));;
-//			}
 		}
-		
-		//smsMsOrdVO.setOrdNo(ordNo);
 		System.out.println(smsMsOrdVO.toString());
 		System.out.println("rowInput : "+rowInput);
 		System.out.println("pageInput : "+pageInput);
@@ -183,6 +161,7 @@ public class OrderManagementController  extends AbstractFileController{
 		System.out.println("7"+smsMsOrdVO.getPoDlvDt()+smsMsOrdVO.getPoDlvDestCd());
 		System.out.println("8"+smsMsOrdVO.getRaptDpstAmt()+smsMsOrdVO.getRaptDpstDt()+smsMsOrdVO.getRaptDpstRate());
 		System.out.println("9"+smsMsOrdVO.getB5mBuyCont());
+		
 		if(smsMsOrdVO.getPaptDpstDt() != null) smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getPaptDpstDt().replace("-",""));
 		if(smsMsOrdVO.getWrhsDlvDt() != null) smsMsOrdVO.setWrhsDlvDt(smsMsOrdVO.getWrhsDlvDt().replace("-",""));
 		if(smsMsOrdVO.getDptrDlvDt() != null) smsMsOrdVO.setDptrDlvDt(smsMsOrdVO.getDptrDlvDt().replace("-",""));
@@ -248,5 +227,46 @@ public class OrderManagementController  extends AbstractFileController{
 		LOGGER.debug("2.1.=============================완료" );
 		return "redirect:/orderManagementView.do";
 	}
+	
+	// ordManagement.jsp  에서 엑셀다운로드 클릭하면, JQgrid 를 그대로 가져와서 엑셀 다운로드 되게 만들어준다.
+	@ResponseBody
+	@RequestMapping(value="/orderManagementExcelDownload.ajax")
+	public GenericExcelView orderManagementExcelDownload(@RequestParam Map<String, String> params, Map<String, Object> model, HttpServletResponse response,@RequestParam(value="dataList")String dataList) throws Exception{
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment; filename=members.xls");
+		
+		String [] colNames = {"Order Number","申请日期","客户名称","订购商品", "查看详情","交易规模","上海负责人","韩国负责人","订购路径","状态","状态详情","最终状态","商品供应商汇款","首付日期","首付金额","首付百分比","入库日期","入库地点","出港日期","出港地点","到岸日期","到岸地点","P/O日期","P/O地点","余付","余款结算日期","余款百分比","是否在帮韩品购买"};
+		List<String> colName = new ArrayList<String>();
+		for(int i=0; i<colNames.length ; i++){
+        	colName.add(colNames[i]);
+        }
+        List<String[]> colValue = new ArrayList<String[]>();
+
+        String a = dataList.replaceAll("&quot", "\"");
+        String b = a.replaceAll(";", "");
+
+        List<SmsMsOrdVO> smsMsOrdVOList = null;
+        smsMsOrdVOList = orderService.orderManageMentExcelDownload(b);
+
+//		List<SmsMsOrdVO> smsMsOrdVOListToExcel = null;
+//		smsMsOrdVOListToExcel = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
+
+		
+        System.out.println("-------------------------------------------------------------------------------");
+
+		String[] arr1 = { "11111", "22222", "33333", "44444", "55555" };
+		String[] arr2 = { "aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee" };
+		String[] arr3 = { "가가가", "나나나", "다다다", "라라라", "마마마" };
+//		modelMap.get(key)
+		colValue.add(arr1);
+		colValue.add(arr2);
+		colValue.add(arr3);
+//
+		model.put("excelName", "test");
+		model.put("colName", colName);
+		model.put("colValue", colValue);
+
+		return new GenericExcelView();
+    }
 	
 }

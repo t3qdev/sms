@@ -61,7 +61,7 @@
 		SELECT
 				COUNT(ORD_GUDS_SEQ)+1 AS ORD_GUDS_SEQ
 		FROM 
-				SMS_MS_ORD_GUDS
+				sms_ms_ord_guds
 		WHERE 
 				ORD_NO = #ordNo#
 				
@@ -71,7 +71,7 @@
 		SELECT 
 				IFNULL(      MAX(GUDS_ID)+1 , 1 ) AS GUDS_ID
 		FROM
-				SMS_MS_ORD_GUDS
+				sms_ms_ord_guds
 	</select>
 	<update id="smsMsOrdGudsDAO.updateSmsMsOrdGuds_S">
 		<![CDATA[

@@ -27,7 +27,7 @@
 	<nav>
 		<ul>
 		<sec:authentication var="user" property="principal" />
-		<li><a href="${web_ctx}/passwordChangeView.do">你好<span>${user.userAlasCnsNm}(${user.userAlasEngNm})</span><span>，欢迎来到SMS管理者页面</span></a></li>
+		<li><a href="${web_ctx}/passwordChangeView.do"><span>你好 ${user.userAlasCnsNm}(${user.userAlasEngNm})</span><span>，欢迎来到SMS管理者页面</span></a></li>
 		<li><a href="${web_ctx}/logOut.do" title="退出登录" class="icon-left"><span class="ic-logout">退出登录</span></a></li>
 		</ul>
 	</nav>

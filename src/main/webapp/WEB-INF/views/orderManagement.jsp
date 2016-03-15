@@ -38,8 +38,8 @@
 	                        <span class="bulk_tit"></span>
 	                        <button class="btn-add" type="button">订单上传</button>
 	                    </div>
-	                	<button class="btn-excel">模版下载</button>
-	                    <button class="btn-excel">列表下载</button>
+	                	<button class="btn-excel" id="templateExcelDownload">模版下载</button>
+	                    <button class="btn-excel" id="jqGridExcelDownload">列表下载</button>
 	                    <select class="ui-selector mr10", id="rownum">
 	                    <option value="50">每页显示数量</option>
 	                    <option value="50">50个</option>
@@ -134,7 +134,106 @@ $(function(){
 		$('#dialog_upload').dialog('open');
 		
 	})
-	
+		dataInitMultiselect = function (elem) {
+	    setTimeout(function () {
+	        var $elem = $(elem), id = elem.id,
+	            inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
+	            options = {
+	                selectedList: 2,
+	                height: "auto",
+	                checkAllText: "all",
+	                uncheckAllText: "no",
+	                noneSelectedText: "Any",
+	                open: function () {
+// 	                    var $menu = $(".ui-multiselect-menu:visible");
+	                    $menu.width("auto");
+	                    return;
+	                }
+	            },
+	            $options = $elem.find("option");
+	        if ($options.length > 0 && $options[0].selected) {
+	            $options[0].selected = false; // unselect the first selected option
+	        }
+	        if (inToolbar) {
+	            options.minWidth = 'auto';
+	        }
+	        //$elem.multiselect(options);
+	        $elem.multiselect(options).multiselectfilter({ placeholder: '' });
+	        $elem.siblings('button.ui-multiselect').css({
+	            width: inToolbar ? "98%" : "100%",
+	            marginTop: "1px",
+	            marginBottom: "1px",
+	            paddingTop: "3px"
+	        });
+	   
+	    }, 50)};
+	jQuery("#jqGridExcelDownload").click( function() {
+		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
+		// 또한 이들을 그대로 뽑아오기 위해서는 jqgrid.saverow 함수를 이용해야 하는데,
+		// saverow 함수는 1 개의 row 단위로 작동하기 때문에 이를 변형해서 사용할 수 있어야 한다.
+
+// 		$("#jqgrid_a").excelExport();
+// 		$("#jqgrid_a").jqGrid('excelExport',{tag:'excel',url:'${web_ctx}/orderManagementExcelDownload.do?'});
+
+// 		window.open('data:application/vnd.ms-excel,' + encodeURIComponent($("jqgrid_a").jqGrid('getRowData')));
+// 		e.preventDefault();
+		var ids =jQuery("#jqgrid_a").jqGrid('getDataIDs');
+		var dataList = [];
+		for(var i = 0; i <  ids.length; i++ ){
+			var cdObject = {
+					"ordNo" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'ordNo'),
+					"ordReqDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'ordReqDt'),
+					"clientNm" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'clientNm'),
+					"orderedGudsNm" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'orderedGudsNm'),
+					"showDetail" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'showDetail'),
+					"ordSumAmt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'ordSumAmt'),
+					"cnsMng" :$('#jqgrid_a').jqGrid("getCell", ids[i], 'cnsMng'),
+					"korMng" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'korMng'),
+					"ordTypeCd" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'ordTypeCd'),
+					"ordStatCd" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'ordStatCd'),
+// 					"histDetail" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'histDetail'),
+					"bactPrvdDtPlusbactPrvdAmt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'bactPrvdDtPlusbactPrvdAmt'),
+					"paptDpstDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'paptDpstDt'),
+					"paptDpstAmt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'paptDpstAmt'),
+					"paptDpstRate" :$('#jqgrid_a').jqGrid("getCell", ids[i], 'paptDpstRate'),
+					"wrhsDlvDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'wrhsDlvDt'),
+					"wrhsDlvDestCd" :$('#jqgrid_a').jqGrid("getCell", ids[i], 'wrhsDlvDestCd'),
+					"dptrDlvDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'dptrDlvDt'),
+					"dptrDlvDestCd" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'dptrDlvDestCd'),
+					"arvlDlvDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'arvlDlvDt'),
+					"arvlDlvDestCd" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'arvlDlvDestCd'),
+					"poDlvDt" :$('#jqgrid_a').jqGrid("getCell", ids[i], 'poDlvDt'),
+					"poDlvDestCd" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'poDlvDestCd'),
+					"raptDpstDt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'raptDpstDt'),
+					"raptDpstAmt" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'raptDpstAmt'),
+					"raptDpstRate" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'raptDpstRate'),
+					"b5mBuyCont" : $('#jqgrid_a').jqGrid("getCell", ids[i], 'b5mBuyCont')	
+			};
+			dataList.push(cdObject);
+		}
+// 		var params = dataList.serialize();
+		$.ajaxSettings.traditional = true;
+// 		alert(dataList);
+// 		alert(JSON.stringify(dataList));
+		$.ajax({
+			type : "POST",
+			url : "${web_ctx}/orderManagementExcelDownload.ajax",
+			async: false,
+// 			dataType: "json",
+			data : {
+				"dataList" :JSON.stringify(dataList)
+			},
+			success : function(data, textStatus, jqXHR) {
+				//Sucess시, 처리
+				alert("성공");
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				//Error시, 처리
+				alert("에러");
+			}
+		});
+
+	});
 	// [+신규주문등록] Dialog Control
 	$('#dialog_upload').dialog({
 		modal: true,
@@ -192,11 +291,12 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买','COUNT','PAGE','ROW'],
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买'
+                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
-            {name:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
-            {name:'clientNm',align:'center',width:100,resizable:false
+            {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
+            {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false
 //             	,
 //             	formatter: 'select',
 // 				 edittype:'select', editoptions:{
@@ -210,10 +310,10 @@ $(function(){
 // 					 //dataInit: dataInitMultiselect
 // 				 }
 			},
-            {name:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input'},
-            {name:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input'},
-            {name:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
-            {name:'cnsMng',align:'center',width:100,resizable:false 
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input'},
+            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input'},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
+            {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false 
 //             ,	formatter: 'select',
 // 				 edittype:'select', editoptions:{
 // 					 value:'某某某(ZSZ):某某某(ZSZ);商鞅(SY):商鞅(SY);独孤方(DGF):独孤方(DGF)',
@@ -226,7 +326,7 @@ $(function(){
 // 					 //dataInit: dataInitMultiselect
 // 				 }
 				 },		
-            {name:'korMng',align:'center',width:100,frozen : true 
+            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true 
 // 					 , formatter: 'select',
 // 					 edittype:'select', editoptions:{
 // 						 value:'太公望(TGW):太公望(TGW);李小龙(LXL):李小龙(LXL)',
@@ -239,19 +339,20 @@ $(function(){
 // 						 //dataInit: dataInitMultiselect
 // 					 }
 					 },
-			{name:'ordTypeCd',align:'center',width:100, formatter: 'select',
+			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',
 				 edittype:'select', editoptions:{
 					 value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',
 					 defaultValue:'none',
-					 multiple: true
+					 multiple: true,
+					 
 				 },
 				 stype:'select', searchoptions: {
 					 
 					 value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
 					,	 sopt: ['eq','ne']
-					 //dataInit: dataInitMultiselect
+// 					, dataInit: dataInitMultiselect
 				 }},
-            {name:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
+            {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{
 					 value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
 					 defaultValue:'none',
@@ -260,56 +361,59 @@ $(function(){
 				 stype:'select', searchoptions: {
 					 value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
 					 sopt: ['eq','ne']
-					 //dataInit: dataInitMultiselect
+// 					, dataInit: dataInitMultiselect
 				 }},	
-            {name:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
-            {name:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
+            {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
+            {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{
 					 value:'N000550300:确定;N000550400:结算;N000560100:DROP',
 					 defaultValue:'none',
 					 multiple: true
 				 }, stype:'input'
             },		
-            {name:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input',  formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
-            {name:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
+            {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
+            {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
-            {name:'paptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
-            {name:'wrhsDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
+            {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
+            {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                  }	},		
-            {name:'wrhsDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd },
-            {name:'dptrDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'wrhsDlvDestCd',index:'wrhsDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd },
+            {name:'dptrDlvDt',index:'dptrDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'dptrDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'arvlDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'dptrDlvDestCd',index:'dptrDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'arvlDlvDt',index:'arvlDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'arvlDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'poDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'arvlDlvDestCd',index:'arvlDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'poDlvDt',index:'poDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'poDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'raptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'poDlvDestCd',index:'poDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'raptDpstDt',index:'raptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} },
-            {name:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
-            {name:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
-            {name:'count',align:'center',width:160,resizable:false,hidden:"true"},
-            {name:'page',align:'center',width:160,resizable:false,hidden:"true"},
-            {name:'row',align:'center',width:160,resizable:false,hidden:"true"}
+            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} },
+            {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
+            {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
+            {name:'count',index:'count',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'page',index:'page',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'row',index:'row',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'bactPrvdMemoCont',index:'bactPrvdMemoCont',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'stdXchrAmt',index:'stdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"}
         ],
     	onSelectRow: function(id){
 
     		var ordStatCd =  $('#jqgrid_a').getCell(id, 'ordStatCd');
-			if(ordStatCd=="N000550300" || ordStatCd=="N000550300" || ordStatCd=="N000560100"){
+			if(ordStatCd=="N000550300" || ordStatCd=="N000550300" ){
 				//PO확정 이후, 선금, 잔금, 입고일, 출항일, 도착일, P/O도착일 등 수정가능
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
@@ -349,32 +453,53 @@ $(function(){
 		pagination:true,
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
+        excel:true,
 
         gridComplete : function(e){
 
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','ordNo',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','ordReqDt',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','clientNm',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','orderedGudsNm',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','showDetail',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','ordSumAmt',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','cnsMng',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','korMng',{frozen:true});
-//         	jQuery("#jqgrid_a").jqGrid('setColProp','ordTypeCd',{frozen:true});
-        	
-//         	jQuery("#jqgrid_a").jqGrid('setFrozenColumns');
-//         	jQuery("#jqgrid_a").jqGrid("setGridParam",{cellEdit : true});
-
+        	// 딜규모에 마우스 올리면, 환율 정보가 툴팁으로 올라감.
+            var ids =jQuery("#jqgrid_a").jqGrid('getDataIDs');
+            for(var i = 0; i <  ids.length; i++ ){
+            	//딜규모에 마우스를 오버하면 다양한(\, ¥, $) 환율이 표기된다.
+            	//환율정보는 PO확정 전에는 주문의 환율, PO확정 후에는 PO의 환율을 사용
+            	var content = "";   // 환율 정보가 들어갈 곳
+            	var  stdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrAmt;
+            	var stdXchrKindCd = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrKindCd;
+            	if(stdXchrKindCd == 'N000590100'){
+            		content = "$ ";
+            	}else if(stdXchrKindCd == 'N000590200'){
+            		content = "₩ ";
+            	}else if(stdXchrKindCd == 'N000590300'){
+            		content = "¥ ";
+            	}
+            	content += stdXchrAmt;
+				jQuery("#jqgrid_a").jqGrid('setCell', ids[i],"ordSumAmt", jQuery("#jqgrid_a").getRowData(ids[i]).ordSumAmt ,"", {title: content});
+            	
+            	var bactPrvdMemoCont = jQuery("#jqgrid_a").getRowData(ids[i]).bactPrvdMemoCont;
+            	jQuery("#jqgrid_a").jqGrid('setCell', ids[i],"bactPrvdDtPlusbactPrvdAmt", jQuery("#jqgrid_a").getRowData(ids[i]).bactPrvdDtPlusbactPrvdAmt ,"", {title: bactPrvdMemoCont});
+            }
+            // SQL PAGING 하기 위해서, VO 에 아래 열을 더 추가함.
         	var totalDbCount = $('#jqgrid_a').getRowData(1).count;
 			var page = $('#jqgrid_a').getRowData(1).page;
 			var row = $('#jqgrid_a').getRowData(1).row;
 			customPager(totalDbCount,page, row);
         },
-
         viewrecords: true,
+        navGrid : true,
 		shrinkToFit: false
         
   	  });
+// 	$('#jqgrid_a').jqGrid('navGrid','#pager_a',{add:false,edit:false,del:false});
+// 	$('#jqgrid_a').jqGrid('navButtonAdd','#pager_a',{
+//         caption:"Export to Excel", 
+//         onClickButton : function () { 
+//             jQuery("#list2").excelExport();
+//         } 
+//     });
+// // 	$('#jqgrid_a').jqGrid('navGrid','#pager_a',{excel:true, add:true});
+// 	$('#jqgrid_a').jqGrid('navButtonAdd', '#pager_a',{caption:"excel",onClickButton:function(){alert("d");}}
+           
+// 	);
 
 	// jqgrid가 로딩완료 되면, 이 pager로 jqgrid 아래에 pager를 지우고 새로 그린다.
 	// 이 페이저에는 goToSelectedPage() 함수가 링크 걸려 있다.
@@ -420,7 +545,9 @@ $(function(){
 		var data = $("#jqgrid_a").jqGrid("getRowData");
 		var list = [];
 		saveparameters = {
-			    "successfunc" : function(){alert("成功")},
+			    "successfunc" : function(){
+// 			    										alert("成功")
+			    										},
 			    "url" : '${web_ctx}/orderManagementSave.ajax',
 			    "extraparam" : {},
 			    "aftersavefunc" : function( response ) {
@@ -434,6 +561,44 @@ $(function(){
 			    "mtype" : "POST"
 			}
 		for(var i=0; i<id.length; i++){
+			
+			// 이 이유는, multiselect 했을 때, 마지막 editable 여부에 따라, 값이 날아가고 안날아가고의 차이가 있기 때문.
+			// 임시방편으로, 1개의 row 가 save 될 때, 그 직전에 그 row의 상태를 한번 더 확인하고, 전송여부를 판단하여 editable을 다시 설정해주고 전송한다.
+			var ordStatCd =  $('#jqgrid_a').getCell(id[i],'ordStatCd');
+			if(ordStatCd=="N000550300" || ordStatCd=="N000550300" ){
+				//PO확정 이후, 선금, 잔금, 입고일, 출항일, 도착일, P/O도착일 등 수정가능
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
+				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:true});
+			}else{
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:false});
+			}
 			jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 		}
 		var page = $('#jqgrid_a').getRowData(1).page;
@@ -580,7 +745,11 @@ $(function(){
 	$('.ui-calendar').datepicker();
 	$('.ui-calendar').datepicker('option', 'dateFormat', 'yy-mm-dd' );
 	$('select.ui-widget-content.ui-corner-all').multiselect();
+
 	
+
+	    
+	    
 	
 });      // End : $(function(){}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -615,5 +784,6 @@ function goToSelectedPage(totalDbCount, page, row){
 	
 	
 };
+
 
 </script>

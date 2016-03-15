@@ -65,4 +65,9 @@ public class SmsMsOrdDAO extends EgovAbstractDAO {
 		update("smsMsOrdDAO.updateSmsMsOrdStatCd",smsMsOrdVO);
 	}
 	
+	// orderManagementView 에서 excel 다운 로드할 때 사용.
+	public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO){
+		return (SmsMsOrdVO) select("smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo",smsMsOrdVO);
+	}
+	
 }

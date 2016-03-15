@@ -17,18 +17,18 @@
 				USER_EML,
 				ROLE_GRP_DIV_CD
    
-			FROM SMS_MS_ROLE_USER
+			FROM sms_ms_role_user
 			WHERE 1=1
 				<isNotEmpty property="userEml" prepend="AND">
 					<![CDATA[ USER_EML = #userEml#]]>
 			    </isNotEmpty> 
 	</select>
 	<delete id="smsMsRoleUserDAO.deleteSmsMsRoleUserByUserEml" parameterClass="SmsMsRoleUserVO">
-			DELETE FROM SMS_MS_ROLE_USER
+			DELETE FROM sms_ms_role_user
 			WHERE <![CDATA[ USER_EML = #userEml# ]]>
 	</delete>
 	<insert id="smsMsRoleUserDAO.insertSmsMsRoleUser" parameterClass="SmsMsRoleUserVO">
-		INSERT INTO SMS_MS_ROLE_USER 
+		INSERT INTO sms_ms_role_user 
 			( 
 				ROLE_GRP_DIV_CD,
 				USER_EML

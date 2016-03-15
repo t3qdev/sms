@@ -1,5 +1,7 @@
 package com.b5m.sms.web.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,12 +11,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
@@ -30,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.file.FileUtil;
 import com.b5m.sms.common.file.cdn.ImageUploadUtil;
+import com.b5m.sms.common.util.DateUtil;
 
 public class AbstractFileController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFileController.class);
@@ -94,7 +101,7 @@ public class AbstractFileController {
 	 * @param fileName
 	 * @param workbook
 	 * @throws IOException
-	 */
+	 */			
 	public void writeExcelFileAndFileDownload(HttpServletResponse response, String fileName, Workbook workbook) throws IOException {
 
 		// 필요시 파일에 쓰고, 파일에서 읽어 올 수 있음.
@@ -422,5 +429,189 @@ public class AbstractFileController {
 		}
 		return fileResultVO;
 	}
+	
+	/**
+	 * 파일 압축
+	 * @param sourcePath
+	 * @param output
+	 * @throws Exception
+	 */
+    public static void zip(String sourcePath, String output) throws Exception {
 
+        // 압축 대상(sourcePath)이 디렉토리나 파일이 아니면 리턴한다.
+        File sourceFile = new File(sourcePath);
+        if (!sourceFile.isFile() && !sourceFile.isDirectory()) {
+            throw new Exception("압축 대상의 파일을 찾을 수가 없습니다.");
+        }
+
+        // output 의 확장자가 zip이 아니면 리턴한다.
+        if (!(StringUtils.substringAfterLast(output, ".")).equalsIgnoreCase("zip")) {
+            throw new Exception("압축 후 저장 파일명의 확장자를 확인하세요");
+        }
+
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+        ZipOutputStream zos = null;
+
+        try {
+            fos = new FileOutputStream(output); // FileOutputStream
+            bos = new BufferedOutputStream(fos); // BufferedStream
+            zos = new ZipOutputStream(bos); // ZipOutputStream
+            zos.setLevel(8); // 압축 레벨 - 최대 압축률은 9, 디폴트 8
+            zipEntry(sourceFile, sourcePath, zos); // Zip 파일 생성
+            zos.finish(); // ZipOutputStream finish
+        } finally {
+            if (zos != null) {
+                zos.close();
+            }
+            if (bos != null) {
+                bos.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+
+    /**
+     * 압축
+     * @param sourceFile
+     * @param sourcePath
+     * @param zos
+     * @throws Exception
+     */
+    private static void zipEntry(File sourceFile, String sourcePath, ZipOutputStream zos) throws Exception {
+        // sourceFile 이 디렉토리인 경우 하위 파일 리스트 가져와 재귀호출
+        if (sourceFile.isDirectory()) {
+            if (sourceFile.getName().equalsIgnoreCase(".metadata")) { // .metadata 디렉토리 return
+                return;
+            }
+            File[] fileArray = sourceFile.listFiles(); // sourceFile 의 하2 위 파일 리스트
+            for (int i = 0; i < fileArray.length; i++) {
+                zipEntry(fileArray[i], sourcePath, zos); // 재귀 호출
+            }
+        } else { // sourcehFile 이 디렉토리가 아닌 경우
+            BufferedInputStream bis = null;
+            try {
+                String sFilePath = sourceFile.getPath();
+                String zipEntryName = sFilePath.substring(sourcePath.length() + 1, sFilePath.length());
+
+                bis = new BufferedInputStream(new FileInputStream(sourceFile));
+                ZipEntry zentry = new ZipEntry(zipEntryName);
+                zentry.setTime(sourceFile.lastModified());
+                zos.putNextEntry(zentry);
+
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int cnt = 0;
+                while ((cnt = bis.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                    zos.write(buffer, 0, cnt);
+                }
+                zos.closeEntry();
+            } finally {
+                if (bis != null) {
+                    bis.close();
+                }
+            }
+        }
+    }
+    /**
+     * 폴더 및 내부 파일을 모두지운다.
+     * @param path
+     */
+	public static void deleteAllFiles(String path){
+			
+			File file = new File(path);
+			//폴더내 파일을 배열로 가져온다.
+			File[] tempFile = file.listFiles();
+	
+			if(tempFile.length >0){
+				
+				for (int i = 0; i < tempFile.length; i++) {
+					
+					if(tempFile[i].isFile()){
+						tempFile[i].delete();
+					}else{
+						//재귀함수
+						deleteAllFiles(tempFile[i].getPath());
+					}
+					tempFile[i].delete();
+					
+				}
+				file.delete();
+				
+			}
+			
+		}
+	/**
+	 * 
+	 * @param response
+	 * @param fileNameList
+	 * @param wbList
+	 * @throws IOException
+	 */
+	    public void writeExcelListForDownload(HttpServletResponse response, List<String> fileNameList, List<Workbook> wbList) throws IOException {
+    			// 필요시 파일에 쓰고, 파일에서 읽어 올 수 있음.
+    			// 출력 파일 위치및 파일명 설정
+    	
+    			int listSize=wbList.size();
+    			String tempFolderName = "PoTemp" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss");
+    			String zipName ="PURCHASE_PO_List" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".zip";
+    			
+    			File dir = new File(tempFolderName);
+    			
+    			if (!dir.exists()) {
+    				dir.mkdirs();
+    			}
+    			
+    			try {
+    				for(int i=0; i<listSize;i++){
+    					FileOutputStream outFile = new FileOutputStream(tempFolderName+File.separator+fileNameList.get(i));
+    					
+        				wbList.get(i).write(outFile);
+        				outFile.close();
+    				}
+
+    				LOGGER.debug("다운로드를 위한 임의 파일생성 완료");
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    			
+    			//1.생성된 폴더로 압축
+    			try {
+					zip(tempFolderName,zipName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    			
+    			//2.압축파일을 다운로드
+    			File downloadFile = new File(zipName);
+    			FileInputStream inputStream = new FileInputStream(downloadFile);
+    			response.setContentType("application/zip");
+    			response.setContentLength((int) downloadFile.length());
+    			response.setHeader("Expires:", "0"); // eliminates browser caching
+    			response.setHeader("Content-Disposition", "attachment; filename=" + zipName);
+    			OutputStream outStream = response.getOutputStream();
+    			
+    			
+    			byte[] buffer = new byte[BUFFER_SIZE];
+    			int bytesRead = -1;
+
+    			// write bytes read from the input stream into the output stream
+    			while ((bytesRead = inputStream.read(buffer)) != -1) {
+    				outStream.write(buffer, 0, bytesRead);
+    			}
+
+    			if(inputStream!=null)inputStream.close();
+    			outStream.flush();
+    			if(outStream!=null)outStream.close();
+    			
+    			//3.생성되었던 폴더 및 파일 삭제
+    			if (dir.exists()) {
+    				deleteAllFiles(tempFolderName);
+    				deleteAllFiles(zipName);
+    				LOGGER.debug("다운로드를 위한 임의 파일 삭제 완료");
+    			}
+    }
+    
+    			
 }

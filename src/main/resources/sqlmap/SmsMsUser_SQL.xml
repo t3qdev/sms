@@ -27,7 +27,7 @@
 		        OGNZ_DIV_CD,
 		        USER_STAT_CD
    
-			FROM SMS_MS_USER
+			FROM sms_ms_user
 			WHERE 1=1
 				<isNotEmpty property="userEml" prepend="AND">
 					<![CDATA[ USER_EML like #userEml# ]]>
@@ -41,7 +41,7 @@
 	</select>
 	<update id="smsMsUserDAO.updateSmsMsUser" parameterClass="smsMsUserVO">
 			<![CDATA[
-			UPDATE SMS_MS_USER
+			UPDATE sms_ms_user
 			SET 
 				USER_PWD = #userPwd#,
 				USER_PWD_STAT_CD = #userPwdStatCd#,
@@ -55,7 +55,7 @@
 	</update>
 	<update id="smsMsUserDAO.updateSmsMsUserWithoutPassword" parameterClass="smsMsUserVO">
 			<![CDATA[
-			UPDATE SMS_MS_USER
+			UPDATE sms_ms_user
 			SET 
 				USER_ALAS_ENG_NM = #userAlasEngNm#,
 				USER_ALAS_CNS_NM = #userAlasCnsNm#,
@@ -67,7 +67,7 @@
 	</update>
 	
 	<insert id="smsMsUserDAO.insertSmsMsUser" parameterClass="smsMsUserVO">
-		INSERT INTO SMS_MS_USER 
+		INSERT INTO sms_ms_user 
 			( 
 				USER_EML,
 				USER_PWD,
@@ -98,7 +98,7 @@
 		        A.USER_ALAS_CNS_NM,
 		        A.OGNZ_DIV_CD,
 		        A.USER_STAT_CD
-			FROM SMS_MS_USER A, SMS_MS_ORD_USER B
+			FROM sms_ms_user A, sms_ms_ord_user B
 			WHERE A.USER_EML = B.USER_EML
 				AND B.ORD_NO=#ordNo#
 	</select>

@@ -72,9 +72,9 @@ $(function(){
         colNames:['이메일','화명','약칭','비밀번호','소속','권한1', '권한2', '권한3','권한4','사용자상태'],
         colModel:[
             {name:'userEml',align:'center',editable:true, editrules:{required:true,email:true},editoptions:{readonly:'true'}},
-            {name:'userAlasCnsNm',align:'center',width:80, editable: true },
-			{name:'userAlasEngNm',align:'center',width:80, editable: true},
-            {name:'userPwd',align:'center',formatter : formatterUserPwd, editable: true,editrules:{required:false}, edittype: "password"},
+            {name:'userAlasCnsNm',align:'center',width:80, editable: true, editrules:{required:true} },
+			{name:'userAlasEngNm',align:'center',width:80, editable: true, editrules:{required:true}},
+            {name:'userPwd',align:'center',formatter : formatterUserPwd, editable: true,editrules:{required:true}, edittype: "password"},
             {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'상해팀',N000530200:'한국팀'}}},
             {name:'roleGrpDivCd1',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},
             {name:'roleGrpDivCd2',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
@@ -111,7 +111,9 @@ $(function(){
 			    "mtype" : "POST"
 			}
 		for(var i=0; i<id.length; i++){
-			jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+
+				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+
 		}
 		jQuery("#jqgrid_a").setGridParam({
 			url : "${web_ctx}/userManagementLoad.ajax",

@@ -731,3 +731,14 @@ td[colindex="10"]+td button.ui-multiselect.ui-widget.ui-state-default.ui-corner-
 .theme_green .ui-search-toolbar .ui-state-default .ui-icon,
 .theme_green .ui-search-toolbar .ui-state-hover .ui-icon,
 .theme_green .ui-search-toolbar .ui-state-active .ui-icon{background-image:url("../images/ui-icons_ffffff_256x240.png")}
+
+.history_step{width:760px; height:43px; background:url("../images/sp_process.png") no-repeat 0 0;}
+.history_step1{ background-position:0 0}
+.history_step2{ background-position:0 -48px}
+.history_step3{ background-position:0 -96px}
+.history_step4{ background-position:0 -144px}
+
+.ui-layout-single{position:relative;}
+
+.s_select{ position:absolute;top:0;left:10px;}
+.s_area{position:absolute;top:0;left:115px;}

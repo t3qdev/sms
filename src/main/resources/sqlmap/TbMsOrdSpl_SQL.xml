@@ -47,7 +47,7 @@
 					,'N000590100' AS STD_XCHR_KIND_CD
 					, USD_XCHR_AMT AS STD_XCHR_AMT
 					, A.ESTM_RCP_REQ_DT AS ORD_HOPE_ARVL_DT
-		FROM TB_MS_ORD_SPL A LEFT OUTER JOIN TB_MS_XCHR B
+		FROM	tb_ms_ord_spl A LEFT OUTER JOIN tb_ms_xchr B
   			  ON XCHR_STD_DT = period_add(date_format(now(), "%Y%m"), -1)
 		WHERE 
 				ORD_ID
@@ -76,11 +76,11 @@
 		    , C.GUDS_ID AS GUDS_ID_OF_B5M
 			, A.CUST_ID AS CUST_ID
 		FROM 
-			TB_MS_ORD_SPL				A
-			, TB_MS_ORD_GUDS_OPT  B
-			, TB_MS_GUDS_OPT			C
-			, TB_MS_GUDS 				D
-			,  TB_MS_BRND_STR 		F
+			tb_ms_ord_spl				A
+			, tb_ms_ord_guds_opt  B
+			, tb_ms_guds_opt			C
+			, tb_ms_guds 				D
+			, tb_ms_brnd_str 		F
 		WHERE 1=1
 		AND A.CUST_ID = B.CUST_ID
 		AND A.ORD_ID = B.ORD_ID
@@ -96,8 +96,8 @@
 		       		SELECT 
 		       			X.B5C_ORD_NO
 		       		FROM 
-		       			SMS_MS_ORD X
-		       			, SMS_MS_ORD_GUDS Y 
+		       			sms_ms_ord X
+		       			, sms_ms_ord_guds  Y 
 		       		WHERE 
 		       			X.ORD_NO = Y.ORD_NO
 		       	)
@@ -122,11 +122,11 @@
 		    , A.CUST_ID AS CUST_ID
 		    , D.GUDS_DLVC_DESN_VAL_5 AS GUDS_DLVC_DESN_VAL_5
 		FROM 
-			TB_MS_ORD 					A
-			, TB_MS_ORD_GUDS_OPT  B
-			, TB_MS_GUDS_OPT			C
-			, TB_MS_GUDS 				D
-			,  TB_MS_BRND_STR 		F
+			tb_ms_ord 					A
+			, tb_ms_ord_guds_opt  B
+			, tb_ms_guds_opt			C
+			, tb_ms_guds				D
+			, tb_ms_brnd_str 		F
 		WHERE 1=1
 		AND A.CUST_ID = B.CUST_ID
 		AND A.ORD_ID = B.ORD_ID

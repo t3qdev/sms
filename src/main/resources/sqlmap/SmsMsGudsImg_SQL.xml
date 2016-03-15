@@ -30,7 +30,7 @@
 	</select>	
 	<insert id="smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg" parameterClass="tbMsOrdBatchVO">
 			INSERT INTO 
-							SMS_MS_GUDS_IMG(
+							sms_ms_guds_img(
 														GUDS_ID
 														, GUDS_IMG_CD
 														, GUDS_IMG_ORGT_FILE_NM
@@ -44,7 +44,7 @@
 											, GUDS_IMG_SYS_FILE_NM
 											, GUDS_IMG_CDN_ADDR
 							FROM 
-										TB_MS_GUDS_IMG
+										tb_ms_guds_img
 							WHERE 
 									SLLR_ID= #brndId# 
 									AND
@@ -67,7 +67,7 @@
 	
 	</insert>
 	<delete id="smsMsGudsImgDAO.deleteSmsMsGudsImg" parameterClass="smsMsGudsImgVO">
-			DELETE FROM SMS_MS_GUDS_IMG
+			DELETE FROM sms_ms_guds_img
 			WHERE GUDS_ID= #gudsId#
 				AND GUDS_IMG_CD= #gudsImgCd#
 	
@@ -92,7 +92,7 @@
 						, GUDS_IMG_ORGT_FILE_NM
 						, GUDS_IMG_SYS_FILE_NM
 						, GUDS_IMG_CDN_ADDR
-			FROM		SMS_MS_GUDS_IMG
+			FROM		sms_ms_guds_img
 			WHERE	GUDS_ID =#gudsId#
 				AND 	GUDS_IMG_CD=#gudsImgCd#
 	

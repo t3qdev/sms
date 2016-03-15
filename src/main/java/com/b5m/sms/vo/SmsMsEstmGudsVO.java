@@ -10,60 +10,89 @@ public class SmsMsEstmGudsVO {
 	private String ordGudsSalePrc;		//상품판매가(po단가)poPrc
 	private String ordGudsPrvdNm;		//주문상품지급(사) 이름pvdrnNm
 	private String ordGudsPrvdCrn;		//주문상품지급 사업자번호crn
+	
+	private String gudsUpcId;				//상품 바코드
+
 	public String getOrdNo() {
 		return ordNo;
 	}
+
 	public void setOrdNo(String ordNo) {
 		this.ordNo = ordNo;
 	}
+
 	public String getGudsId() {
 		return gudsId;
 	}
+
 	public void setGudsId(String gudsId) {
 		this.gudsId = gudsId;
 	}
+
 	public String getOrdGudsKorNm() {
 		return ordGudsKorNm;
 	}
+
 	public void setOrdGudsKorNm(String ordGudsKorNm) {
 		this.ordGudsKorNm = ordGudsKorNm;
 	}
+
 	public String getOrdGudsCnsNm() {
 		return ordGudsCnsNm;
 	}
+
 	public void setOrdGudsCnsNm(String ordGudsCnsNm) {
 		this.ordGudsCnsNm = ordGudsCnsNm;
 	}
+
 	public String getOrdGudsQty() {
 		return ordGudsQty;
 	}
+
 	public void setOrdGudsQty(String ordGudsQty) {
 		this.ordGudsQty = ordGudsQty;
 	}
+
 	public String getOrdGudsOrgPrc() {
 		return ordGudsOrgPrc;
 	}
+
 	public void setOrdGudsOrgPrc(String ordGudsOrgPrc) {
 		this.ordGudsOrgPrc = ordGudsOrgPrc;
 	}
+
 	public String getOrdGudsSalePrc() {
 		return ordGudsSalePrc;
 	}
+
 	public void setOrdGudsSalePrc(String ordGudsSalePrc) {
 		this.ordGudsSalePrc = ordGudsSalePrc;
 	}
+
 	public String getOrdGudsPrvdNm() {
 		return ordGudsPrvdNm;
 	}
+
 	public void setOrdGudsPrvdNm(String ordGudsPrvdNm) {
 		this.ordGudsPrvdNm = ordGudsPrvdNm;
 	}
+
 	public String getOrdGudsPrvdCrn() {
 		return ordGudsPrvdCrn;
 	}
+
 	public void setOrdGudsPrvdCrn(String ordGudsPrvdCrn) {
 		this.ordGudsPrvdCrn = ordGudsPrvdCrn;
 	}
+
+	public String getGudsUpcId() {
+		return gudsUpcId;
+	}
+
+	public void setGudsUpcId(String gudsUpcId) {
+		this.gudsUpcId = gudsUpcId;
+	}
+
 	@Override
 	public String toString() {
 		return "SmsMsEstmGudsVO [ordNo=" + ordNo + ", gudsId=" + gudsId
@@ -71,8 +100,11 @@ public class SmsMsEstmGudsVO {
 				+ ordGudsCnsNm + ", ordGudsQty=" + ordGudsQty
 				+ ", ordGudsOrgPrc=" + ordGudsOrgPrc + ", ordGudsSalePrc="
 				+ ordGudsSalePrc + ", ordGudsPrvdNm=" + ordGudsPrvdNm
-				+ ", ordGudsPrvdCrn=" + ordGudsPrvdCrn + "]";
+				+ ", ordGudsPrvdCrn=" + ordGudsPrvdCrn + ", gudsUpcId="
+				+ gudsUpcId + "]";
 	}
+
+	
 	
 	
 }

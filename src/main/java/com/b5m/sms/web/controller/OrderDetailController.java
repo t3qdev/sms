@@ -29,6 +29,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.Region;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -52,6 +54,8 @@ import com.b5m.sms.common.util.DateUtil;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.OrderDetailVO;
+import com.b5m.sms.vo.SmsMsEstmGudsVO;
+import com.b5m.sms.vo.SmsMsEstmVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdFileVO;
@@ -900,5 +904,151 @@ public class OrderDetailController extends AbstractFileController{
         System.out.println("scale : "+scale);
 	    
 	    pict.resize(scale);    
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/downloadExcel_PO")
+	public void downloadExcel_PO(HttpServletRequest request, HttpServletResponse response,String ordNo) throws Exception{
+		// get absolute path of the application
+				ServletContext context = request.getSession().getServletContext();
+				String appPath = context.getRealPath("") + File.separator;
+
+				LOGGER.debug("appPath = " + appPath);
+
+				// construct the complete absolute path of the file
+				String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "PURCHASE_PO.xlsx";
+
+				LOGGER.info("템플릿 엑셀파일 위치 =" + fullPath);
+
+				File templateFile = new File(fullPath);
+				List<Workbook> wbList = new ArrayList<Workbook>();
+				List<String> excelNmList = new ArrayList<String>();
+				
+				
+				//1.cell을 채우는데 필요한 데이터가져오기
+				SmsMsEstmVO poVo = orderService.selectSmsMsEstmVO(ordNo);
+				List<SmsMsEstmGudsVO> poGudsList= goodsService.selectSmsMsEstmGuds(ordNo);
+				List<SmsMsEstmGudsVO> poPrvdList= goodsService.selectSmsMsEstmGudsGroupByPrvd(ordNo);
+				
+				int sourceRowNum =17;				//참고할 스타일행
+				
+				int prvdSize = poPrvdList.size();
+				int gudsSize = poGudsList.size();
+				
+				int gudsNo=0;	
+				//String rowNoStr="";
+				
+				//해당 상품 공급자 수 만큼 매입PO 엑셀을 만든다.
+				for(int prvdIndex=0;prvdIndex<prvdSize ;prvdIndex++){
+					int rowNo =sourceRowNum;				//소스넘버체크 
+					
+					System.out.println(poPrvdList.get(prvdIndex).getOrdGudsPrvdNm());
+					Workbook wb =  WorkbookFactory.create(templateFile);
+					
+					Sheet sheet = wb.getSheetAt(0);
+					Row sourceRow = sheet.getRow(sourceRowNum);			//스타일을 가지고 있는 행
+					gudsNo=0;			//삽입될 상품의 개수 	
+
+					
+					String poNo="IZK"+poVo.getPoDt()+String.format("%03d", (prvdIndex+1));
+					
+					//1-1.PO NO (IZK+날짜+번호)
+					Row row = sheet.getRow(2);
+					Cell cell = row.getCell(9);
+					cell.setCellValue(poNo);	
+					
+					//1-2.PO날짜 
+					row=sheet.getRow(3);
+					cell = row.getCell(9);
+					cell.setCellValue(StringUtil.dtToDate(poVo.getPoDt()));	
+					
+					//1-3.사업자번호
+					row=sheet.getRow(6);
+					cell = row.getCell(3);
+					cell.setCellValue(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn());
+					
+					//1-4.상호
+					row=sheet.getRow(7);
+					cell = row.getCell(3);
+					cell.setCellValue(poPrvdList.get(prvdIndex).getOrdGudsPrvdNm());
+					
+					
+					
+					for(int gudsIndex=0; gudsIndex<gudsSize;gudsIndex++){
+						if(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn().equals(poGudsList.get(gudsIndex).getOrdGudsPrvdCrn())){		//사업자번호가 같은경우 삽입
+							gudsNo++;
+						}
+					}
+					
+					sheet.shiftRows(18, 34, gudsNo);		//상품이동
+					
+					for(int gudsIndex=0; gudsIndex<gudsNo;gudsIndex++){	
+				
+							SmsMsEstmGudsVO gudsVo = poGudsList.get(gudsIndex);		//gudsVO에 현재 po상품 삽입	
+							Row newRow = sheet.createRow(sourceRowNum+1+gudsIndex);			//새로운row 생성 
+							newRow.setHeight(sourceRow.getHeight());
+							Row nowRow=sheet.getRow(sourceRowNum+gudsIndex);			
+								for(int j=1;j<sourceRow.getLastCellNum(); j++){
+									
+									Cell oldCell = sourceRow.getCell(j);		
+									Cell newCell = newRow.createCell(j);
+									Cell nowCell =nowRow.getCell(j);
+						            // Copy style from old cell and apply to new cell
+						            CellStyle newCellStyle = wb.createCellStyle();						          
+						            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//스타일을 선언하고 기존 스타일을 넣는다
+						            newCell.setCellStyle(newCellStyle);	
+						            
+						            //실제 데이터 삽입
+						            switch (j) {
+						            case 1:
+						            	nowCell.setCellValue(gudsIndex+1);
+						            	break;
+					                case 2:		//2-1.바코드
+					                	nowCell.setCellValue(gudsVo.getGudsUpcId());
+					                    break;
+					                case 3:		//2-2.상품명
+					                	nowCell.setCellValue(gudsVo.getOrdGudsCnsNm());		
+					                    break;
+					                case 6:		//2-3.주문수량
+					                	nowCell.setCellValue(Integer.parseInt(gudsVo.getOrdGudsQty()));
+					                    break;
+					                case 7:		//2-4.매입단가
+					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
+					                    break;
+					                case 8:		//2-5.매입합계
+					                	rowNo +=1;
+					                	//rowNoStr=Integer.toString(rowNo); 
+					                	nowCell.setCellFormula("G"+rowNo+"*H"+rowNo);                    
+					                    break;
+						            }//end switch
+								}//end for j
+					}//end for gudsIndex
+					
+					
+					//3-1. 합계수량
+					row = sheet.getRow(rowNo+1);
+					cell = row.getCell(7);
+					cell.setCellFormula("SUM(G18:G"+(rowNo+1)+")");
+							
+					//3-2. 합계금액(VAT 별도)
+					row = sheet.getRow(rowNo+2);
+					cell = row.getCell(7);
+					cell.setCellFormula("SUM(I18:I"+(rowNo+1)+")");
+					
+					//4. 특정셀 셀병합(상품명,매입합계)	 : 읽을 수 없는 내용이 있습니다라는 경고를 발생시킨다.
+					for(int gudsIndex=0; gudsIndex<gudsNo;gudsIndex++){
+						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex,sourceRowNum+gudsIndex , 3, 4));
+						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex,sourceRowNum+gudsIndex , 8, 9));
+						
+					}
+					
+					
+					String downloadedTemplateName = "PURCHASE_PO" + "_" + poNo + ".xlsx";
+					wbList.add(wb);	//생성된 엑셀파일을 리스트에 담는다.
+					excelNmList.add(downloadedTemplateName);		//생성된 엑셀파일의 이름을 리스트에 담는다
+				}//end for prvdIndex
+				
+
+				writeExcelListForDownload(response, excelNmList, wbList);
 	}
 }

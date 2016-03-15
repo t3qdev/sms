@@ -1066,6 +1066,24 @@ public class StringUtil {
 		
 		return tagStr;
 	}
-	
+	/**
+	 * 20160310형태로 들어오는 날짜값을 2016-03-10으로 변경 
+	 * @param dt
+	 * @return
+	 */
+	public static String dtToDate(String dt){
+		String date;
+		if(!isNullOrEmpty(dt)){
+			dt=dt.trim();
+			if(dt.length()==8){
+				date=dt.substring(0,4)+'-'+dt.substring(4,6)+'-'+dt.substring(6,8);
+				return date;
+			}else{
+				return dt;
+			}
+		}else{
+			return dt;
+		}
+	}
 }
 

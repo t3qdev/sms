@@ -60,10 +60,23 @@
 		<put-attribute name="footer" value="" />
 	</definition>
 	
+	<definition name="error" extends=".basic">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/error.jsp" />
+		<put-attribute name="footer" value="" />
+	</definition>
 	
-	
-	
+	<definition name="error" extends=".basic">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="body" value="/WEB-INF/views/error.jsp" />
+		<put-attribute name="footer" value=""/>
+	</definition>
 
+	<definition name="error_notException" extends=".basic">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="body" value="/WEB-INF/views/error_notException.jsp" />
+		<put-attribute name="footer" value=""/>
+	</definition>
 	<!-- default  현재는 admin/xxxx   용도로 사용되고 있음.  -->
 	
 	<definition name="*/*" extends=".basic">

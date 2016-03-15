@@ -31,7 +31,7 @@
 	         	<button  id="btn_01">P/O上传</button> 
                <a class="btn-proc btn_pop" id="btn_proc01" data-href="./orderPOView.do?ordNo=${ordNo }" data-popw="1500" data-poph="800">P/O确认</a>
                     <button class="btn-proc btn_pop" id="btn_proc02" data-href="./orderCalculateView.do?ordNo=${ordNo }" data-popw="570" data-poph="280">结算</button>
-                    <a href="" id="poExcelDownload"><button class="btn-excel mr10">采购P/O(excel) 下载</button></a>
+                    <a href="" id="poExcelDownload"><button class="btn-excel">采购P/O(excel) 下载</button></a>
                 	<a href="" id="excelDownload"><button class="btn-excel mr10">下载订单(excel)</button></a>
                      
                 </section>
@@ -408,6 +408,11 @@ $(function(){
 	//order Excel 파일 다운로드
 	$("#excelDownload").click(function(){
 		$('#excelDownload').attr("href","${web_ctx}/downloadExcel_Order.do?ordNo="+$('#ordNo').val());
+	});
+	
+	//PO Excel 파일 다운로드
+	$("#poExcelDownload").click(function(){
+		$('#poExcelDownload').attr("href","${web_ctx}/downloadExcel_PO.do?ordNo="+$('#ordNo').val());
 	});
 	
 	//팝업페이지 연결

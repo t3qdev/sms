@@ -88,6 +88,11 @@ public class GoodsServiceImpl implements GoodsService {
 		return smsMsGudsImgDAO.selectSmsMsGudsImgByCd(smsMsGudsImgVo);
 	}
 
+	@Override
+	public List<SmsMsEstmGudsVO> selectSmsMsEstmGudsGroupByPrvd(String ordNo)	throws Exception {
+		return smsMsEstmGudsDAO.selectSmsMsEstmGudsGroupByPrvd(ordNo);
+	}
+
 
 }
 

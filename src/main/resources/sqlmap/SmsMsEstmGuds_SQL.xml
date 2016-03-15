@@ -7,15 +7,16 @@
 	<typeAlias alias="smsMsEstmGudsVO" type="com.b5m.sms.vo.SmsMsEstmGudsVO" />
 	
 	<resultMap id="smsMsEstmGuds" class="com.b5m.sms.vo.SmsMsEstmGudsVO">
-		<result property="ordNo" column="ORD_NO" columnIndex="1"/>
-		<result property="gudsId" column="GUDS_ID" columnIndex="2"/>
-		<result property="ordGudsKorNm" column="ORD_GUDS_KOR_NM" columnIndex="3"/>
-		<result property="ordGudsCnsNm" column="ORD_GUDS_CNS_NM" columnIndex="4"/>
-		<result property="ordGudsQty" column="ORD_GUDS_QTY" columnIndex="5"/>
-		<result property="ordGudsOrgPrc" column="ORD_GUDS_ORG_PRC" columnIndex="6"/>
-		<result property="ordGudsSalePrc" column="ORD_GUDS_SALE_PRC" columnIndex="7"/>
-		<result property="ordGudsPrvdNm" column="ORD_GUDS_PRVD_NM" columnIndex="8"/>
-		<result property="ordGudsPrvdCrn" column="ORD_GUDS_PRVD_CRN" columnIndex="9"/>
+		<result property="ordNo" column="ORD_NO" />
+		<result property="gudsId" column="GUDS_ID" />
+		<result property="ordGudsKorNm" column="ORD_GUDS_KOR_NM" />
+		<result property="ordGudsCnsNm" column="ORD_GUDS_CNS_NM" />
+		<result property="ordGudsQty" column="ORD_GUDS_QTY" />
+		<result property="ordGudsOrgPrc" column="ORD_GUDS_ORG_PRC" />
+		<result property="ordGudsSalePrc" column="ORD_GUDS_SALE_PRC" />
+		<result property="ordGudsPrvdNm" column="ORD_GUDS_PRVD_NM"/>
+		<result property="ordGudsPrvdCrn" column="ORD_GUDS_PRVD_CRN" />
+		<result property="gudsUpcId" column="GUDS_UPC_ID" />
 	</resultMap>
 	
 	<insert id="smsMsEstmGudsDAO.insertSmsMsEstmGuds_S">
@@ -90,7 +91,7 @@
 	<select id="smsMsEstmGudsDAO.selectSmsMsEstmGuds" parameterClass="String" resultMap="smsMsEstmGuds">
 			SELECT
 				ORD_NO
-				, GUDS_ID
+				, a.GUDS_ID
 				, ORD_GUDS_KOR_NM
 				, ORD_GUDS_CNS_NM
 				, ORD_GUDS_QTY
@@ -98,10 +99,19 @@
 				, ORD_GUDS_SALE_PRC
 				, ORD_GUDS_PRVD_NM
 				, ORD_GUDS_PRVD_CRN
-			FROM sms_ms_estm_guds
-			WHERE ORD_NO=#ordNo#
+				, GUDS_UPC_ID
+			FROM sms_ms_estm_guds a, sms_ms_guds b
+			WHERE a.GUDS_ID=b.GUDS_ID
+				AND ORD_NO=#ordNo#
 	</select>
 	
-	
+	<select id="smsMsEstmGudsDAO.selectSmsMsEstmGudsGroupByPrvd" parameterClass="String" resultClass="smsMsEstmGudsVO">
+			select  ORD_GUDS_PRVD_NM as ordGudsPrvdNm
+					,ORD_GUDS_PRVD_CRN as ordGudsPrvdCrn
+			FROM sms_ms_estm_guds
+			WHERE ORD_NO=#ordNo#
+			GROUP BY ORD_GUDS_PRVD_NM
+			
+	</select>
 	
 </sqlMap>

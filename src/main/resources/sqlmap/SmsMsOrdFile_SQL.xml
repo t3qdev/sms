@@ -43,12 +43,12 @@
 	      SELECT 
 	      		IFNULL(MAX(ORD_FILE_SEQ)+1,0)
 	      FROM 
-	      		SMS_MS_ORD_FILE
+	      		sms_ms_ord_file
 	      WHERE ORD_NO = #ordNo#
 	</select>
 	
 	<insert id="smsMsOrdFileDAO.insertSmsMsOrdFile" parameterClass="smsMsOrdFileVO">
-			INSERT INTO SMS_MS_ORD_FILE 
+			INSERT INTO sms_ms_ord_file 
 			( 
 					ORD_NO
 				  , ORD_FILE_SEQ

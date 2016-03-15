@@ -24,7 +24,7 @@
 	<![CDATA[
 		
 		INSERT INTO 
-				SMS_MS_ORD_USER (
+				sms_ms_ord_user (
 										ORD_NO
 										, USER_EML
 									)
@@ -37,7 +37,7 @@
 	</insert>
 
 	<delete id="smsMsOrdUserDAO.deleteSmsMsOrdUserByOrdNo" parameterClass="String">
-		DELETE FROM SMS_MS_ORD_USER
+		DELETE FROM sms_ms_ord_user
 			WHERE ORD_NO =#ordNo#
 	</delete>
 

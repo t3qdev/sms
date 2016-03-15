@@ -24,7 +24,7 @@
 		        DATE_FORMAT(ORD_HIST_REG_DTTM,'%Y-%m-%d') AS ORD_HIST_REG_DTTM,
 		        ORD_HIST_HIST_CONT
    
-			FROM SMS_MS_ORD_HIST
+			FROM sms_ms_ord_hist
 			WHERE 1=1
 				<isNotEmpty property="ordNo" prepend="AND">
 					<![CDATA[ ORD_NO like #ordNo# ]]>
@@ -45,12 +45,12 @@
 		        ORD_HIST_WRTR_EML,
 		        DATE_FORMAT(ORD_HIST_REG_DTTM,'%Y-%m-%d') AS ORD_HIST_REG_DTTM ,
 		        ORD_HIST_HIST_CONT
-   			FROM SMS_MS_ORD_HIST
+   			FROM sms_ms_ord_hist
 			WHERE 1=1
 	        AND ORD_HIST_SEQ = 
 	         (SELECT 
 	        	MAX(ORD_HIST_SEQ) 
-	        FROM SMS_MS_ORD_HIST 
+	        FROM sms_ms_ord_hist 
 	        WHERE 1=1
 				and	ORD_NO like #ordNo#  ) AND ORD_NO like  #ordNo#
 	</select>
@@ -58,7 +58,7 @@
 	      SELECT 
 	      		IFNULL(MAX(ORD_HIST_SEQ),0)
 	      FROM 
-	      		SMS_MS_ORD_HIST
+	      		sms_ms_ord_hist
 	      WHERE 1=1 
 	      		AND ORD_NO = #ordNo#
 	</select>
@@ -66,7 +66,7 @@
 	
 	<update id="smsMsOrdHistDAO.updateSmsMsOrdHist" parameterClass="smsMsOrdHistVO">
 			<![CDATA[
-			UPDATE SMS_MS_ORD_HIST
+			UPDATE sms_ms_ord_hist
 			SET 
 				ORD_STAT_CD = #ordStatCd#,
 				ORD_HIST_WRTR_EML = #ordHistWrtrEml#,
@@ -78,7 +78,7 @@
 	</update>
 	
 	<insert id="smsMsOrdHistDAO.insertSmsMsOrdHist" parameterClass="smsMsOrdHistVO">
-		INSERT INTO SMS_MS_ORD_HIST 
+		INSERT INTO sms_ms_ord_hist 
 			( 
 				ORD_NO,
 				ORD_HIST_SEQ,
