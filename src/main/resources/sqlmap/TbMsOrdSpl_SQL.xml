@@ -55,7 +55,7 @@
 							SELECT 
 									B5C_ORD_NO 
 							FROM 
-									SMS_MS_ORD
+									sms_ms_ord
 							)
 	</select>
 	<select id="tbMsOrdSplDAO.selectTbMsOrdGudsOptForSmsMsOrdGuds"  resultMap="tbMsOrdBatch">

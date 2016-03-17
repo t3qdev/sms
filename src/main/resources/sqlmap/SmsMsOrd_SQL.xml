@@ -394,7 +394,6 @@
 						, ORD_ESTM_DT=#ordEstmDt#
 						, ORD_EXP_DT=#ordExpDt#
 						, CTRT_TMPL_YN=#ctrtTmplYn#
-						, BACT_REGR_EML=#stdXchrAmt#
 						, SMPL_REQ_YN=#smplReqYn#
 						, PO_SCHD_DT=#poSchdDt#
 						, QLFC_REQ_YN=#qlfcReqYn#
