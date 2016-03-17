@@ -16,14 +16,14 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 public class GenericExcelView extends AbstractExcelView {
 
 	@Override
-	protected void buildExcelDocument(Map<String, Object> model,
+	protected void buildExcelDocument(Map<String, Object> modelMap,
 			HSSFWorkbook workbook, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		String excelName = (String) model.get("excelName");
+		String excelName = (String) modelMap.get("excelName");
 
-		List<String> colName = (List<String>) model.get("colName");
-		List<String[]> colValue = (List<String[]>) model.get("colValue");
+		List<String> colName = (List<String>) modelMap.get("colName");
+		List<String[]> colValue = (List<String[]>) modelMap.get("colValue");
 
 		response.setContentType("application/msexcel");
 		response.setHeader("Content-Disposition", "attachment; filename="
@@ -48,7 +48,8 @@ public class GenericExcelView extends AbstractExcelView {
 				cell.setCellValue(new HSSFRichTextString(colValue.get(i)[j]));
 			}
 		}
-		
+
 	}
+	
 
 }

@@ -61,6 +61,7 @@ import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
+import com.b5m.sms.vo.SmsMsOrdFileVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 
@@ -254,13 +255,14 @@ public class OrderPOController extends AbstractFileController{
 	
 	@ResponseBody
 	@RequestMapping(value="/orderPOSave")
-	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt) throws Exception{
-		orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt);
+	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt,FileResultVO fileResultVo) throws Exception{
+
+		orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt,fileResultVo);
 		
 	}
 	
 	@RequestMapping(value="/orderPOInsert")
-	public String orderPOInsert(@RequestParam("file") MultipartFile[] fileArray, Model model, HttpServletRequest req, String ordNo) throws Exception{
+	public String orderPOInsert(@RequestParam("file") MultipartFile[] fileArray, Model model, HttpServletRequest req, String ordNo,String wrtrEml) throws Exception{
 			System.out.println(req.getContextPath());
 			System.out.println("orderPoInsert ordNo : " +ordNo);
 			List<String> imgFileNameList = new ArrayList<String>();
@@ -287,10 +289,20 @@ public class OrderPOController extends AbstractFileController{
 			LOGGER.debug("3.=============================" );
 
 			//이미지 파일과 엑셀파일 로컬에 저장
+			List<FileResultVO> fileResultList = new ArrayList<FileResultVO>();
+			
+			//DB에 파일정보를 유지하기 위한 정보 
 			FileResultVO fileResultVO = uploadMultipartFileToDisk(excelFile); 
+			fileResultList.add(fileResultVO);
+			
 			for(MultipartFile mf : imgFileList){
-				uploadMultipartFileToDisk(mf);
+				FileResultVO imgfileResultVO =uploadMultipartFileToDisk(mf);
+				fileResultList.add(imgfileResultVO);
 			}
+			
+
+			
+			
 			
 			
 			Workbook wb = WorkbookFactory.create(excelFile.getInputStream());		//엑셀 파일생성
@@ -415,6 +427,8 @@ public class OrderPOController extends AbstractFileController{
 		model.addAttribute("poVo", poVo);
 		model.addAttribute("poGudsList", poGudsList);
 		model.addAttribute("gudsCnt", poGudsList.size());
+		model.addAttribute("fileResultList",fileResultList);
+		
 		
 		
 
@@ -448,7 +462,7 @@ private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IO
 				byte[] data = pictureData.getData();
 				String ext = pictureData.suggestFileExtension();
 
-				FileOutputStream out = new FileOutputStream(OPT_B5C_DISK+ordNo+ rowmark + ".jpg");
+				FileOutputStream out = new FileOutputStream(OPT_B5C_ETC+ordNo+ rowmark + ".jpg");
 				out.write(data);
 				out.close();
 
@@ -484,7 +498,7 @@ private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IO
 					byte[] data = pictureData.getData();
 					String ext = pictureData.suggestFileExtension();
 					
-					FileOutputStream out = new FileOutputStream(OPT_B5C_DISK+ordNo + ctMarker.getRow() + ".jpg");
+					FileOutputStream out = new FileOutputStream(OPT_B5C_ETC+ordNo + ctMarker.getRow() + ".jpg");
 					
 					out.write(data);
 					out.close();

@@ -60,7 +60,7 @@ body{min-width:560px; background:#fff;}
 <script>
 $(function(){
 	//시작시 날짜 초기화
-	$("bactPrvdDt").val(dtToDate("${ordcalc.bactPrvdDt}"));
+	$("#bactPrvdDt").val(dtToDate("${ordcalc.bactPrvdDt}"));
 	
 	
 	$('#check').click(function(){

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.security.User;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.ExcelClientReqGudsVO;
@@ -74,7 +75,7 @@ public interface OrderService {
 	public void updateSmsMsOrdGudsDetail(OrderDetailVO orderDetailVo, List<SmsMsOrdGudsVO> smsMsOrdGudsList,String wrtrEml) throws Exception;
 	
 	//orderPO를 저장
-	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt) throws Exception;
+	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt, FileResultVO fileResultVo) throws Exception;
 	
 	// orderManagementView 에서 [저장]을 눌렀을 떄, 한 row update 하는 SQL
 	public void updateSmsMsOrdInOrderManagementView(SmsMsOrdVO smsMsOrdVO);

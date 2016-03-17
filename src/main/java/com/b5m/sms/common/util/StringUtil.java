@@ -1085,5 +1085,17 @@ public class StringUtil {
 			return dt;
 		}
 	}
+	
+	public static Boolean containStr(String[] arr, String str){
+		if(isNullOrEmpty(str)|| arr.length==0){
+			return false;
+		}
+		for(int i=0;i<arr.length;i++){
+			if(str.equals(arr[i])){
+				return true;
+			}
+		}
+		return false;
+	}
 }
 

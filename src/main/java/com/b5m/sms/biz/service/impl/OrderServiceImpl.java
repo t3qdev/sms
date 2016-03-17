@@ -1,5 +1,6 @@
 package com.b5m.sms.biz.service.impl;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,12 +14,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.b5m.sms.biz.dao.SmsMsEstmDAO;
 import com.b5m.sms.biz.dao.SmsMsEstmGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsGudsDAO;
@@ -33,6 +34,7 @@ import com.b5m.sms.biz.dao.TbMsGudsImgDAO;
 import com.b5m.sms.biz.dao.TbMsOrdDAO;
 import com.b5m.sms.biz.dao.TbMsOrdSplDAO;
 import com.b5m.sms.biz.service.OrderService;
+import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.file.FileUtil;
 import com.b5m.sms.common.security.User;
 import com.b5m.sms.common.util.StringUtil;
@@ -250,7 +252,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			ordHistSeq = smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(smsMsOrdHistVO);
 			int tempSeq = Integer.parseInt(ordHistSeq)+1;
 			ordHistSeq=Integer.toString(tempSeq);
-			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq+1);
+			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq);
 			smsMsOrdHistVO.setOrdStatCd(ordStatCd);       // 주문상태 코드 : 접수(N000550100)
 			smsMsOrdHistVO.setOrdHistWrtrEml(ordHistWrtrEml);
 //			smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
@@ -368,7 +370,12 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			tbMsOrdBatchVO.setGudsId(gudsId);
 			tbMsOrdBatchVO.setBrndId(brndId);
 			tbMsOrdBatchVO.setGudsIdOfB5m(gudsIdOfB5m);
-			smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);      
+			smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);
+			
+			final File file = new File(OPT_B5C_IMG);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
 			
 	//     이미지 파일 복사.		
 			List<SmsMsGudsImgVO> smsMsGudsImgVO = null;
@@ -376,7 +383,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			for(SmsMsGudsImgVO vo : smsMsGudsImgVO){
 				if(vo.getGudsImgCdnAddr()!=null){
 					URL url = new URL(vo.getGudsImgCdnAddr());
-					String destName = OPT_B5C_DISK +vo.getGudsImgSysFileNm();
+					String destName = OPT_B5C_IMG +vo.getGudsImgSysFileNm();
 					System.out.println(destName);
 					System.out.println(destName);
 					 
@@ -724,38 +731,71 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			}
 			
 			
-			//히스토리업데이트			
-			 SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
+			//히스토리업데이트(StatCd체크후 상태에 따라 작동)			
+			
+			//1.현재 주문의 최신상태를 받아온다
+			SmsMsOrdVO ordStatCdVo = new SmsMsOrdVO();
+			ordStatCdVo.setOrdNo(orderDetailVo.getOrdNo());
+			ordStatCdVo=smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(ordStatCdVo);
+			String ordStatCd = ordStatCdVo.getOrdStatCd();
+			System.out.println(ordStatCd);
+			
+			//2.히스토리테이블에서 최신 seq를 받아온다.
+			SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
 			 histVo.setOrdNo(orderDetailVo.getOrdNo());
 			 String seq=smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(histVo);
 			 System.out.println("seq :"+seq);
+			 //2-1.히스토리vo에 정보세팅
+			 histVo.setOrdStatCd("N000550200");		//주문상태코드 : N000550200 진행
 			 if(seq!=null){
 				 int tempSeq = Integer.parseInt(seq)+1;
 				 seq=Integer.toString(tempSeq);
 			 }else{
 				 seq="0";
 			 }
-
 			 histVo.setOrdHistSeq(seq);
 			 histVo.setOrdHistWrtrEml(wrtrEml);
+			 //2-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
+			if("N000550100".equals(ordStatCd)){					//접수 
+				 histVo.setOrdHistHistCont("주문이 진행되었습니다.");			//자동생성되는 진행코멘트 
+				 System.out.println(histVo);
+				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+				 
+				 //주문상태저장
+				 SmsMsOrdVO statVo = new SmsMsOrdVO();
+				 statVo.setOrdNo(orderDetailVo.getOrdNo());
+				 statVo.setOrdStatCd("N000550200");
+				 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+				
+			}else if("N000550200".equals(ordStatCd)){			//진행
+				 histVo.setOrdHistHistCont("주문이 변경되었습니다.");			//자동생성되는 진행코멘트
+				 System.out.println(histVo);
+				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+				 
+				 //주문상태저장
+				 SmsMsOrdVO statVo = new SmsMsOrdVO();
+				 statVo.setOrdNo(orderDetailVo.getOrdNo());
+				 statVo.setOrdStatCd("N000550200");
+				 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+				
+			}else{
+				//PO확정, 정산, DROP일 경우 히스토리 업데이트가 되면 안된다.이 부분에 들어오면 에러임
+				System.out.println("check source code, can't be in");
+			}
 			 
-			 histVo.setOrdHistHistCont("주문이 변경되었습니다.");			//자동생성되는 진행코멘트
-			 histVo.setOrdStatCd("N000550200");		//주문상태코드 : N000550200 진행
-			 System.out.println(histVo);
-			 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+
+			
 			 
-			 //주문상태저장
-			 SmsMsOrdVO statVo = new SmsMsOrdVO();
-			 statVo.setOrdNo(orderDetailVo.getOrdNo());
-			 statVo.setOrdStatCd("N000550200");
-			 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+			
+			 
+			
 			
 		
 			
 		}
 
 		@Override
-		public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo, int gudsCnt) throws Exception {
+		public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo, int gudsCnt, FileResultVO fileResultVo) throws Exception {
 
 			
 			//1.po정보를 DB에 삽입
@@ -887,9 +927,18 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			
 			//5.히스토리추가
 			
+			//히스토리업데이트(StatCd체크후 상태에 따라 작동)			
+			
+			//현재 주문의 최신상태를 받아온다
+			SmsMsOrdVO ordStatCdVo = new SmsMsOrdVO();
+			ordStatCdVo.setOrdNo(orderPoVo.getOrdNo());
+			ordStatCdVo=smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(ordStatCdVo);
+			String ordStatCd = ordStatCdVo.getOrdStatCd();
+			System.out.println(ordStatCd);
 			 SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
 			 histVo.setOrdNo(orderPoVo.getOrdNo());
 			 
+			 //히스토리세팅
 			 System.out.println("ordNo :"+orderPoVo.getOrdNo());
 			 String seq=smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(histVo);
 			 System.out.println("seq :"+seq);
@@ -904,17 +953,72 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 
 			 histVo.setOrdHistSeq(seq);
 			 histVo.setOrdHistWrtrEml(orderPoVo.getPoRegrEml());
-			 
-			 histVo.setOrdHistHistCont("P/O확정");			//자동생성되는 확정코멘트
 			 histVo.setOrdStatCd("N000550300");		//주문상태코드 : N000550300 확정
 			 System.out.println(histVo);
-			 //주문테이블의 스탯도 변경해줘야한다
-			 SmsMsOrdVO statVo = new SmsMsOrdVO();
-			 statVo.setOrdNo(orderPoVo.getOrdNo());
-			 statVo.setOrdStatCd("N000550300");
-			 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+
+
 			 
-			 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+			 //5-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
+				if("N000550200".equals(ordStatCd)){					//진행 
+					 histVo.setOrdHistHistCont("PO가 확정되었습니다.");			//자동생성되는 진행코멘트 
+					 System.out.println(histVo);
+					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+					 
+					 //주문테이블의 스탯도 변경해줘야한다
+					 SmsMsOrdVO statVo = new SmsMsOrdVO();
+					 statVo.setOrdNo(orderPoVo.getOrdNo());
+					 statVo.setOrdStatCd("N000550300");
+					 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+					
+				}else if("N000550300".equals(ordStatCd)){			//확정
+					 histVo.setOrdHistHistCont("PO가 변경되었습니다.");			//자동생성되는 진행코멘트
+					 System.out.println(histVo);
+					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
+					 
+					 //주문테이블의 스탯도 변경해줘야한다
+					 SmsMsOrdVO statVo = new SmsMsOrdVO();
+					 statVo.setOrdNo(orderPoVo.getOrdNo());
+					 statVo.setOrdStatCd("N000550300");
+					 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
+					
+				}else{
+					//접수, 정산, DROP일 경우 히스토리 업데이트가 되면 안된다.이 부분에 들어오면 에러임
+					System.out.println("check source code, can't be in");
+				}
+			 
+			 
+			 //저장된 파일을 DB에 관리
+				
+				if(fileResultVo.getSavedFileNm()!=null && fileResultVo.getSavedRealFileNm()!=null){
+					
+					List<FileResultVO> fileResultList= new ArrayList<FileResultVO>();
+					String[] realFileNm =fileResultVo.getSavedRealFileNm().split(",");
+					String[] sysFileNm = fileResultVo.getSavedFileNm().split(",");
+					int fileLen = realFileNm.length;
+					for(int i=0; i<fileLen;i++){
+						FileResultVO tempFileVo = new FileResultVO();
+						tempFileVo.setSavedFileNm(sysFileNm[i]);
+						tempFileVo.setSavedRealFileNm(realFileNm[i]);
+						fileResultList.add(tempFileVo);
+					}
+					
+					for(FileResultVO vo : fileResultList){
+						SmsMsOrdFileVO ordFileVo = new SmsMsOrdFileVO();
+						ordFileVo.setOrdFileKindCd("N000540100");					//코드 N000540100 (주문파일종류코드 POB)
+						//ordFileVo.setOrdFilepath(ordFilepath);					//경로
+						ordFileVo.setOrdFileRegrEml(orderPoVo.getPoRegrEml());					//등록자
+						ordFileVo.setOrdFileOrgtFileNm(vo.getSavedRealFileNm());	//원래 파일이름
+						ordFileVo.setOrdFileSysFileNm(vo.getSavedFileNm());  //실제 저장된 파일 이름
+						ordFileVo.setOrdNo(orderPoVo.getOrdNo());		//주문번호
+						ordFileVo.setOrdFileSeq(selectSmsMsOrdFileSeqNext(orderPoVo.getOrdNo()));
+						insertSmsMsOrdFile(ordFileVo);			
+					}
+				}
+					
+
+			
+			 
+			 
 			
 		}//end public void orderPOSave(..)
 
@@ -965,7 +1069,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					HashMap<String, Object> rs = new ObjectMapper().readValue(obj.toString(), HashMap.class);
 					String ordNo = (String)rs.get("ordNo");
 					SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
-					smsMsOrdVOList.add(smsMsOrdVO);
+					smsMsOrdVO.setOrdNo(ordNo);
 					SmsMsOrdVO smsMsOrdVO1 = new SmsMsOrdVO();
 					smsMsOrdVO1 = smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(smsMsOrdVO);
 					smsMsOrdVOList.add(smsMsOrdVO1);

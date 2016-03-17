@@ -47,7 +47,7 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		for(SmsMsGudsVO vo : smsMsGudsList){
 			System.out.println(vo);
 			List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());	//한 guds_id에 이미지 여러개일수 있음
-			if(!gudsImgList.isEmpty()){ //OPT_B5C_DISK
+			if(!gudsImgList.isEmpty()){ 
 				if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){				//첫번째이미지를 파일이미지로 사용
 					vo.setImgSrcPath(gudsImgList.get(0).getGudsImgSysFileNm());
 				}
@@ -80,7 +80,7 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		for(SmsMsGudsVO vo : smsMsGudsList){
 			System.out.println(vo);
 			List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());	//한 guds_id에 이미지 여러개일수 있음
-			if(!gudsImgList.isEmpty()){ //OPT_B5C_DISK
+			if(!gudsImgList.isEmpty()){ 
 				if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){				//첫번째이미지를 파일이미지로 사용
 					vo.setImgSrcPath(gudsImgList.get(0).getGudsImgSysFileNm());
 				}

@@ -50,6 +50,7 @@ import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.biz.service.UserService;
 import com.b5m.sms.common.file.FileResultVO;
+import com.b5m.sms.common.file.FileUtil;
 import com.b5m.sms.common.util.DateUtil;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.CodeVO;
@@ -143,7 +144,7 @@ public class OrderDetailController extends AbstractFileController{
 				}
 				//GUDS_IMG_CD  N000080100 대표이미지 	N000080200 목록이미지
 				List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());
-				if(!gudsImgList.isEmpty()){ //OPT_B5C_DISK
+				if(!gudsImgList.isEmpty()){ 
 					if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){
 						vo.setImgSrcPath(gudsImgList.get(0).getGudsImgSysFileNm());
 					}
@@ -444,7 +445,7 @@ public class OrderDetailController extends AbstractFileController{
 			}
 		}
 		
-		
+		String isSaved ="N";
 		//5.model에 각종 정보를 담는다.
 		model.addAttribute("ordNo", ordNo);		//주문번호	
 		//selectBox구성요소
@@ -457,6 +458,7 @@ public class OrderDetailController extends AbstractFileController{
 		model.addAttribute("orderDetail",orderDetailVO);	//주문상세정보
 		model.addAttribute("smsMsOrdGudsList", smsMsOrdGudsVOList);	//주문상품리스트
 		model.addAttribute("gudsListSize", smsMsOrdGudsVOList.size());	//주문상품리스트
+		model.addAttribute("isSaved", isSaved);
 		return "orderDetail";
 	}
 	//저장
@@ -578,10 +580,24 @@ public class OrderDetailController extends AbstractFileController{
 	
 	@RequestMapping(value = "/orderDetailFileDownload", method = RequestMethod.GET)
 	public void doDownload(HttpServletRequest request, HttpServletResponse response, String filePath,String fileName) throws IOException {
+		String fullPath;
 		System.out.println("filepath : "+filePath);
-		final String fullPath = OPT_B5C_DISK + filePath;
-		//downloadFile(request, response, fullPath);
+		String ext=null;
+		if(!StringUtil.isNullOrEmpty(filePath)){
+			ext=FileUtil.getExt(filePath);
+			System.out.println("ext : "+ext);
+		}
 		
+		
+		
+		if(StringUtil.containStr(imgExt, ext)){
+			fullPath=OPT_B5C_IMG + filePath;
+		}else{
+			fullPath=OPT_B5C_ETC + filePath;
+		}
+		
+		//downloadFile(request, response, fullPath);
+	
 		
 		File downloadFile = new File(fullPath);
 		FileInputStream inputStream = new FileInputStream(downloadFile);
@@ -680,7 +696,8 @@ public class OrderDetailController extends AbstractFileController{
 					}
 				}
 				cell.setCellValue(orderDetailVO.getStdXchrKindCd());
-				
+				cell = row.getCell(14);
+				cell.setCellValue(orderDetailVO.getStdXchrKindCd());
 
 				
 				
@@ -700,6 +717,9 @@ public class OrderDetailController extends AbstractFileController{
 					}
 				}
 				cell.setCellValue(orderDetailVO.getDlvModeCd());
+				cell = row.getCell(14);
+				cell.setCellValue(orderDetailVO.getDlvModeCd());
+				
 				//1-5.견적일자
 				row = sheet.getRow(7);
 				cell = row.getCell(10);
@@ -708,7 +728,9 @@ public class OrderDetailController extends AbstractFileController{
 				row = sheet.getRow(8);
 				cell = row.getCell(10);
 				cell.setCellValue(orderDetailVO.getOrdExpDt());
-				
+				row = sheet.getRow(7);
+				cell = row.getCell(14);
+				cell.setCellValue(orderDetailVO.getOrdExpDt());
 				
 				System.out.println("엑셀에 삽입될 :"+orderDetailVO);
 				
@@ -732,9 +754,9 @@ public class OrderDetailController extends AbstractFileController{
 						}
 						//GUDS_IMG_CD  N000080100 대표이미지 	N000080200 목록이미지
 						List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());
-						if(!gudsImgList.isEmpty()){ //OPT_B5C_DISK
+						if(!gudsImgList.isEmpty()){ 
 							if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){
-								vo.setImgSrcPath(OPT_B5C_DISK+gudsImgList.get(0).getGudsImgSysFileNm());
+								vo.setImgSrcPath(OPT_B5C_IMG+gudsImgList.get(0).getGudsImgSysFileNm());
 							}
 						}
 					}
@@ -752,9 +774,10 @@ public class OrderDetailController extends AbstractFileController{
 				
 				
 				Cell newCell0 = sourceRow.getCell(0);		//브랜드
-				Cell newCell1 = sourceRow.getCell(1);		//이미지
+				//이미지
 				if(smsMsOrdGudsList.get(0).getImgSrcPath()!=null){
 					addPricture(smsMsOrdGudsList.get(0).getImgSrcPath(),1,(11),wb,sheet);
+					addPricture(smsMsOrdGudsList.get(0).getImgSrcPath(),13,(11),wb,sheet);
 				}
 				Cell newCell2 = sourceRow.getCell(2);		//바코드
 				newCell2.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUpcId());
@@ -776,6 +799,16 @@ public class OrderDetailController extends AbstractFileController{
 				newCell9.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUrlAddr());
 				Cell newCell10= sourceRow.getCell(10);		//담당자
 				newCell10.setCellValue(orderDetailVO.getOprCns());
+				
+				//요약정보 표시
+
+				Cell newCell14= sourceRow.getCell(14);		//단가
+				newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
+				Cell newCell15= sourceRow.getCell(15);		//주문수량
+				newCell15.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsQty());
+				Cell newCell16= sourceRow.getCell(16);		//총액
+				newCell16.setCellFormula("G12*H12");
+				
 				
 				if(addRowCountNum>0){
 					sheet.shiftRows(12, 16, addRowCountNum);
@@ -802,6 +835,7 @@ public class OrderDetailController extends AbstractFileController{
 			                case 1:		//이미지
 			                	if(smsMsOrdGudsList.get(i+1).getImgSrcPath()!=null){
 			                		addPricture(smsMsOrdGudsList.get(i+1).getImgSrcPath(),1,(i+12),wb,sheet);
+			                		addPricture(smsMsOrdGudsList.get(i+1).getImgSrcPath(),13,(i+12),wb,sheet);
 			                	}
 			                    break;
 			                case 2:		//바코드
@@ -854,6 +888,25 @@ public class OrderDetailController extends AbstractFileController{
 			                case 10:		
 			                	newCell.setCellValue(orderDetailVO.getOprCns());
 			                    break;
+			                case 14:		//요약정보-단가
+			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){
+			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
+			                	}
+			                    break;
+			                case 15:		//요약정보-주문수량
+			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsQty()!=null){
+			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsQty());
+			                	}
+			                	
+			                    break;
+			                case 16:		//요약정보 -총액
+			                	intk=destinationRowNum+1+i;
+		                		k=Integer.toString(intk); 
+		                		newCell.setCellFormula("G"+k+"*H"+k);       
+			                    break;
+
 			            }//end switch
 					}//end for j
 				}//end for i 
@@ -866,7 +919,7 @@ public class OrderDetailController extends AbstractFileController{
 					
 				}
 				// 다운로드 될 템플릿 파일 이름 형식 : ORDER_DETAIL+_년월일시분초.xls
-				String downloadedTemplateName = "ORDER_DETAIL" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
+				String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
 				// 엑셀 다운로드
 				writeExcelAttachmentForDownload(response, downloadedTemplateName, wb);
 

@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -66,50 +73,16 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping(value="/orderManagementView")
 	public String orderManagement(HttpSession session) throws Exception{
 		String result = "orderManagement";
+
+		// 이 페이지를 들어올 때마다, Batch 실행
 		smsMsOrdBatch();
-//		try {
-//			
-//			//일괄로 다운 받는데 최신을 표시하는 값이 db에 필요할듯 
-//			List<SmsMsGudsImgVO> imgList = goodsService.selectSmsMsGudsImgAll();
-//			for(SmsMsGudsImgVO vo :imgList){
-//				if(vo.getGudsImgCdnAddr()!=null){
-//					URL url = new URL(vo.getGudsImgCdnAddr());
-//					//String fileName = url.getFile();
-//				   //String destName = OPT_B5C_DISK + fileName.substring(fileName.lastIndexOf("/"));
-//				   String destName = OPT_B5C_DISK +vo.getGudsImgSysFileNm();
-//				   System.out.println(destName);
-//				 
-//				   InputStream is = url.openStream();
-//				   OutputStream os = new FileOutputStream(destName);
-//				 
-//				   byte[] b = new byte[2048];
-//				   int length;
-//				 
-//				   while ((length = is.read(b)) != -1) {
-//				      os.write(b, 0, length);
-//				   }
-//				 
-//				   is.close();
-//				   os.close();
-//				}
-//			}
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		return result;
 	}
 	
 	@ResponseBody
 	@RequestMapping("/orderManagementSearch.ajax")
-	public List<SmsMsOrdVO> orderManagementSearch(SmsMsOrdVO smsMsOrdVO, String rowInput, String pageInput ,HttpSession session, Model model, String filters) throws Exception {
-		System.out.println("-------------------------------------------------------------");
-		if(filters != null){
-			String a = filters.replaceAll("&quot", "\"");
-			String b = a.replaceAll(";", "");
-			System.out.println("filters : " + b);
-			
-		}
+	public List<SmsMsOrdVO> orderManagementSearch(SmsMsOrdVO smsMsOrdVO, String rowInput, String pageInput , HttpSession session, Model model, String filters) throws Exception {
+
 		System.out.println(smsMsOrdVO.toString());
 		System.out.println("rowInput : "+rowInput);
 		System.out.println("pageInput : "+pageInput);
@@ -129,21 +102,36 @@ public class OrderManagementController  extends AbstractFileController{
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
 		
+		//화면단에서, 바코드 or 상품명으로 주문 검색 키워드
+//		if(searchKeyword==null || "".equals(searchKeyword)){
+//			smsMsOrdVO.setSearchKeyword(searchKeyword);
+//		}
 		System.out.println("row : " + row);
 		System.out.println("page : " +page);
 		System.out.println("setStart : " +smsMsOrdVO.getStart());
 		System.out.println("setEnd : " + smsMsOrdVO.getEnd());
+		System.out.println("searchKeyword : " + smsMsOrdVO.getSearchKeyword());
 
 		System.out.println(smsMsOrdVO.toString());
 		List<SmsMsOrdVO> smsMsOrdVOList = null;
 		smsMsOrdVOList = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
 		for(int i=0; i<smsMsOrdVOList.size(); i++){
 			if(smsMsOrdVOList.get(i).getBactPrvdDt() != null && smsMsOrdVOList.get(i).getBactPrvdAmt() !=null ){
-				smsMsOrdVOList.get(i).setBactPrvdDtPlusbactPrvdAmt(""+smsMsOrdVOList.get(i).getBactPrvdDt()+" "+smsMsOrdVOList.get(i).getBactPrvdAmt());
-				}
+				
+				smsMsOrdVOList.get(i).setBactPrvdDtPlusbactPrvdAmt(""+formatterDate(smsMsOrdVOList.get(i).getBactPrvdDt())+" "+smsMsOrdVOList.get(i).getBactPrvdAmt());
+			}
+
+			smsMsOrdVOList.get(i).setPaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getPaptDpstDt()))  ;
+			smsMsOrdVOList.get(i).setRaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getRaptDpstDt()))  ;
+			smsMsOrdVOList.get(i).setWrhsDlvDt(formatterDate(smsMsOrdVOList.get(i).getWrhsDlvDt()))  ;
+			smsMsOrdVOList.get(i).setDptrDlvDt(formatterDate(smsMsOrdVOList.get(i).getDptrDlvDt()))  ;
+			smsMsOrdVOList.get(i).setArvlDlvDt(formatterDate(smsMsOrdVOList.get(i).getArvlDlvDt()))  ;
+			smsMsOrdVOList.get(i).setPoDlvDt(formatterDate(smsMsOrdVOList.get(i).getPoDlvDt()))  ;
+			
 			smsMsOrdVOList.get(i).setPage(page);
 			smsMsOrdVOList.get(i).setRow(row);
 		}
+		System.out.println("size : " + smsMsOrdVOList.size());
 
 		return smsMsOrdVOList;
 
@@ -180,7 +168,22 @@ public class OrderManagementController  extends AbstractFileController{
 		if("".equals(smsMsOrdVO.getPoDlvDt())) smsMsOrdVO.setPoDlvDt(null);
 		if("".equals(smsMsOrdVO.getPoDlvDestCd())) smsMsOrdVO.setPoDlvDestCd(null);
 		if("".equals(smsMsOrdVO.getB5mBuyCont())) smsMsOrdVO.setB5mBuyCont(null);
+	
+
 		
+		if(smsMsOrdVO.getPaptDpstRate()  !=null && new BigDecimal("100").equals(smsMsOrdVO.getPaptDpstRate())){
+//			선금 100%, 잔금 0%
+				smsMsOrdVO.setRaptDpstAmt(null);
+				smsMsOrdVO.setRaptDpstRate(null);
+				smsMsOrdVO.setRaptDpstDt(null);
+		}else if(smsMsOrdVO.getRaptDpstRate()  != null && new BigDecimal("100").equals(smsMsOrdVO.getRaptDpstRate())){
+//			선금 0%, 잔금 100%
+				smsMsOrdVO.setPaptDpstAmt(null);
+				smsMsOrdVO.setPaptDpstRate(null);
+				smsMsOrdVO.setPaptDpstDt(null);
+		}else{
+			
+		}
 		
 		orderService.updateSmsMsOrdInOrderManagementView(smsMsOrdVO);
 		return "success";
@@ -230,10 +233,14 @@ public class OrderManagementController  extends AbstractFileController{
 	
 	// ordManagement.jsp  에서 엑셀다운로드 클릭하면, JQgrid 를 그대로 가져와서 엑셀 다운로드 되게 만들어준다.
 	@ResponseBody
-	@RequestMapping(value="/orderManagementExcelDownload.ajax")
-	public GenericExcelView orderManagementExcelDownload(@RequestParam Map<String, String> params, Map<String, Object> model, HttpServletResponse response,@RequestParam(value="dataList")String dataList) throws Exception{
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-Disposition", "attachment; filename=members.xls");
+	@RequestMapping(value="/orderManagementExcelDownload.do")
+	public void orderManagementExcelDownload(@RequestParam Map<String, String> params, Map<String, Object> model, HttpServletResponse response,@RequestParam(value="dataList")String dataList) throws Exception{
+
+        Date d = new Date();
+        SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
+        System.out.println("현재날짜 : "+ today.format(d));
+		String filename = "[StatusReport]"+today.format(d)+".xls";
+		String sheetname = today.format(d);
 		
 		String [] colNames = {"Order Number","申请日期","客户名称","订购商品", "查看详情","交易规模","上海负责人","韩国负责人","订购路径","状态","状态详情","最终状态","商品供应商汇款","首付日期","首付金额","首付百分比","入库日期","入库地点","出港日期","出港地点","到岸日期","到岸地点","P/O日期","P/O地点","余付","余款结算日期","余款百分比","是否在帮韩品购买"};
 		List<String> colName = new ArrayList<String>();
@@ -243,30 +250,86 @@ public class OrderManagementController  extends AbstractFileController{
         List<String[]> colValue = new ArrayList<String[]>();
 
         String a = dataList.replaceAll("&quot", "\"");
-        String b = a.replaceAll(";", "");
+        String jsonString = a.replaceAll(";", "");
 
         List<SmsMsOrdVO> smsMsOrdVOList = null;
-        smsMsOrdVOList = orderService.orderManageMentExcelDownload(b);
+        smsMsOrdVOList = orderService.orderManageMentExcelDownload(jsonString);
 
-//		List<SmsMsOrdVO> smsMsOrdVOListToExcel = null;
-//		smsMsOrdVOListToExcel = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
-
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		//Sheet명 설정
+		HSSFSheet sheet = workbook.createSheet(sheetname);
 		
-        System.out.println("-------------------------------------------------------------------------------");
+		HSSFRow row ;
+		HSSFCell cell;
+					
+		int j=0;
+		row = sheet.createRow(0);
+		//출력 cell 생성
+		for(int i=0; i<colNames.length ; i++){
+			row.createCell(j++).setCellValue(colNames[i]);
+        }
+		for(int i=0; i<smsMsOrdVOList.size(); i++){
+        	String ordSumAmt = null;
+        	if(smsMsOrdVOList.get(i).getOrdSumAmt()!=null) ordSumAmt = smsMsOrdVOList.get(i).getOrdSumAmt().toString();
+        	
+        	String paptDpstAmt = null;
+        	if(smsMsOrdVOList.get(i).getPaptDpstAmt()!=null) paptDpstAmt = smsMsOrdVOList.get(i).getPaptDpstAmt().toString();
+        	
+        	String paptDpstRate = null;
+        	if(smsMsOrdVOList.get(i).getPaptDpstRate()!=null) paptDpstRate = smsMsOrdVOList.get(i).getPaptDpstRate().toString();
+        	
+        	String raptDpstAmt = null;
+        	if(smsMsOrdVOList.get(i).getRaptDpstAmt()!=null) raptDpstAmt = smsMsOrdVOList.get(i).getRaptDpstAmt().toString();
+        	
+        	String raptDpstRate = null;
+        	if(smsMsOrdVOList.get(i).getRaptDpstRate()!=null) raptDpstRate = smsMsOrdVOList.get(i).getRaptDpstRate().toString();
+        	
+			int k=0;
+			row = sheet.createRow(i+1);
+			//출력 cell 생성
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrdNo());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrdReqDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getClientNm());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrderedGudsNm());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getShowDetail());
+			row.createCell(k++).setCellValue(ordSumAmt);
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getCnsMng());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getKorMng());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrdTypeCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrdStatCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getHistDetail());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getOrdStatCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getBactPrvdDtPlusbactPrvdAmt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getPaptDpstDt());
+			row.createCell(k++).setCellValue(paptDpstAmt);
+			row.createCell(k++).setCellValue(paptDpstRate);
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getWrhsDlvDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getWrhsDlvDestCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getDptrDlvDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getDptrDlvDestCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getArvlDlvDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getArvlDlvDestCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getPoDlvDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getPoDlvDestCd());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getRaptDpstDt());
+			row.createCell(k++).setCellValue(raptDpstAmt);
+			row.createCell(k++).setCellValue(raptDpstRate);
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getB5mBuyCont());
+		}
 
-		String[] arr1 = { "11111", "22222", "33333", "44444", "55555" };
-		String[] arr2 = { "aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee" };
-		String[] arr3 = { "가가가", "나나나", "다다다", "라라라", "마마마" };
-//		modelMap.get(key)
-		colValue.add(arr1);
-		colValue.add(arr2);
-		colValue.add(arr3);
-//
-		model.put("excelName", "test");
-		model.put("colName", colName);
-		model.put("colValue", colValue);
+		//생성된 엑셀을 HTTPServletResponse에 적어서 다운로드 할 수 있도록 한다. 
+		writeExcelAttachmentForDownload(response,filename, workbook);
 
-		return new GenericExcelView();
     }
+	public String formatterDate(String date){
+		if(date!=null && "".equals(date)!=true){
+			String yyyy = date.substring(0,4);
+			String mm = date.substring(4,6);
+			String dd = date.substring(6,8);
+			return yyyy+'-'+mm+'-'+dd;
+		}else{
+			return date;
+		}
+	}
 	
 }

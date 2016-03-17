@@ -410,7 +410,7 @@
 				A.ORD_NO AS ORD_NO
 				,A.ORD_REQ_DT AS ORD_REQ_DT
 			    ,A.CUST_ID AS CLIENT_NM
-				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
+				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
                 ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
                       THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
                       ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
@@ -469,7 +469,13 @@
 				<isNotEmpty property="ordStatCd">			 
 					 AND ORD_STAT_CD = #ordStatCd#
 				</isNotEmpty>
-				 
+				 <isNotEmpty property="searchKeyword">
+				        AND A.ord_no IN (SELECT B.ord_no
+                          FROM sms_ms_ord_guds B
+                         WHERE B.ord_guds_kor_nm LIKE CONCAT('%', #searchKeyword#, '%')
+                            OR B.ord_guds_cns_nm LIKE CONCAT('%', #searchKeyword#, '%')
+                            OR B.ord_guds_upc_id = #searchKeyword#)
+				</isNotEmpty>
 				 
 		ORDER BY ORD_NO DESC
 		LIMIT #start#,#row#
@@ -522,6 +528,7 @@
 				<isNotEmpty property="ordNo">			 
 					 AND ORD_NO = #ordNo#
 				</isNotEmpty>
+
 	</select>
 		<update id="smsMsOrdDAO.updateSmsMsOrdInOrderManagementView"  parameterClass="smsMsOrdVO">
 		<![CDATA[

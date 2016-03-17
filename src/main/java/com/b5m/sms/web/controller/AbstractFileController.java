@@ -37,6 +37,7 @@ import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.file.FileUtil;
 import com.b5m.sms.common.file.cdn.ImageUploadUtil;
 import com.b5m.sms.common.util.DateUtil;
+import com.b5m.sms.common.util.StringUtil;
 
 public class AbstractFileController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFileController.class);
@@ -47,6 +48,12 @@ public class AbstractFileController {
 	//final static String OPT_B5C_DISK = File.separator + "opt" + File.separator + "b5c-disk" + File.separator;
 	protected static String OPT_B5C_DISK;
 	
+	//final static String OPT_B5C_IMG = File.separator + "opt" + File.separator + "b5c + File.separator + "img" + File.separator;
+	protected static String OPT_B5C_IMG;
+	//final static String OPT_B5C_ETC = File.separator + "opt" + File.separator + "b5c + File.separator + "etc" + File.separator;
+	protected static String OPT_B5C_ETC;
+	
+	protected static String[] imgExt = {"jpeg","png","jpg","bmp"};
 	
 	
 
@@ -56,6 +63,23 @@ public class AbstractFileController {
 
 	public static void setOPT_B5C_DISK(String oPT_B5C_DISK) {
 		OPT_B5C_DISK = oPT_B5C_DISK;
+	}
+	
+
+	public static String getOPT_B5C_IMG() {
+		return OPT_B5C_IMG;
+	}
+
+	public static void setOPT_B5C_IMG(String oPT_B5C_IMG) {
+		OPT_B5C_IMG = oPT_B5C_IMG;
+	}
+
+	public static String getOPT_B5C_ETC() {
+		return OPT_B5C_ETC;
+	}
+
+	public static void setOPT_B5C_ETC(String oPT_B5C_ETC) {
+		OPT_B5C_ETC = oPT_B5C_ETC;
 	}
 
 	/**
@@ -415,10 +439,16 @@ public class AbstractFileController {
 
 			String fileName = multiPartFile.getOriginalFilename();
 
-			final String systemFileName = FileUtil.getBRSaveFileNameForCurrentTime() + "." + FileUtil.getExt(fileName);
-
+			//final String systemFileName = FileUtil.getBRSaveFileNameForCurrentTime() + "." + FileUtil.getExt(fileName);
+			String ext=FileUtil.getExt(fileName);
+			final String systemFileName = FileUtil.getBRSaveFileNameForCurrentTime() + "." +ext;
 			try {
-				writeFileToDiskFromMultipartFile(multiPartFile, systemFileName, OPT_B5C_DISK);
+				if(StringUtil.containStr(imgExt, ext)){
+					writeFileToDiskFromMultipartFile(multiPartFile, systemFileName, OPT_B5C_IMG);
+				}else{
+					writeFileToDiskFromMultipartFile(multiPartFile, systemFileName, OPT_B5C_ETC);
+				}
+				
 
 				fileResultVO.setSavedRealFileNm(fileName);
 				fileResultVO.setSavedFileNm(systemFileName);

@@ -118,7 +118,7 @@ body{min-width:760px; background:#fff}
 
 <script>
 $(function(){
-	
+	   $.ajaxSetup({cache:false});   
 	//1.취소버튼
 	$('.btn-cancel').click(function(){
 		window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
@@ -187,13 +187,14 @@ $(function(){
 				async: false,
 				cache : false,
 				success:function(){
+					var imgPath = "${web_ctx}/orderDetailFileDownload.do?filePath="+imgSrcPath;
 					$(opener.document).find("input[name=ordGudsUpcId]").eq(${index }).val(gudsUpcId);
-					$(opener.document).find("img[name=imgSrcPath]").eq(${index }).val(imgSrcPath);
+					$(opener.document).find("input[name=imgSrcPath]").eq(${index }).val(imgSrcPath);
 					$(opener.document).find("input[name=gudsInbxQty]").eq(${index }).val(gudsInbxQty);
 					
-					
+					 $(opener.document).find("img[name=imgSrcPath_src]").eq(${index }).attr("src",imgPath);		
 					alert("商品以正常配对");
-					opener.document.orderDetailSaveForm.submit(); 
+					//opener.document.orderDetailSaveForm.submit(); 
 					window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
 				}
 			});//end $.ajax	

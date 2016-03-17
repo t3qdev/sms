@@ -23,6 +23,7 @@
             <h2><span>Order Number: ${ordNo }</span></h2>
 				
             <div class="ui-layout-double">
+            
                 <section class="ui-layout-action">
                 	
                 </section>
@@ -64,13 +65,13 @@
 				
                 	<tr>
                     	<th>上海负责人</th>
-                        <td><div> <select id="oprCns" name="oprCns">
+                        <td><div> <select id="oprCns" name="oprCns" class="selectbox">
                         				<c:forEach var="cnsOpr" items="${cnsOprList}">
 											<option  value="${cnsOpr.userEml}">${cnsOpr.userAlasCnsNm}(${cnsOpr.userAlasEngNm})</option>											
 										</c:forEach>
 						</select> </div></td>
                         <th>韩国负责人</th>
-                        <td><div><select id="oprKr" name="oprKr">
+                        <td><div><select id="oprKr" name="oprKr" class="selectbox">
                         				<c:forEach var="krOpr" items="${krOprList}">
 											<option  value="${krOpr.userEml}">${krOpr.userAlasCnsNm}(${krOpr.userAlasEngNm})</option>
 										</c:forEach>
@@ -86,7 +87,7 @@
                         <th>标准汇率</th>
                         <td><div><input type="text" id="stdXchrAmt" name="stdXchrAmt" value="${orderDetail.stdXchrAmt }"></div></td>
                     	<th>报价货币</th>
-                      <td><div><select id="stdXchrKindCd" name="stdXchrKindCd">
+                      <td><div><select id="stdXchrKindCd" name="stdXchrKindCd" class="selectbox">
                         				<c:forEach var="stdXchrKindCd" items="${stdXchrKindCdList}">
 											<option  value="${stdXchrKindCd.cd}">${stdXchrKindCd.cdVal}</option>
 										</c:forEach>
@@ -96,13 +97,13 @@
                     </tr>
                     <tr>
                     	<th>报价条款</th>
-                        <td><div><select id="dlvModeCd" name="dlvModeCd">
+                        <td><div><select id="dlvModeCd" name="dlvModeCd" class="selectbox">
                         				<c:forEach var="dlvModeCd" items="${dlvModeCdList}">
 											<option  value="${dlvModeCd.cd}">${dlvModeCd.cdVal}</option>
 										</c:forEach>
 						</select></div></td> 
                         <th>港口</th>
-                        <td><div><select id="dlvDestCd" name="dlvDestCd">
+                        <td><div><select id="dlvDestCd" name="dlvDestCd" class="selectbox">
                         				<c:forEach var="dlvDestCd" items="${dlvDestCdList}">
 											<option  value="${dlvDestCd.cd}">${dlvDestCd.cdVal}</option>
 										</c:forEach>
@@ -114,15 +115,15 @@
                     </tr>
                     <tr>
                     	<th>是否有框架合同</th>
-                        <td><div><select id="ctrtTmplYn" name="ctrtTmplYn">
+                        <td><div><select id="ctrtTmplYn" name="ctrtTmplYn" class="selectbox">
                         <option value="Y">有</option><option value="N">无</option></select></div></td>
                         <th>是否有样品需求</th>
-                        <td><div><select id="smplReqYn" name="smplReqYn">
+                        <td><div><select id="smplReqYn" name="smplReqYn" class="selectbox">
                         <option value="Y">有</option><option value="N">无</option></select></div></td>
                     	<th>预估PO日期</th>
                         <td><div><input type="text" class="ui-calendar" id="poSchdDt" name="poSchdDt"/></div></td>
                     	<th>是否有自制需求</th>
-                        <td><div><select id="qlfcReqYn" name="qlfcReqYn">
+                        <td><div><select id="qlfcReqYn" name="qlfcReqYn" class="selectbox">
                         <option value="Y">有</option><option value="N">无</option></select></div></td>
                     </tr>
                     <tr>
@@ -173,10 +174,10 @@
                     	<td class="tac">${status.count }</td>
                     	<c:choose>
                     		<c:when test="${smsMsOrdGuds.imgSrcPath ne null }">
-                    			<td class="tac"><img src="${web_ctx}/orderDetailFileDownload.do?filePath=${smsMsOrdGuds.imgSrcPath }" id="imgSrcPath_src"  width="60" height="60"></td>	
+                    			<td class="tac"><img src="${web_ctx}/orderDetailFileDownload.do?filePath=${smsMsOrdGuds.imgSrcPath }" id="imgSrcPath_src" name="imgSrcPath_src" width="60" height="60"></td>	
                     		</c:when>
                     		<c:otherwise>
-                    			<td class="tac"><img src="" id="imgSrcPath_src"  width="60" height="60"></td>
+                    			<td class="tac"><img src="" id="imgSrcPath_src"  name="imgSrcPath_src" width="60" height="60"></td>
                     		</c:otherwise>
                     	
                     	</c:choose>
@@ -194,7 +195,7 @@
                         <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsUrlAddr" name="ordGudsUrlAddr" value="${smsMsOrdGuds.ordGudsUrlAddr}"></div></a></td>
                         
-                        <td class="tac"><a href="#" class="btn-search btn_pop" data-href="orderGoodsMappingView.do?gudsNm=${smsMsOrdGuds.ordGudsCnsNm}&UpcId=${smsMsOrdGuds.ordGudsUpcId}&index=${status.index}&ordNo=${smsMsOrdGuds.ordNo }&ordGudsSeq=${smsMsOrdGuds.ordGudsSeq }" data-popw="1000" data-poph="600"></a></td>
+                        <td class="tac"><a href="#" class="btn-search btn_pop" id="mappingBtn" data-href="orderGoodsMappingView.do?gudsNm=${smsMsOrdGuds.ordGudsCnsNm}&UpcId=${smsMsOrdGuds.ordGudsUpcId}&index=${status.index}&ordNo=${smsMsOrdGuds.ordNo }&ordGudsSeq=${smsMsOrdGuds.ordGudsSeq }" data-popw="1000" data-poph="600"></a></td>
                         </tr> 
                     </c:forEach> 
 
@@ -224,7 +225,7 @@
                 </section>
                 <section class="ui-layout-action">
 <!--                     <button class="btn-proc btn_pop" id="btn_proc01" data-href="./orderPo.html" data-popw="1300" data-poph="800">P/O확정</button> -->
-                    <button class="btn-save mr10" >保存</button>
+                    <button class="btn-save mr10" id="detailSave">保存</button>
                 </section> 
             </div>
         </section>
@@ -238,7 +239,7 @@
             	<section class="ui-layout-form-b">
                 	<div class="ml10 tar">
                         <i class="file"><input id="orderFile" name="orderFile" type="file"><em>No file selected...</em></i>
-                        <button class="btn-add mr10" id="orderFileUpload">登录</button>
+                        <button class="btn-add mr10" id="orderFileUpload">上传</button>
                     </div>
 				</section>    
             </div>
@@ -269,6 +270,14 @@
 	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download" id="btnFileDownload${status.index }">다운로드</a></td>
 	                  </tr>
 	                   </c:forEach> 
+	                   
+	                    <c:if test="${fn:length(smsMsOrdFileList) ==0}">
+		                    <tr>
+		                    	<td colspan="4" class="tac nodata">请上传文件。</td>
+		                    </tr>
+	                   </c:if>
+	                   
+                </tbody>
                 </table>
             </div>
         </section>
@@ -278,7 +287,7 @@
     
     
     <div id="dialog_upload" title="P/O文件上传">
-		<form id="dialog_upload_form" action="${web_ctx}/orderPOInsert.do?ordNo=${ordNo }" method="post" enctype="multipart/form-data">
+		<form id="dialog_upload_form" action="${web_ctx}/orderPOInsert.do?ordNo=${ordNo }&wrtrEml=${user.username }" method="post" enctype="multipart/form-data">
 			<section class="ui-layout-form-b">
 				<ul>
 					<li>
@@ -310,6 +319,15 @@
 
 $(function(){
 	
+	//팝업페이지 연결
+	$(".btn_pop").each(function(){
+       $(this).click(function(){
+			window.open($(this).data("href"), "po", "scrollbars=yes,width=" + $(this).data("popw") + ",height=" + $(this).data("poph") + ",top=10,left=20");
+		}); 
+    });
+	
+
+
 	//1.날짜정보는 초기화시 세팅해줘야함
 	
 	$("#ordReqDt").val(dtToDate("${orderDetail.ordReqDt}"));		//문의일자
@@ -340,10 +358,19 @@ $(function(){
 	if(ordStatCd=='N000550100' || ordStatCd=='N000550200'){
 		$("#btn_proc01").hide();	//PO확인
 		$('#poExcelDownload').hide();
-	}
-	if(ordStatCd!='N000550400'){
 		$("#btn_proc02").hide();	//정산
+		
 	}
+	if(ordStatCd=='N000550300' || ordStatCd=='N000550400'){
+		$("#detailSave").hide();		//detail저장
+		$("#mappingBtn").unbind("click"); 	//매핑연결버튼
+		$(":text").attr("disabled","true");
+		$(".selectbox").attr("disabled","true");
+	}
+	if('${isSaved}'=='N'){
+		$(".btn-search").hide();
+	}
+	
 		
 	
 	$('#dialog_upload').dialog({
@@ -363,7 +390,7 @@ $(function(){
 				}
 			});
 	
-		$('#btn_01').click(function(){
+		$('#btn_01').click(function(){dialog_upload_form
 				//$('#dialog_upload').find('input[name=file]').val('');
 				$('#dialog_upload').dialog('open');
 		})
@@ -380,7 +407,6 @@ $(function(){
 		formData.append("wrtrEml",wrtr);
 		formData.append("ordNo",ordNo);
 				
-		alert("clicked");
 		$.ajax({
 			type : "POST",
 			url : "${web_ctx}/orderDetailFileUpload.do",
@@ -415,12 +441,7 @@ $(function(){
 		$('#poExcelDownload').attr("href","${web_ctx}/downloadExcel_PO.do?ordNo="+$('#ordNo').val());
 	});
 	
-	//팝업페이지 연결
-	$(".btn_pop").each(function(){
-       $(this).click(function(){
-			window.open($(this).data("href"), "po", "scrollbars=yes,width=" + $(this).data("popw") + ",height=" + $(this).data("poph") + ",top=10,left=20");
-		}); 
-    });
+	
 	
 	
 })//end function

@@ -252,7 +252,10 @@ body{min-width:1900px}
                     </tfoot>
                 </table>
             </div>
-            
+            <c:forEach var="fileResult" items="${fileResultList }">
+            	<input type="hidden" id="savedFileNm" name="savedFileNm" value="${fileResult.savedFileNm }">
+            	<input type="hidden" id="savedRealFileNm" name="savedRealFileNm" value="${fileResult.savedRealFileNm }">
+            </c:forEach>
             
         </section>
     </div>

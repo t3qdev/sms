@@ -45,6 +45,26 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!--  /opt/b5c/img/ static 변수 초기화  메소드를 만들고 이를 호출. -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.b5m.sms.web.controller.AbstractFileController.setOPT_B5C_IMG" />
+		<property name="arguments">
+			<list>
+				<value>${file.opt.b5c.img}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!--  /opt/b5c/etc/ static 변수 초기화  메소드를 만들고 이를 호출. -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.b5m.sms.web.controller.AbstractFileController.setOPT_B5C_ETC" />
+		<property name="arguments">
+			<list>
+				<value>${file.opt.b5c.etc}</value>
+			</list>
+		</property>
+	</bean>
 
 	<!-- 메일을 발송하는 Mail 클래스의 서버정보를 셋팅하고 인스턴스를 생성해 놓은 후 이를 재 사용하기 위한 목적.  -->
 	<bean id="mail" class="com.b5m.sms.common.mail.Mail">

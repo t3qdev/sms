@@ -18,7 +18,7 @@
 <article>
     
 	<h1>
-		<span>사용자관리</span>
+		<span>用户管理</span>
 	</h1>
     <div class="ui-layout-single">
         <section>
@@ -28,7 +28,7 @@
                 <section class="ui-layout-action">
                 </section>
                 <section class="ui-layout-action">
-                    <button class="btn-add mr10" id="member_add">회원추가</button>
+                    <button class="btn-add mr10" id="member_add">添加用户</button>
                 </section>
             </div>
             <div class="ui-layout-jqgrid">
@@ -43,7 +43,7 @@
         </section>
         <section class="ui-layout-action">
 
-            <button class="btn-save">저장</button>
+            <button class="btn-save">保存</button>
         </section>
     </div>
 </article>
@@ -69,21 +69,21 @@ $(function(){
 		loadonce: true,            // jqgrid 누를때마다 로딩되는 것을 막음
 		width: 600,
         //height: 250,
-        colNames:['이메일','화명','약칭','비밀번호','소속','권한1', '권한2', '권한3','권한4','사용자상태'],
+        colNames:['邮箱','花名','简称','密码','所属','权限1', '权限2', '权限3','权限4','用户状态'],
         colModel:[
             {name:'userEml',align:'center',editable:true, editrules:{required:true,email:true},editoptions:{readonly:'true'}},
             {name:'userAlasCnsNm',align:'center',width:80, editable: true, editrules:{required:true} },
 			{name:'userAlasEngNm',align:'center',width:80, editable: true, editrules:{required:true}},
             {name:'userPwd',align:'center',formatter : formatterUserPwd, editable: true,editrules:{required:true}, edittype: "password"},
-            {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'상해팀',N000530200:'한국팀'}}},
-            {name:'roleGrpDivCd1',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},
-            {name:'roleGrpDivCd2',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
-            {name:'roleGrpDivCd3',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
-            {name:'roleGrpDivCd4',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:마스터;N000580200:열람, 수정;N000580300:PO확정;N000580400:결제;N000580500:물류"}},		
+            {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'上海',N000530200:'韩国'}}},
+            {name:'roleGrpDivCd1',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},
+            {name:'roleGrpDivCd2',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
+            {name:'roleGrpDivCd3',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
+            {name:'roleGrpDivCd4',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
             {name:'userStatCd',align:'center', formatter:formatterUserStatCd,editable: true, edittype:"select",editoptions:{value:"N000610100:재직;N000610200:휴직;N000610300:퇴직"}}		
         ],
     	onSelectRow: function(id){
-    			jQuery('#jqgrid_a').jqGrid('editRow',id,true);
+    			jQuery('#jqgrid_a').jqGrid('editRow',id,false);
     	},
         multiselect: true,
         pager: '#pager_a',
@@ -96,6 +96,35 @@ $(function(){
 		id = jQuery("#jqgrid_a").jqGrid('getGridParam','selarrrow');
 		var data = $("#jqgrid_a").jqGrid("getRowData");
 		var list = [];
+		
+		
+		//이메일, 화명 중복 체크
+		var allIds =jQuery("#jqgrid_a").jqGrid('getDataIDs');
+		var userAlasCnsNmMap = new Map();
+		var userEmlMap = new Map();
+		for(var i = 0; i <  allIds.length; i++ ){
+			jQuery("#jqgrid_a").jqGrid('saveRow',allIds[i]);
+			var userEml = $('#jqgrid_a').getCell(allIds[i], 'userEml');
+			if(userEmlMap.has(userEml)){
+				alert("duplicated userEml");
+				jQuery('#jqgrid_a').jqGrid('editRow',allIds[i],false);
+				return;
+			}else{
+				userEmlMap.set(userEml,userEml);
+			}	
+			var userAlasCnsNm = $('#jqgrid_a').getCell(allIds[i], 'userAlasCnsNm');
+			if(userAlasCnsNmMap.has(userAlasCnsNm)){
+				alert("duplicated CnsNM");
+				jQuery('#jqgrid_a').jqGrid('editRow',allIds[i],false);
+				return;
+			}else{
+				userAlasCnsNmMap.set(userAlasCnsNm,userAlasCnsNm);
+			}
+		}
+		jQuery('#jqgrid_a').jqGrid('editRow',id,false);
+		// END: 이메일, 화명 중복 체크
+		
+		
 		saveparameters = {
 			    "successfunc" : null,
 			    "url" : '${web_ctx}/userManagementSave.ajax',
@@ -111,9 +140,7 @@ $(function(){
 			    "mtype" : "POST"
 			}
 		for(var i=0; i<id.length; i++){
-
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
-
 		}
 		jQuery("#jqgrid_a").setGridParam({
 			url : "${web_ctx}/userManagementLoad.ajax",
@@ -133,9 +160,9 @@ $(function(){
     // jqgrid의 ognzDivCd 컬럼에 대한 formatter
     function formatterOgnzDivCd(cellvalue,options,rowObject){
 		if(cellvalue == 'N000530200'){
-			return "한국팀";
+			return "韩国";
 		}else if(cellvalue == 'N000530100'){
-			return "상해팀";
+			return "上海";
 		}else{
 			return "";
 		}
@@ -144,15 +171,15 @@ $(function(){
     // jqgrid의 roleGrpDivCd 컬럼에 대한 formatter와 unformatter
     function formatterRoleGrpDivCd(cellvalue,options,rowObject){
 		if(cellvalue == 'N000580100'){
-			return "마스터";
+			return "最高权限";
 		}else if(cellvalue == 'N000580200'){
-			return "열람, 수정";
+			return "阅览, 修正";
 		}else if(cellvalue == 'N000580300'){
-			return "PO확정";
+			return "P/O确定";
 		}else if(cellvalue == 'N000580400'){
-			return "결제";
+			return "结算";
 		}else if(cellvalue == 'N000580500'){
-			return "물류";
+			return "物流";
 		}else{
 			return "";
 		}
@@ -161,11 +188,11 @@ $(function(){
     // jqgrid의 userStatCd 컬럼에 대한 formatter와 unformatter
     function formatterUserStatCd(cellvalue,options,rowObject){
 		if(cellvalue == 'N000610100'){
-			return "재직";
+			return "在职";
 		}else if(cellvalue == 'N000610200'){
-			return "휴직";
+			return "休假";
     	}else if(cellvalue == 'N000610300'){
-    		return "퇴직";
+    		return "离职";
     	}else{
     		return "";
     	}
