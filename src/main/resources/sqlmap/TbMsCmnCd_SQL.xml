@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TbMsCmnCd">
+
+	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="tbMsCmnCdVO" type="com.b5m.sms.vo.TbMsCmnCdVO" />
+
+	<resultMap id="tbMsCmnCd" class="com.b5m.sms.vo.TbMsCmnCdVO">
+		<result property="cd" column="CD" columnIndex="1" />
+		<result property="cdNm" column="CD_NM" columnIndex="2" />
+		<result property="cdVal" column="CD_VAL" columnIndex="3" />
+		<result property="useYn" column="USE_YN" columnIndex="4" />
+		<result property="sortNo" column="SORT_NO" columnIndex="5" />
+		<result property="etc" column="ETC" columnIndex="6" />
+	</resultMap>
+
+	<resultMap id="TbMsCmnMainCd" class="com.b5m.sms.vo.TbMsCmnCdVO">
+		<result property="cd" column="CD" columnIndex="1" />
+		<result property="cdNm" column="CD_NM" columnIndex="2" />
+	</resultMap>
+
+	<select id="tbMsCmnCdDAO.selectCmnCdByCdNm" parameterClass="String" resultMap="tbMsCmnCd">
+		<![CDATA[
+			SELECT CD
+					, CD_NM
+					, CD_VAL
+					, USE_YN
+					, SORT_NO
+					, ETC
+			FROM tb_ms_cmn_cd
+			WHERE CD_NM=#cdNm# 
+		]]>
+	</select>
+
+	<insert id="tbMsCmnCdDAO.insertTbMsCmnCd">
+		<![CDATA[
+			INSERT INTO tb_ms_cmn_cd (
+				    CD
+				 	, CD_NM
+					, CD_VAL
+					, USE_YN
+					, SORT_NO
+					, ETC
+	    ) VALUES ( 
+	               #cd#
+				  , #cdNm#
+				  , #cdVal#
+				  , #useYn#
+				  , #sortNo#
+				  , #etc#
+         )
+		]]>
+	</insert>
+
+	<update id="tbMsCmnCdDAO.updateTbMsCmnCd">
+		<![CDATA[
+			UPDATE tb_ms_cmn_cd
+			SET  CD= #cd#
+				 , CD_NM=#cdNm#
+				 , CD_VAL=#cdVal#
+				 , USE_YN=#useYn#
+				 , SORT_NO=#sortNo#
+				 , ETC=#etc#
+			WHERE  CD = #cd#
+			]]>
+	</update>
+
+	<delete id="tbMsCmnCdDAO.deleteTbMsCmnCd">
+		<![CDATA[
+			DELETE FROM tb_ms_cmn_cd 
+			WHERE CD = #cd#
+			]]>
+	</delete>
+
+
+
+	<select id="tbMsCmnCdDAO.selectCmnCdByCd" parameterClass="String" resultMap="tbMsCmnCd">
+
+		SELECT CD
+		, CD_NM
+		, CD_VAL
+		, USE_YN
+		, SORT_NO
+		, ETC
+		FROM tb_ms_cmn_cd
+		WHERE 1=1
+		<isNotEmpty>
+			AND SUBSTRING(CD,1,6)=#cd#
+		</isNotEmpty>
+
+	</select>
+
+	<select id="tbMsCmnCdDAO.selectCmnCdMainCd" resultMap="TbMsCmnMainCd">
+		<![CDATA[
+			SELECT DISTINCT SUBSTRING(CD,1,6) AS CD
+					, CD_NM
+			FROM tb_ms_cmn_cd
+		]]>
+	</select>
+
+	<select id="tbMsCmnCdDAO.selectCmnCdMaxCd" parameterClass="String" resultClass="String">
+		<![CDATA[
+			SELECT MAX(SUBSTRING(CD,1,6)) 
+			FROM tb_ms_cmn_cd
+		]]>
+
+	</select>
+
+
+	<!-- masterCodeMng.jsp 에서 사용 _been -->
+	<select id="tbMsCmnCdDAO.selectCmnCdMainMaxCd" resultMap="TbMsCmnMainCd">
+		<![CDATA[
+			SELECT MAX(CD)  AS CD 
+					,CD_NM
+			FROM tb_ms_cmn_cd 
+			GROUP BY SUBSTRING(CD,1,6);
+		]]>
+
+	</select>
+	
+
+
+	<select id="tbMsCmnCdDAO.selectCmnCdByETC" parameterClass="String" resultMap="tbMsCmnCd">
+		SELECT CD
+		, CD_NM
+		, CD_VAL
+		, USE_YN
+		, SORT_NO
+		, ETC
+		FROM tb_ms_cmn_cd
+		WHERE 1=1
+
+			AND ETC=#etc#
+
+
+	</select>
+</sqlMap>

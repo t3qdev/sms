@@ -18,6 +18,7 @@ import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdHistVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
+import com.b5m.sms.vo.TbMsCmnCdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 
 
@@ -100,5 +101,10 @@ public interface OrderService {
 	public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO)throws Exception;
 	
 	public List<SmsMsOrdVO>orderManageMentExcelDownload(String jsonString) throws Exception;
+
+	
+	// SMS_MS_USER 뺴고 모두 지운다 -> 배치 처음 하기 전으로 돌아가 배치를 다시 돌려보기 위함
+	public void deleteBeforeFirstBatch() throws Exception;
+	
 }
 

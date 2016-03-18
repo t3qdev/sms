@@ -24,4 +24,10 @@ public class SmsMsOrdUserDAO extends EgovAbstractDAO {
     public void deleteSmsMsOrdUserByOrdNo(String ordNo){
     	delete("smsMsOrdUserDAO.deleteSmsMsOrdUserByOrdNo",ordNo);
     }
+    
+    public void deleteSmsMsOrdUser_S( ){
+    	delete("smsMsOrdUserDAO.deleteSmsMsOrdUser_S");
+    }
+    
+    
 }

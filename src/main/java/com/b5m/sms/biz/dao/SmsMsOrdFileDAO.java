@@ -26,4 +26,8 @@ public class SmsMsOrdFileDAO extends EgovAbstractDAO {
 		insert("smsMsOrdFileDAO.insertSmsMsOrdFile",smsMsOrdFileVO);
 	}
 
+	public void deleteSmsMsOrdFile_S(){
+		delete("smsMsOrdFileDAO.deleteSmsMsOrdFile_S");
+	}
+	
 }

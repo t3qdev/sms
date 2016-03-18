@@ -6,6 +6,8 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<sec:authentication var="user" property="principal" />
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
 
 	<script type="text/javascript" src="libs/jquery-ui/external/jquery/jquery.js"></script>
@@ -50,9 +52,21 @@
 
 <script>
 $(function(){
+	
+	   //0.권한 관리를 위한 유저권한 체크(map으로 관리)
+	   var roles = new Map();
+	   <c:forEach var="role" items="${user.authorities }">
+	      roles.set("${role.name}","${role.name}");
+	   </c:forEach>
+	   
+	   
 	// 브라우저에 따라 caching 때문에 ajax 최신정보가 보이지 않게됨을 막음.
 	jQuery.ajaxSetup({cache:false});   
 	
+
+	   
+	  
+	   
 	// 네비게이션에 하이라이트 효과
 	$('#userManagement').attr("class", "ui-state-active");	
 	
@@ -141,10 +155,10 @@ $(function(){
 			    "url" : '${web_ctx}/userManagementSave.ajax',
 			    "extraparam" : {},
 			    "aftersavefunc" : function( response ) {
-			                          alert('saved : '+response);
+			                          alert('保存成功');    // 저장성공
 			                      },
 			    "errorfunc": function( response ) {
-			                    	alert('error : '+response);
+			                    	alert('保存失败');     // 저장실패
 			                    },
 			    "afterrestorefunc" : null,
 			    "restoreAfterError" : true,

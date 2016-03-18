@@ -105,7 +105,7 @@
                         <th>港口</th>
                         <td><div><select id="dlvDestCd" name="dlvDestCd" class="selectbox">
                         				<c:forEach var="dlvDestCd" items="${dlvDestCdList}">
-											<option  value="${dlvDestCd.cd}">${dlvDestCd.cdVal}</option>
+											<option  value="${dlvDestCd.cd}">${dlvDestCd.etc} (${dlvDestCd.cdVal})</option>
 										</c:forEach>
 						</select></div></td> 
 						<th>订单日期</th>
@@ -266,8 +266,8 @@
 	                  <tr>
 	                    	<td class="tac">${file.ordFileRegDttm}</td>
 	                        <td class="tac">${file.userAlasCnsNm }(${file.userAlasEngNm })</td>
-	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls">${file.ordFileOrgtFileNm }</a></td>
-	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download" id="btnFileDownload${status.index }">다운로드</a></td>
+	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
+	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download fileDown" id="btnFileDownload${status.index }">다운로드</a></td>
 	                  </tr>
 	                   </c:forEach> 
 	                   
@@ -319,12 +319,68 @@
 
 $(function(){
 	
+	if("YES"=="${reload}"){
+		opener.parent.location.reload();
+	}
 	//팝업페이지 연결
 	$(".btn_pop").each(function(){
        $(this).click(function(){
 			window.open($(this).data("href"), "po", "scrollbars=yes,width=" + $(this).data("popw") + ",height=" + $(this).data("poph") + ",top=10,left=20");
 		}); 
     });
+	
+
+	//0.권한 관리를 위한 유저권한 체크
+	var roles = new Array();
+	<c:forEach var="role" items="${user.authorities }">
+		roles.push("${role.name}");
+	</c:forEach>
+	
+	console.log(roles.indexOf("N000580300"));
+	
+	//버튼별 권한테이블
+	var RolesSave = new Array("N000580100","N000580200","N000580300");		//1.저장버튼
+	var RolesOrderDown = new Array("N000580100","N000580200","N000580300");		//2.주문상세다운로드
+	var RolesPoUpload = new Array("N000580100","N000580300");		//3.po업로드
+	var RolesPoCheck = new Array("N000580100","N000580300","N000580400");		//4.po확인
+	var RolesPoCalc = new Array("N000580100","N000580400");		//5.po정산
+	var RolesPoZip = new Array("N000580100","N000580300");		//6.매입po
+	var RolesMapping = new Array("N000580100","N000580200","N000580300");		//7.상품매핑
+	var RolesFileDown = new Array("N000580100","N000580300");		//8.첨부파일다운 
+	
+	
+	//권한에 따라 버튼 표시/숨김
+	if(!checkIndex(RolesSave,roles)){			//1.저장버튼
+		$("#detailSave").hide();	
+	}
+	if(!checkIndex(RolesOrderDown,roles)){			//2.주문상세다운로드
+		$("#excelDownload").hide();	//주문내역 다운로드
+	}
+	if(!checkIndex(RolesPoUpload,roles)){			//3.po업로드
+		$('#btn_01').hide();	//PO업로드
+	}
+	if(!checkIndex(RolesPoCheck,roles)){			//4.po확인
+		$("#btn_proc01").hide();	//PO확인
+	}
+	if(!checkIndex(RolesPoCalc,roles)){			//5.po정산
+		$("#btn_proc02").hide();	//정산
+	}
+	if(!checkIndex(RolesPoZip,roles)){			//6.매입po
+		$('#poExcelDownload').hide();
+	}
+	if(!checkIndex(RolesSave,roles)){			//7.상품매핑
+		$(".btn-search").hide();		
+	}
+	if(!checkIndex(RolesSave,roles)){			//8.첨부파일다운 
+		$("#orderFileUpload").hide();//파일업로드
+		$("#orderFile").hide();	//파일선택창
+		//$(".fileDown").unbind("click");
+		$(".fileDown").click(function(a) {
+			a.preventDefault();
+			});
+		 //$(".fileDown").hide();		//상품 매핑
+	}
+	
 	
 
 
@@ -355,7 +411,7 @@ $(function(){
 	if(ordStatCd==''){
 		$('#btn_01').hide();	//PO업로드
 		$("#btn_proc01").hide();	//PO확인
-		$('#poExcelDownload').hide();
+		$('#poExcelDownload').hide();	//매입PO다운
 		$("#btn_proc02").hide();	//정산
 		$(".btn-search").hide();		//상품 매핑
 		$("#excelDownload").hide();	//주문내역 다운로드
@@ -471,6 +527,18 @@ function dateToDt(date){
 	var dt;
 	dt=date.replace(/-/gi,"");
 	return dt;
+}
+
+//array와 array를 비교해여 해당값이 존재하는지 체크 
+function checkIndex(btnRole, userRole){
+	var flag=false;
+	btnRole.forEach(function(role){
+			if(userRole.indexOf(role)!=-1){
+				flag=true;
+				return true;
+			}
+		});
+	return flag;
 }
 
 </script>

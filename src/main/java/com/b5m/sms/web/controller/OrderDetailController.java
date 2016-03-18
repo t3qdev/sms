@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -159,10 +161,6 @@ public class OrderDetailController extends AbstractFileController{
 		//4.견적파일정보를 담은 List<orderDetailFileVO>
 		List<SmsMsOrdFileVO> smsMsOrdFileList= orderService.selectSmsMsOrdFileByOrdNo(ordNo); 	//=orderService.select
 
-		for(SmsMsOrdFileVO vo : smsMsOrdFileList){
-			System.out.println("filevo : "+vo);
-		}
-		System.out.println("orderDeatil페이지 로딩시 orderDeatil정보 :::::::::::::::::"+orderDetail);
 		
 		//5.model에 각종 정보를 담는다.
 		model.addAttribute("ordNo", ordNo);		//주문번호	
@@ -199,7 +197,6 @@ public class OrderDetailController extends AbstractFileController{
 				LOGGER.debug("1.2.=============================확장자 잘못됨." );
 			}
 		}
-		System.out.println("ordNO :-=--=-"+ordNo);
 		//workbook 초기화
 		Workbook wb = WorkbookFactory.create(excelFile.getInputStream());
 		Sheet sheet = wb.getSheetAt(1);                    // 임시로 1번 한국어 시트로 함.
@@ -250,8 +247,7 @@ public class OrderDetailController extends AbstractFileController{
 				dlvDestCd = strArr[1].trim();
 			}
 		}
-		System.out.println("dlvModeCd: " +dlvModeCd );
-		System.out.println("dlvDestCd: " +dlvDestCd );
+
 		ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
 		if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
 		else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							
@@ -280,15 +276,15 @@ public class OrderDetailController extends AbstractFileController{
 		int tempRows = sheet.getPhysicalNumberOfRows();
 		ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//비고
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
-		System.out.println("클라이언트 : " + custId);
-		System.out.println("문의일자 : " + ordReqDt);
-		System.out.println("희망 인도일자 : " + ordHopeArvlDt);
-		System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
-		System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
-		System.out.println("샘플요청유무 : " + smplReqYn);
-		System.out.println("자격 요청 유무 : " + qlfcReqYn);
-		System.out.println("주문 프로세스 : " + custOrdProcCont);
+//		System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
+//		System.out.println("클라이언트 : " + custId);
+//		System.out.println("문의일자 : " + ordReqDt);
+//		System.out.println("희망 인도일자 : " + ordHopeArvlDt);
+//		System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
+//		System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
+//		System.out.println("샘플요청유무 : " + smplReqYn);
+//		System.out.println("자격 요청 유무 : " + qlfcReqYn);
+//		System.out.println("주문 프로세스 : " + custOrdProcCont);
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		
@@ -329,7 +325,6 @@ public class OrderDetailController extends AbstractFileController{
 		
 		LOGGER.debug("2.1.4.1 엑셀에서 주문의 SMS_MS_ORD_GUDS 리스트를 뽑아온다." );
 		int rows = sheet.getPhysicalNumberOfRows();
-		System.out.println("row 갯수 : " + rows);
 
 		
 		
@@ -366,7 +361,6 @@ public class OrderDetailController extends AbstractFileController{
 				smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 				smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
 				
-				System.out.println(ord_guds_seq+"-"+ordGudsUpcId+"-"+ordGudsCnsNm+"-"+ordGudsQty+"-"+ordGudsSizeVal+"-"+ordGudsSalePrc+"-"+ordGudsUrlAddr);
 				smsMsOrdGudsVOList.add(smsMsOrdGudsVO);
 				LOGGER.debug(smsMsOrdGudsVO.toString());
 			}
@@ -374,15 +368,13 @@ public class OrderDetailController extends AbstractFileController{
 		LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS  List Load==========완료" );
 		//END////////////////////////////////////// 스페셜 오더, 견적서 엑셀 로드 - KJY ///////////////////////////////////////////END
 
-		//		orderDetailVO    ->  오더 정보
-		System.out.println("Excel 에서 읽어온 orderDetailVO ");
-		System.out.println(orderDetailVO.toString());
+
 
 		//		smsMsOrdGudsVOList     -> 상품정보 리스트	
-		System.out.println("Excel 에서 읽어온 smsMsOrdGudsVOList ");
-		for(int i=0; i<smsMsOrdGudsVOList.size();i++){
-			System.out.println(smsMsOrdGudsVOList.get(i).toString());
-		}
+//		System.out.println("Excel 에서 읽어온 smsMsOrdGudsVOList ");
+//		for(int i=0; i<smsMsOrdGudsVOList.size();i++){
+//			System.out.println(smsMsOrdGudsVOList.get(i).toString());
+//		}
 
 		//
 		
@@ -513,14 +505,14 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		
 		
-		System.out.println(orderDetailVo);			//상품정보 
-		System.out.println(smsMsOrdGudsVO);		//상품 VO
-		System.out.println(ordNo);						//업데이트될 상품번호
-		System.out.println(gudsListSize);			//상품의 개수 
+//		System.out.println(orderDetailVo);			//상품정보 
+//		System.out.println(smsMsOrdGudsVO);		//상품 VO
+//		System.out.println(ordNo);						//업데이트될 상품번호
+//		System.out.println(gudsListSize);			//상품의 개수 
 		
-		for(String s : ordGudsSeq){
-			System.out.println("s " +s);
-		}
+//		for(String s : ordGudsSeq){
+//			System.out.println("s " +s);
+//		}
 		
 		
 		
@@ -540,8 +532,7 @@ public class OrderDetailController extends AbstractFileController{
 			
 		}
 		
-		System.out.println(orderDetailVo);
-		System.out.println(smsMsOrdGudsList);
+
 		
 		orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml   );
 		
@@ -559,10 +550,10 @@ public class OrderDetailController extends AbstractFileController{
 		MultipartFile mpf = request.getFile(itr.next());
 		FileResultVO fileResultVO = uploadMultipartFileToDisk(mpf); 
 		LOGGER.debug(fileResultVO.toString());
-		System.out.println(fileResultVO.getSavedRealFileNm());		//원본 파일 이름
-		System.out.println(fileResultVO.getSavedFileNm());				//시스템 파일이름
-		System.out.println(ordNo);			//주문번호	
-		System.out.println(wrtrEml);			//작성자
+//		System.out.println(fileResultVO.getSavedRealFileNm());		//원본 파일 이름
+//		System.out.println(fileResultVO.getSavedFileNm());				//시스템 파일이름
+//		System.out.println(ordNo);			//주문번호	
+//		System.out.println(wrtrEml);			//작성자
 		
 		//2.DB에 업로드 파일 정보 저장
 		SmsMsOrdFileVO ordFileVo = new SmsMsOrdFileVO();
@@ -581,11 +572,11 @@ public class OrderDetailController extends AbstractFileController{
 	@RequestMapping(value = "/orderDetailFileDownload", method = RequestMethod.GET)
 	public void doDownload(HttpServletRequest request, HttpServletResponse response, String filePath,String fileName) throws IOException {
 		String fullPath;
-		System.out.println("filepath : "+filePath);
+//		System.out.println("filepath : "+filePath);
 		String ext=null;
 		if(!StringUtil.isNullOrEmpty(filePath)){
 			ext=FileUtil.getExt(filePath);
-			System.out.println("ext : "+ext);
+//			System.out.println("ext : "+ext);
 		}
 		
 		
@@ -709,7 +700,7 @@ public class OrderDetailController extends AbstractFileController{
 				//값으로 들어온 견적조건을 코드값으로 변경
 				if(orderDetailVO.getDlvModeCd()!=null){
 					for(CodeVO vo : dlvModeCdList){
-						System.out.println(vo.getCd());
+//						System.out.println(vo.getCd());
 						if(orderDetailVO.getDlvModeCd().equals(vo.getCd())){
 							orderDetailVO.setDlvModeCd(vo.getCdVal());
 						}
@@ -731,7 +722,7 @@ public class OrderDetailController extends AbstractFileController{
 				cell = row.getCell(14);
 				cell.setCellValue(orderDetailVO.getOrdExpDt());
 				
-				System.out.println("엑셀에 삽입될 :"+orderDetailVO);
+//				System.out.println("엑셀에 삽입될 :"+orderDetailVO);
 				
 				//DB에서 상품 정보를 가져온다.
 				List<SmsMsOrdGudsVO> smsMsOrdGudsList =goodsService.selectSmsMsOrdGudsByOrdNo(ordNo);
@@ -759,7 +750,6 @@ public class OrderDetailController extends AbstractFileController{
 							}
 						}
 					}
-					System.out.println("화면에 표시될 VO :"+vo);
 				}//End_for(SmsMsOrdGudsVO vo :smsMsOrdGudsList)
 				
 				int sourceRowNum = 11;		//참고할 스타일행
@@ -812,7 +802,6 @@ public class OrderDetailController extends AbstractFileController{
 				if(addRowCountNum>0){
 					sheet.shiftRows(12, 16, addRowCountNum);
 				}
-				System.out.println("cellNum : "+sourceRow.getLastCellNum());
 				for(int i=0; i<addRowCountNum;i++){
 					Row newRow = sheet.createRow(12+i);
 					newRow.setHeight(sourceRow.getHeight());
@@ -847,7 +836,6 @@ public class OrderDetailController extends AbstractFileController{
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsKorNm());
 			                	}		*/
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm()!=null){
-			                		System.out.println(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                	}	
 			                    break;
@@ -918,7 +906,12 @@ public class OrderDetailController extends AbstractFileController{
 					
 				}
 				// 다운로드 될 템플릿 파일 이름 형식 : ORDER_DETAIL+_년월일시분초.xls
-				String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
+				 Date d = new Date();
+			     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
+			     String downloadedTemplateName = "[Estimate]"+smsMsOrdGudsList.get(0).getOrdGudsCnsNm()+"_("+orderDetailVO.getCustId()+")_"+orderDetailVO.getOprKr()+"_"+today.format(d)+"_ver.2.xls";
+
+				
+				//String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
 				// 엑셀 다운로드
 				writeExcelAttachmentForDownload(response, downloadedTemplateName, wb);
 
@@ -929,7 +922,6 @@ public class OrderDetailController extends AbstractFileController{
 		InputStream is = new FileInputStream(fileName);
 		byte[] bytes = IOUtils.toByteArray(is);
 		
-		System.out.println(workbook);
 		
 		int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);		//
 		
@@ -953,7 +945,6 @@ public class OrderDetailController extends AbstractFileController{
         
 	   
         double scale =(double)85/(double)bimg.getWidth();
-        System.out.println("scale : "+scale);
 	    
 	    pict.resize(scale);    
 	}
@@ -994,7 +985,6 @@ public class OrderDetailController extends AbstractFileController{
 				for(int prvdIndex=0;prvdIndex<prvdSize ;prvdIndex++){
 					int rowNo =sourceRowNum;				//소스넘버체크 
 					
-					System.out.println(poPrvdList.get(prvdIndex).getOrdGudsPrvdNm());
 					Workbook wb =  WorkbookFactory.create(templateFile);
 					
 					Sheet sheet = wb.getSheetAt(0);
@@ -1095,7 +1085,18 @@ public class OrderDetailController extends AbstractFileController{
 					}
 					
 					
+					//파일 이름을 만들어 주기 위해 order정보를 받아온다
+					OrderDetailVO orderDetailVo = orderService.selectSmsMsOrdDetail(ordNo);
+					
+					 Date d = new Date();
+				     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
+				     String filename = "[SReport]"+poGudsList.get(0).getOrdGudsCnsNm()+"("+orderDetailVo.getCustId()+")_"+orderDetailVo.getOprKr()+"_"+today.format(d)+".xls";
+					
 					String downloadedTemplateName = "PURCHASE_PO" + "_" + poNo + ".xlsx";
+					
+					
+					
+					
 					wbList.add(wb);	//생성된 엑셀파일을 리스트에 담는다.
 					excelNmList.add(downloadedTemplateName);		//생성된 엑셀파일의 이름을 리스트에 담는다
 				}//end for prvdIndex
@@ -1103,4 +1104,5 @@ public class OrderDetailController extends AbstractFileController{
 
 				writeExcelListForDownload(response, excelNmList, wbList);
 	}
+
 }

@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -100,7 +101,9 @@ public class AbstractFileController {
 		byte[] outArray = outByteStream.toByteArray();
 		response.setContentLength(outArray.length);
 		response.setHeader("Expires:", "0"); // eliminates browser caching
-		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		  String docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");			//한문출력을 위하여 
+		response.setHeader("Content-Disposition", "attachment; filename=" + docName);
+		//response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 		OutputStream outStream = response.getOutputStream();
 
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(outArray);

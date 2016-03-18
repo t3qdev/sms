@@ -14,6 +14,9 @@ public class SmsMsEstmDAO extends EgovAbstractDAO {
 	public void deleteSmsMsEstm(String ordNo) throws Exception{
 		delete("smsMsEstmDAO.deleteSmsMsEstm",ordNo);	
 	}
+	public void deleteSmsMsEstm_S() throws Exception{
+		delete("smsMsEstmDAO.deleteSmsMsEstm_S");	
+	}
 	public SmsMsEstmVO selectSmsMsEstmVO(String ordNo) throws Exception{
 		return (SmsMsEstmVO)select("smsMsEstmDAO.selectSmsMsEstmVO",ordNo);
 	}

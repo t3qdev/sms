@@ -70,5 +70,8 @@
 			)
 		
 	</insert>
+	<delete id="smsMsOrdFileDAO.deleteSmsMsOrdFile_S">
+		DELETE FROM sms_ms_ord_file
+	</delete>
 
 </sqlMap>

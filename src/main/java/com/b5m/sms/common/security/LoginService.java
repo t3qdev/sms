@@ -57,11 +57,7 @@ public class LoginService implements UserDetailsService {
             String password = userList.get(0).getUserPwd();
             String userAlasEngNm = userList.get(0).getUserAlasEngNm();
             String userAlasCnsNm = userList.get(0).getUserAlasCnsNm();
-            
-            System.out.println("입력한 비밀번호의 암호화 된 값 : ");
-//			System.out.println(bcrypt.encode(password));
-			System.out.println("- 추후 삭제 필수 ");
-//        	String password = passwordEncoder.encodePassword(userList.get(0).getSllrPwd(), saltSource.getSalt(user));
+ 
 			user.setUsername(username);
         	user.setPassword(password);
         	user.setUserAlasCnsNm(userAlasCnsNm);
@@ -81,15 +77,10 @@ public class LoginService implements UserDetailsService {
 			}
         	for(int i=0; i<smsMsRoleUserList.size();i++){
         		Role role = new Role();
-        		System.out.println(smsMsRoleUserList.get(i).getRoleGrpDivCd());
         		role.setName(smsMsRoleUserList.get(i).getRoleGrpDivCd());
-        		System.out.println(role);
                 roles.add(role);
         	}
-        	for(int i=0; i<roles.size();i++){
-        		System.out.println(roles.get(i).getName());
-        	}
-        	 
+
         	// user에 role set
             user.setAuthorities(roles);
         }

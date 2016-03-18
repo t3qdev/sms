@@ -56,4 +56,8 @@ public class SmsMsGudsDAO extends EgovAbstractDAO {
 	public void deleteSmsMsGuds(SmsMsGudsVO smsMsGudsVO) throws Exception{
 		delete("smsMsGudsDAO.deleteSmsMsGuds",smsMsGudsVO);
 	}
+	
+	public void deleteSmsMsGuds_S() throws Exception{
+		delete("smsMsGudsDAO.deleteSmsMsGuds_S");
+	}
 }

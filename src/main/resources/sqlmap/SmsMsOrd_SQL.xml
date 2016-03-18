@@ -83,6 +83,7 @@
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT" columnIndex="4"/>
 		<result property="bactRegrEml" column="BACT_REGR_EML" columnIndex="5"/>
 		<result property="bactRegDt" column="BACT_REG_DT" columnIndex="6"/>
+		<result property="ordStatCd" column="ORD_STAT_CD" columnIndex="7"/>
 
 	</resultMap>
 	
@@ -220,7 +221,7 @@
 				            WHEN #dlvModeCd# = 'EXW'
 				            THEN 'N000520300'
 				            ELSE #dlvModeCd# END
-				  ,(SELECT CD FROM tb_ms_cmn_cd WHERE CD_VAL = #dlvDestCd#)
+				  ,#dlvDestCd#
 				  , #custId#
 				  , #ordSumAmt#
 				  , #ordEstmDt#
@@ -385,6 +386,7 @@
 			SELECT
 				 CD as cd
 				 ,CD_VAL as cdVal
+				 ,ETC as etc
 			FROM tb_ms_cmn_cd
 			WHERE substr(CD,1,6)=#cd#
 			]]>
@@ -399,6 +401,7 @@
 				, BACT_PRVD_MEMO_CONT
 				, BACT_REGR_EML
 				, BACT_REG_DT
+				, ORD_STAT_CD
 			FROM sms_ms_ord
 			WHERE ORD_NO=#ordNo#
 			]]>
@@ -411,7 +414,7 @@
 						, BACT_PRVD_AMT=#bactPrvdAmt#
 						, BACT_PRVD_MEMO_CONT=#bactPrvdMemoCont#
 						, BACT_REGR_EML=#bactRegrEml#
-						, BACT_REG_DT=now()
+						, BACT_REG_DT=DATE_FORMAT(NOW(),"%Y%m%d")
 				WHERE ORD_NO=#ordNo#
 			]]>
 	</update>
@@ -489,7 +492,7 @@
 		            AND A.B5C_ORD_NO = X.ORD_ID) AS CNS_XCHR_AMT
 		FROM
 				 sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
-   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -2)
+   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)
 		WHERE 1=1 
 				<isNotEmpty property="ordNo">			 
 					 AND ORD_NO = #ordNo#
@@ -573,6 +576,58 @@
 				</isNotEmpty>
 
 	</select>
+	<select id="smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNoChangeCD" parameterClass="smsMsOrdVO" resultMap="smsMsOrdView">
+	SELECT 
+	
+				A.ORD_NO AS ORD_NO
+				,A.ORD_REQ_DT AS ORD_REQ_DT
+			    ,A.CUST_ID AS CLIENT_NM
+				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
+                ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
+                      THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
+                      ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
+				 END AS SHOW_DETAIL
+			    ,A.ORD_SUM_AMT	AS ORD_SUM_AMT
+				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
+				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML AND Q.OGNZ_DIV_CD="N000530200" AND A.ORD_NO=W.ORD_NO) AS KOR_MNG
+				,(SELECT CD_VAL FROM tb_ms_cmn_cd W WHERE W.CD = A.ORD_TYPE_CD) AS ORD_TYPE_CD
+                
+                
+               
+			    ,(SELECT CD_VAL FROM tb_ms_cmn_cd W WHERE W.CD = A.ORD_STAT_CD) AS ORD_STAT_CD
+			    ,(SELECT CONCAT(C.ORD_HIST_REG_DTTM," ",C.ORD_HIST_HIST_CONT) FROM sms_ms_ord_hist C WHERE C.ORD_NO = A.ORD_NO AND C.ORD_HIST_SEQ = (SELECT MAX(J.ORD_HIST_SEQ) FROM sms_ms_ord_hist J WHERE J.ORD_NO=A.ORD_NO )  ) AS HIST_DETAIL
+			    ,(SELECT CD_VAL FROM tb_ms_cmn_cd W WHERE W.CD = A.ORD_STAT_CD) AS ORD_STAT_CD
+				,A.BACT_PRVD_DT AS BACT_PRVD_DT
+				,A.BACT_PRVD_AMT AS BACT_PRVD_AMT
+			    ,A.PAPT_DPST_DT AS PAPT_DPST_DT
+			    ,A.PAPT_DPST_AMT AS PAPT_DPST_AMT
+			    ,A.PAPT_DPST_RATE AS PAPT_DPST_RATE
+			    ,A.WRHS_DLV_DT AS WRHS_DLV_DT
+			    ,A.WRHS_DLV_DEST_CD AS WRHS_DLV_DEST_CD
+			    ,A.DPTR_DLV_DT AS DPTR_DLV_DT
+			    ,A.DPTR_DLV_DEST_CD AS DPTR_DLV_DEST_CD
+				,A.ARVL_DLV_DT AS ARVL_DLV_DT
+			    ,A.ARVL_DLV_DEST_CD AS ARVL_DLV_DEST_CD
+			    ,A.PO_DLV_DT AS PO_DLV_DT
+			    ,A.PO_DLV_DEST_CD AS PO_DLV_DEST_CD
+			    ,A.RAPT_DPST_DT AS RAPT_DPST_DT
+			    ,A.RAPT_DPST_AMT AS RAPT_DPST_AMT
+			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
+			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
+			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
+	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT
+	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
+	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
+	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
+	    		
+		FROM
+				 sms_ms_ord A
+		WHERE 1=1 
+				<isNotEmpty property="ordNo">			 
+					 AND ORD_NO = #ordNo#
+				</isNotEmpty>
+
+	</select>
 		<update id="smsMsOrdDAO.updateSmsMsOrdInOrderManagementView"  parameterClass="smsMsOrdVO">
 		<![CDATA[
 			UPDATE sms_ms_ord
@@ -612,4 +667,7 @@
 	<select id="smsMsOrdDAO.selectSmsMsOrdOrdStatCdColumn"  resultClass="String">
 		SELECT DISTINCT ORD_STAT_CD FROM  sms_ms_ord
 	</select>
+
+	
+	
 </sqlMap>

@@ -125,10 +125,10 @@ $(function(){
 				    "url" : '${web_ctx}/orderHistorySave.ajax',
 				    "extraparam" : {},
 				    "aftersavefunc" : function( response ) {
-				                          alert('saved : '+response);
+				                          alert('保存成功');   // 저장성공
 				                      },
 				    "errorfunc": function( response ) {
-				                    	alert('error : '+response);
+				                    	alert('保存失败');      // 저장실패
 				                    },
 				    "afterrestorefunc" : null,
 				    "restoreAfterError" : true,

@@ -63,8 +63,7 @@ public class PasswordChangeController {
 	@RequestMapping(value="/passwordChangeUpdate")
 	public String passwordChangeUpdate(PasswordChangeVO passwordChangeVo, Model model) throws Exception{
 		
-		System.out.println(passwordChangeVo);
-		System.out.println(passwordChangeVo.getUserEml());
+
 		//1.비밀번호체크를 위해 해당 유저아이디의 정보를 받아온다.
 		SmsMsUserVO paramUserVo = new SmsMsUserVO();
 		paramUserVo.setUserEml(passwordChangeVo.getUserEml());

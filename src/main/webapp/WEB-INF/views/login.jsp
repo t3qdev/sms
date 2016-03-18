@@ -35,7 +35,7 @@
 				<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
 					<font color="red">
 						<%-- Your login attempt was not successful due to --%>
-						请确认帐号和密码。
+						帐号或者密码有误。
 						<%-- <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" /> --%>
 						<%--<spring:message code="AbstractUserDetailsAuthenticationProvider.badCredentials" /> --%>
 					</font>
@@ -44,8 +44,10 @@
 
 		</article>
 		<footer>
-			<p>
-            忘记登录帐号或密码时请联系管理者。
+			<p class="tal">
+            忘记登录帐号或密码时请联系管理者<br>
+            。中国负责人 : 常遇春 (changyuchun@b5m.com)<br>
+            。韩国负责人 : 汤和 (tanghe@b5m.com)
       	   </p>
 		</footer>
 	</form>

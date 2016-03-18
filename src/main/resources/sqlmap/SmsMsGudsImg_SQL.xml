@@ -73,6 +73,10 @@
 	
 	</delete>
 	
+	<delete id="smsMsGudsImgDAO.deleteSmsMsGudsImg_S" >
+			DELETE FROM sms_ms_guds_img
+	
+	</delete>
 	<select id="smsMsGudsImgDAO.selectSmsMsGudsImgAll" resultMap="smsMsGudsImg">
 	<![CDATA[ 
 			SELECT

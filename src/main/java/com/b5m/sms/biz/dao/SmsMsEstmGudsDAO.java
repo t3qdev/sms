@@ -18,6 +18,10 @@ public class SmsMsEstmGudsDAO extends EgovAbstractDAO {
 		delete("smsMsEstmGudsDAO.deleteSmsMsEstmGudsByOrdNm",ordNo);
 		
 	}
+	public void deleteSmsMsEstmGuds_S() throws Exception{
+		delete("smsMsEstmGudsDAO.deleteSmsMsEstmGuds_S");
+		
+	}
 	@SuppressWarnings("unchecked")
 	public List<SmsMsEstmGudsVO> selectSmsMsEstmGuds(String ordNo) throws Exception{
 		return (List<SmsMsEstmGudsVO>)list("smsMsEstmGudsDAO.selectSmsMsEstmGuds",ordNo);

@@ -30,6 +30,7 @@ import com.b5m.sms.biz.dao.SmsMsOrdGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdHistDAO;
 import com.b5m.sms.biz.dao.SmsMsOrdUserDAO;
 import com.b5m.sms.biz.dao.SmsMsUserDAO;
+import com.b5m.sms.biz.dao.TbMsCmnCdDAO;
 import com.b5m.sms.biz.dao.TbMsGudsImgDAO;
 import com.b5m.sms.biz.dao.TbMsOrdDAO;
 import com.b5m.sms.biz.dao.TbMsOrdSplDAO;
@@ -54,6 +55,7 @@ import com.b5m.sms.vo.SmsMsOrdHistVO;
 import com.b5m.sms.vo.SmsMsOrdUserVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
+import com.b5m.sms.vo.TbMsCmnCdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
 import com.b5m.sms.web.controller.AbstractFileController;
@@ -103,6 +105,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 	@Resource(name="tbMsGudsImgDAO")
 	private TbMsGudsImgDAO tbMsGudsImgDAO;
 	
+	@Resource(name="tbMsCmnCdDAO")
+	private TbMsCmnCdDAO tbMsCmnCdDAO;
 	
 	
 	@Override
@@ -222,8 +226,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 
 
 			// SMS_MS_ORD_GUDS 추가.
-			System.out.println("----------------------------------");
-			System.out.println(smsMsOrdVO.toString());
+
 //			N000620100
 			List <TbMsOrdBatchVO> tbMsOrdBatchVOList = null;
 			if(ordTypeCd.equals("N000620100")){
@@ -262,12 +265,12 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdHistVO.setOrdHistHistCont(ordHistHistCont);
 			
 			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);
-			LOGGER.debug("이동한 smsMsOrdHistVO : "+smsMsOrdHistVO.toString());
-			LOGGER.debug("insertSmsMsOrdHist 등록 ");
+//			LOGGER.debug("이동한 smsMsOrdHistVO : "+smsMsOrdHistVO.toString());
+//			LOGGER.debug("insertSmsMsOrdHist 등록 ");
 	
 			
 		}
-		LOGGER.debug("이동한 SMS_MS_ORD 개수 : "+tbMsOrdVOList.size());
+//		LOGGER.debug("이동한 SMS_MS_ORD 개수 : "+tbMsOrdVOList.size());
 	}
 	public void batch2(List <TbMsOrdBatchVO> tbMsOrdBatchVOList)throws Exception{
 		String ordNo = null;
@@ -291,7 +294,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		
 		String gudsInbxQty= null;		//상품인박스수량
 		for(int i=0; i<tbMsOrdBatchVOList.size();i++){
-			System.out.println(tbMsOrdBatchVOList.get(i).toString());
 			b5cOrdNo = tbMsOrdBatchVOList.get(i).getB5cOrdNo();
 			
 			//SMS_MS_ORD_GUDS 에 넣을 변수들.
@@ -320,10 +322,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdGudsVO.setGudsInbxQty(gudsInbxQty);
 
 			
-			System.out.println("smsMsOrdGudsVO : " + smsMsOrdGudsVO);
 			smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);               
-			System.out.println(smsMsOrdGudsVO.toString());
-			System.out.println("Insert   SmsMsOrdGuds  성공 : " +i+1);
+
 			
 			SmsMsGudsVO smsMsGudsVO = new SmsMsGudsVO();
 			gudsId = gudsId;
@@ -347,17 +347,14 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			if(tempSmsMsGudsVO==null){
 				
 					smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
-					System.out.println("smsMsGudsVO" + smsMsGudsVO);
 				
 			}else if(tempSmsMsGudsVO.size()==0){
 				smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
-				System.out.println("smsMsGudsVO" + smsMsGudsVO);
 			}
 			
 			else{
-				System.out.println("상품 upc 가 존재합니다.");
+//				System.out.println("상품 upc 가 존재합니다.");
 			}
-			System.out.println("Insert    SmsMsGuds 성공 : " +i);
 			
 
 	///////////////////////////////////////////////////////////////////////////////////////////		
@@ -387,8 +384,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				if(vo.getGudsImgCdnAddr()!=null){
 					URL url = new URL(vo.getGudsImgCdnAddr());
 					String destName = OPT_B5C_IMG +vo.getGudsImgSysFileNm();
-					System.out.println(destName);
-					System.out.println(destName);
+
 					 
 					   InputStream is = url.openStream();
 					   OutputStream os = new FileOutputStream(destName);
@@ -458,7 +454,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				 histVo.setOrdHistWrtrEml(vo.getBactRegrEml());
 				 histVo.setOrdHistHistCont("정산");			//자동생성되는 정산코멘트
 				 histVo.setOrdStatCd("N000550400");		//주문상태코드 : N000550400 정산
-				 System.out.println(histVo);
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
@@ -470,7 +465,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 
 			 vo.setBactPrvdDt(StringUtil.dateToDt(vo.getBactPrvdDt()));
 			 smsMsOrdDAO.updateSmsMsOrdCalculate(vo);
-			 System.out.println("굳");
 		}
 
 		@Override
@@ -482,7 +476,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		@Override
 		public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception {
 			// TODO Auto-generated method stub
-			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
+//			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
 			// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO
 			String userAlasCnsNm = null;							 //담당자   (중문 화명)
 			String custId = null;								// 클라이언트
@@ -526,8 +520,21 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					dlvDestCd = strArr[1].trim();
 				}
 			}
-			System.out.println("dlvModeCd: " +dlvModeCd );
-			System.out.println("dlvDestCd: " +dlvDestCd );
+
+			
+			// 배송 방법은- Code 테이블에서 직접 가져오고, 정확하지 않으면 null 처리 한다.
+			if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
+				List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
+				tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByETC(dlvDestCd);
+				if(tbMsCmnCdVOList.size() == 1){
+					
+					dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
+
+				}else{
+					dlvDestCd = null;
+				}
+			}
+			
 			ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
 			if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
 			else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							
@@ -557,16 +564,18 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			int tempRows = sheet.getPhysicalNumberOfRows();
 			ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//비고
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
-			System.out.println("클라이언트 : " + custId);
-			System.out.println("문의일자 : " + ordReqDt);
-			System.out.println("희망 인도일자 : " + ordHopeArvlDt);
-			System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
-			System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
-			System.out.println("샘플요청유무 : " + smplReqYn);
-			System.out.println("자격 요청 유무 : " + qlfcReqYn);
-			System.out.println("주문 프로세스 : " + custOrdProcCont);
-			System.out.println("비고 : " + ordMemoCont);
+//			System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
+//			System.out.println("클라이언트 : " + custId);
+//			System.out.println("문의일자 : " + ordReqDt);
+//			System.out.println("희망 인도일자 : " + ordHopeArvlDt);
+//			System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
+//			System.out.println("견적조건  : " + dlvModeCd);
+//			System.out.println("항구  : " + dlvDestCd);
+//			System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
+//			System.out.println("샘플요청유무 : " + smplReqYn);
+//			System.out.println("자격 요청 유무 : " + qlfcReqYn);
+//			System.out.println("주문 프로세스 : " + custOrdProcCont);
+//			System.out.println("비고 : " + ordMemoCont);
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			// 변수들을 SMS_MS_ORD 에 집어 넣는다.
@@ -589,9 +598,9 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 //				smsMsOrdVO.setB5cOrdNo(b5cOrdNo);  // 방우차이 아니니까 필요 없음.  null
 			smsMsOrdVO.setOrdTypeCd("N000620300");  // 주문유형코드		오프라인
 			smsMsOrdVO.setOrdStatCd("N000550100");		 // 주문상태 코드 : 접수(N000550100)
-			LOGGER.debug("2.1.2.1  SMS_MS_ORD 에 넣을 VO : "+smsMsOrdVO.toString() );
+//			LOGGER.debug("2.1.2.1  SMS_MS_ORD 에 넣을 VO : "+smsMsOrdVO.toString() );
 			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  											// SMS_MS_ORD 에 INSERT		//////////////////////////////////////////////
-			LOGGER.debug("2.1.2.2======SMS_MS_ORD 에 INSERT==========완료" );
+//			LOGGER.debug("2.1.2.2======SMS_MS_ORD 에 INSERT==========완료" );
 
 			
 			SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
@@ -615,15 +624,14 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdHistVO.setOrdHistWrtrEml(user.getUsername());  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
 //				smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
 			smsMsOrdHistVO.setOrdHistHistCont("주문 접수");
-			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
+//			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
 
 			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);								// SMS_MS_ORD_HIST 에 INSERT		//////////////////////////////////////////////
-			LOGGER.debug("2.1.3.2.======SMS_MS_ORD_HIST 에 INSERT==========완료");
+//			LOGGER.debug("2.1.3.2.======SMS_MS_ORD_HIST 에 INSERT==========완료");
 			
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			LOGGER.debug("2.1.4.1 엑셀에서 주문의 상품 리스트를 뽑아온다." );
+//			LOGGER.debug("2.1.4.1 엑셀에서 주문의 상품 리스트를 뽑아온다." );
 			int rows = sheet.getPhysicalNumberOfRows();
-			System.out.println("row 갯수 : " + rows);
 
 			int tempNum=1;   					//ord_guds_seq에 넣을 숫자 관리용
 			ordNo = ordNo;						//ordNo
@@ -664,10 +672,9 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 					smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
 					
-					System.out.println(ord_guds_seq+"-"+ordGudsUpcId+"-"+ordGudsCnsNm+"-"+ordGudsQty+"-"+ordGudsSizeVal+"-"+ordGudsSalePrc+"-"+ordGudsUrlAddr);
-					System.out.println(smsMsOrdGudsVO.toString());
+
 					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);
-					LOGGER.debug(smsMsOrdGudsVO.toString());
+//					LOGGER.debug(smsMsOrdGudsVO.toString());
 				}
 			}
 			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
@@ -675,7 +682,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			}
 			
 
-			LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS 에 INSERT==========완료" );
+//			LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS 에 INSERT==========완료" );
 		}
 
 
@@ -696,7 +703,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			SmsMsOrdUserVO opr= new SmsMsOrdUserVO();
 			opr.setOrdNo(orderDetailVo.getOrdNo());
 			
-			System.out.println("inservice**********************:"+orderDetailVo);
+//			System.out.println("inservice**********************:"+orderDetailVo);
 
 			smsMsOrdUserDAO.deleteSmsMsOrdUserByOrdNo(orderDetailVo.getOrdNo());
 			if(orderDetailVo.getOprCns()!=null){
@@ -718,7 +725,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				tempVo.setGudsId(vo.getGudsId());
 				tempVo.setGudsUpcId(vo.getGudsUpcId());
 				vo.setOrdGudsCnsNm(StringUtil.tagStrToText(vo.getOrdGudsCnsNm()));
-				System.out.println("태그처리된 cnsNm : "+vo.getOrdGudsCnsNm());
+//				System.out.println("태그처리된 cnsNm : "+vo.getOrdGudsCnsNm());
 				if(smsMsGudsDAO.selectSmsMsGudsByVO(tempVo)==null){
 					vo.setOrdGudsMpngYn("N");
 				}
@@ -741,13 +748,11 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			ordStatCdVo.setOrdNo(orderDetailVo.getOrdNo());
 			ordStatCdVo=smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(ordStatCdVo);
 			String ordStatCd = ordStatCdVo.getOrdStatCd();
-			System.out.println(ordStatCd);
 			
 			//2.히스토리테이블에서 최신 seq를 받아온다.
 			SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
 			 histVo.setOrdNo(orderDetailVo.getOrdNo());
 			 String seq=smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(histVo);
-			 System.out.println("seq :"+seq);
 			 //2-1.히스토리vo에 정보세팅
 			 histVo.setOrdStatCd("N000550200");		//주문상태코드 : N000550200 진행
 			 if(seq!=null){
@@ -761,7 +766,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 //2-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
 			if("N000550100".equals(ordStatCd)){					//접수 
 				 histVo.setOrdHistHistCont("주문이 진행되었습니다.");			//자동생성되는 진행코멘트 
-				 System.out.println(histVo);
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
@@ -772,7 +776,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				
 			}else if("N000550200".equals(ordStatCd)){			//진행
 				 histVo.setOrdHistHistCont("주문이 변경되었습니다.");			//자동생성되는 진행코멘트
-				 System.out.println(histVo);
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
@@ -783,7 +786,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				
 			}else{
 				//PO확정, 정산, DROP일 경우 히스토리 업데이트가 되면 안된다.이 부분에 들어오면 에러임
-				System.out.println("check source code, can't be in");
+//				System.out.println("check source code, can't be in");
 			}
 			 
 
@@ -859,9 +862,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				String newGudsId = smsMsGudsDAO.selectSmsMsGudsGudsId();
 				for(int i=0; i<gudsCnt; i++){
 					//3-1.바코드로 smsMsGuds테이블을  검색한다 
-					System.out.println(gudsUpcId[i].trim());
 					SmsMsGudsVO smsMsGudsVo = smsMsGudsDAO.selectSmsMsGudsByUpcId(gudsUpcId[i].trim());
-					System.out.println("검색직후 smsMsGudsVo : "+smsMsGudsVo);
 					smsMsEstmGudsList.add(new SmsMsEstmGudsVO());
 					//3-2.기존에 상품테이블에 존재안함 : gudsId생성후 새로운 상품 삽입,
 					if(smsMsGudsVo==null){
@@ -873,7 +874,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 							//새로운 상품 생성
 							smsMsGudsVo = new SmsMsGudsVO();
 							 smsMsGudsVo.setGudsId(newGudsId);
-							 System.out.println("newGudsId : " +newGudsId);
 							 //smsMsGudsVo.setBrndId(brndId);	 브랜드?
 							 smsMsGudsVo.setGudsKorNm(gudsKorNm[i].trim());
 							 smsMsGudsVo.setGudsCnsNm(gudsCnsNm[i].trim());
@@ -883,7 +883,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 							 smsMsGudsVo.setGudsInbxQty(gudsInbxQty[i].trim());
 							
 							 //SmsMsGuds 테이블에 삽입
-							 System.out.println(smsMsGudsVo);
 							//smsMsGudsDAO.deleteSmsMsGuds(smsMsGudsVo);				
 							smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVo);
 							//이미지테이블에 이미지 삽입					
@@ -916,7 +915,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					smsMsEstmGudsList.get(i).setOrdGudsPrvdCrn(crn[i].trim());
 					
 					//3_4.값을 estm_guds테이블에 저장한다.
-					System.out.println(smsMsEstmGudsList.get(i));
 					smsMsEstmGudsDAO.insertSmsMsEstmGuds(smsMsEstmGudsList.get(i));
 					
 
@@ -937,34 +935,28 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			ordStatCdVo.setOrdNo(orderPoVo.getOrdNo());
 			ordStatCdVo=smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(ordStatCdVo);
 			String ordStatCd = ordStatCdVo.getOrdStatCd();
-			System.out.println(ordStatCd);
 			 SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
 			 histVo.setOrdNo(orderPoVo.getOrdNo());
 			 
 			 //히스토리세팅
-			 System.out.println("ordNo :"+orderPoVo.getOrdNo());
 			 String seq=smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(histVo);
-			 System.out.println("seq :"+seq);
 			 if(seq!=null){
 				 int tempSeq = Integer.parseInt(seq)+1;
 				 seq=Integer.toString(tempSeq);
 			 }else{
 				 seq="0";
 			 }
-			 System.out.println("seq :"+seq);
-			 System.out.println("ordNo :"+orderPoVo.getOrdNo());
+
 			 
 			 histVo.setOrdHistSeq(seq);
 			 histVo.setOrdHistWrtrEml(orderPoVo.getPoRegrEml());
 			 histVo.setOrdStatCd("N000550300");		//주문상태코드 : N000550300 확정
-			 System.out.println(histVo);
 
 
 			 
 			 //5-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
 				if("N000550200".equals(ordStatCd)){					//진행 
 					 histVo.setOrdHistHistCont("PO가 확정되었습니다.");			//자동생성되는 진행코멘트 
-					 System.out.println(histVo);
 					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 					 
 					 //주문테이블의 스탯도 변경해줘야한다
@@ -975,7 +967,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					
 				}else if("N000550300".equals(ordStatCd)){			//확정
 					 histVo.setOrdHistHistCont("PO가 변경되었습니다.");			//자동생성되는 진행코멘트
-					 System.out.println(histVo);
 					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 					 
 					 //주문테이블의 스탯도 변경해줘야한다
@@ -986,7 +977,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					
 				}else{
 					//접수, 정산, DROP일 경우 히스토리 업데이트가 되면 안된다.이 부분에 들어오면 에러임
-					System.out.println("check source code, can't be in");
+//					System.out.println("check source code, can't be in");
 				}
 			 
 			 
@@ -1074,11 +1065,24 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
 					smsMsOrdVO.setOrdNo(ordNo);
 					SmsMsOrdVO smsMsOrdVO1 = new SmsMsOrdVO();
-					smsMsOrdVO1 = smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(smsMsOrdVO);
+					smsMsOrdVO1 = smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNoChangeCD(smsMsOrdVO);
 					smsMsOrdVOList.add(smsMsOrdVO1);
 				}
 			}
 			return smsMsOrdVOList;
+		}
+		
+		// SMS_MS_USER 뺴고 모두 지운다 -> 배치 처음 하기 전으로 돌아가 배치를 다시 돌려보기 위함
+		public void deleteBeforeFirstBatch() throws Exception{
+			smsMsOrdDAO.deleteSmsMsOrd_S();
+			smsMsOrdGudsDAO.deleteSmsMsOrdGuds_S();
+			smsMsGudsDAO.deleteSmsMsGuds_S();
+			smsMsGudsImgDAO.deleteSmsMsGudsImg_S();
+			smsMsOrdHistDAO.deleteSmsMsOrdHist_S();
+			smsMsOrdUserDAO.deleteSmsMsOrdUser_S();
+			smsMsEstmDAO.deleteSmsMsEstm_S();
+			smsMsEstmGudsDAO.deleteSmsMsEstmGuds_S();
+			smsMsOrdFileDAO.deleteSmsMsOrdFile_S();
 		}
 		
 }//end class

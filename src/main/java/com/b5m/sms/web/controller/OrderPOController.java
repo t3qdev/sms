@@ -130,7 +130,6 @@ public class OrderPOController extends AbstractFileController{
 		Double poAll= Double.parseDouble(estmVo.getPoSumAmt());
 		Double xchr = Double.parseDouble(estmVo.getStdXchrAmt());
 		Double dlv = Double.parseDouble(estmVo.getDlvAmt());
-		System.out.println("계산 사용변수1 :" +poAll+"               "+xchr);
 		
 		//1-4.주문테이블에서 얻어와야 할값
 		OrderDetailVO ordVo = orderService.selectSmsMsOrdDetail(ordNo);
@@ -142,7 +141,6 @@ public class OrderPOController extends AbstractFileController{
 		
 		//2-2. po상품 개수 만큼 OrderPOGudsVO를 생성한다
 		for(SmsMsEstmGudsVO vo:estmGudsList){
-			System.out.println(vo);
 			OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
 			//2-2-1.단순삽입데이터
 			poGudsVo.setGudsKorNm(vo.getOrdGudsKorNm());
@@ -164,8 +162,7 @@ public class OrderPOController extends AbstractFileController{
 			
 			//2-2-2. SmsMsGuds 테이블에서 가져온다
 			SmsMsGudsVO smsMsGudsVo =goodsService.selectSmsMsGuds(vo.getGudsId());
-			System.out.println("vo.getGudsId()123125 : "+vo.getGudsId());
-			System.out.println("smsMsGudsVo123125346 : "+smsMsGudsVo);
+
 			if(smsMsGudsVo!=null){
 				poGudsVo.setGudsInbxQty(smsMsGudsVo.getGudsInbxQty());
 				poGudsVo.setGudsUpcId(smsMsGudsVo.getGudsUpcId());
@@ -175,9 +172,7 @@ public class OrderPOController extends AbstractFileController{
 			SmsMsGudsImgVO smsMsGudsImgVo =new SmsMsGudsImgVO();
 			smsMsGudsImgVo.setGudsId(vo.getGudsId());
 			smsMsGudsImgVo.setGudsImgCd("N000080200");
-			System.out.println("orderpocontroller : "+smsMsGudsImgVo);
 			smsMsGudsImgVo=goodsService.selectSmsMsGudsImgByCd(smsMsGudsImgVo);
-			System.out.println("orderpocontroller : "+smsMsGudsImgVo);
 			String imgSrc =smsMsGudsImgVo.getGudsImgSysFileNm();
 			poGudsVo.setImgSrcPath(imgSrc);
 			
@@ -263,8 +258,6 @@ public class OrderPOController extends AbstractFileController{
 	
 	@RequestMapping(value="/orderPOInsert")
 	public String orderPOInsert(@RequestParam("file") MultipartFile[] fileArray, Model model, HttpServletRequest req, String ordNo,String wrtrEml) throws Exception{
-			System.out.println(req.getContextPath());
-			System.out.println("orderPoInsert ordNo : " +ordNo);
 			List<String> imgFileNameList = new ArrayList<String>();
 			
 			List<MultipartFile> imgFileList = new ArrayList<MultipartFile>();
@@ -367,7 +360,7 @@ public class OrderPOController extends AbstractFileController{
 			poVo.setPoDt(poDt);
 			poVo.setOrdArvlDt(ordArvlDt);
 
-			System.out.println(poVo);
+	
 			
 			
 			//1-2.버전에 따른 이미지 저장방법이 다름
@@ -382,7 +375,6 @@ public class OrderPOController extends AbstractFileController{
 			
 			//2.상품정보 VO생성
 			int rows = sheet.getPhysicalNumberOfRows();
-			System.out.println("row 갯수 : " + rows);
 
 			
 			for(int i=13; i<rows-1; i++){
@@ -413,7 +405,6 @@ public class OrderPOController extends AbstractFileController{
 				if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
 					poGudsList.add(poGudsVo);
 				}
-				System.out.println(poGudsVo);
 			}
 			
 		
@@ -437,7 +428,6 @@ public class OrderPOController extends AbstractFileController{
 	
 private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IOException {
 		
-		System.out.println("HSSF Excel Format.");
 		
 		List<HSSFPictureData> pictures = workbook.getAllPictures();
 		HSSFSheet sheet = workbook.getSheetAt(0);
@@ -474,7 +464,6 @@ private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IO
 	
 	private void excelXSSFPictureInfo(XSSFWorkbook workbook, String ordNo) throws IOException {
 		
-		System.out.println("XSSF Excel Format.");
 		
 		List<XSSFPictureData> pictures = workbook.getAllPictures();
 		XSSFSheet sheet = workbook.getSheetAt(0);

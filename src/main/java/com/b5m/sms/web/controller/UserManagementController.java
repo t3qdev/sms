@@ -94,7 +94,7 @@ public class UserManagementController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("사용자 리스트 가져오는 데 에러가 발생 했습니다.");
+//			System.out.println("사용자 리스트 가져오는 데 에러가 발생 했습니다.");
 		}
 		return smsMsUserVOList;
 	}
@@ -102,8 +102,6 @@ public class UserManagementController {
 	@ResponseBody
 	@RequestMapping("/userManagementSave.ajax")
 	public String userManagementSave(HttpSession session, Model model, SmsMsUserVO smsMsUserVO) throws Exception {
-		System.out.println("controller로  들어온  vo : ");
-		System.out.println(smsMsUserVO.toString());
 		// 화면상에서는 [저장]만 누르기 때문에, 이 값이 (가입)인지 (수정)인지 구분할 필요가 있다.
 		// 화면상에서 로직은, 체크한 Row들 마다 따로 ajax 호출을 받아 오기 때문에, 본 controller 에서는 1개의 SmsMsUserVO가 들어온다.
 		// 	1.	해당 vo의 email을 SMS_MS_USER 테이블에서 열람을 하고, 있는 id 인지 없는 id 인지 확인한다.                 smsMsUserDAO.selectSmsMsUser                                 
@@ -119,18 +117,15 @@ public class UserManagementController {
 		// service로 넣어줄 변수 vo 선언
 		SmsMsUserVO tempMsUserByUserEmlVO = new SmsMsUserVO();
 		tempMsUserByUserEmlVO.setUserEml(smsMsUserVO.getUserEml());
-		System.out.println(tempMsUserByUserEmlVO.toString());
 		
 		// 	1.	해당 vo의 email을 SMS_MS_USER 테이블에서 열람을 하고, 있는 id 인지 없는 id 인지 확인한다.                 smsMsUserDAO.selectSmsMsUser 
 		List<SmsMsUserVO> selectSmsMsUserVOList = null;						
 		selectSmsMsUserVOList = userService.selectSmsMsUser(tempMsUserByUserEmlVO);     
-		System.out.println("volist : "+selectSmsMsUserVOList.size());
 		
 		
 		tempMsUserByUserEmlVO.setUserEml(smsMsUserVO.getUserEml());
 		if(smsMsUserVO.getUserPwd()!=null){						      				
 			if("".equals(smsMsUserVO.getUserPwd())==false && "**********".equals(smsMsUserVO.getUserPwd())==false){					//   if : 비밀번호가 수정 되었는가?   true -> 비밀번호도 vo에 넣어주고 update
-				System.out.println("4");
 				// 변경할 비밀번호를 암호화 해서 vo에 세팅
 				tempMsUserByUserEmlVO.setUserPwd(bcrypt.encode(smsMsUserVO.getUserPwd().trim()));
 				 // 화면에서 password 를 변경했으면 사용자비밀번호상태코드를 초기화(N000600100)로 세팅  -> because 이 사용자는 로그인할 때, 비밀번호 변경 페이지로 자동 이동.
@@ -157,8 +152,7 @@ public class UserManagementController {
 		if (duplicateTest.add(smsMsUserVO.getRoleGrpDivCd4()) == true) {
 			tempMsUserByUserEmlVO.setRoleGrpDivCd4(smsMsUserVO.getRoleGrpDivCd4());
 		}
-		System.out.println("db에 들어갈 vo : ");
-		System.out.println(tempMsUserByUserEmlVO.toString());
+
 		
 		if(selectSmsMsUserVOList != null){
 			if(selectSmsMsUserVOList.size()==1){                  				  //   if : 해당 email이 DB에 존재한다?  true -> update
@@ -170,7 +164,8 @@ public class UserManagementController {
 				// SMS_MS_USER INSERT, SMS_MS_ROLE_USER도 바로 INSERT
 				userService.insertSmsMsUserNSmsMsRoleUser(tempMsUserByUserEmlVO);
 			}else{
-				System.out.println("DB 이상");
+				LOGGER.debug("DB has problems..." );
+				
 			}
 		}
 		

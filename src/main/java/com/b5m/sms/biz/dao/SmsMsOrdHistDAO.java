@@ -33,7 +33,9 @@ public class SmsMsOrdHistDAO extends EgovAbstractDAO{
 	public String selectSmsMsOrdHistSeqCount(SmsMsOrdHistVO smsMsOrdHistVO)throws Exception{
 		return (String) select("smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount",smsMsOrdHistVO);
 	}
-	
+	public void deleteSmsMsOrdHist_S() throws Exception{
+		delete("smsMsOrdHistDAO.deleteSmsMsOrdHist_S");
+	}
 	
 	
 	

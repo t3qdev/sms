@@ -41,5 +41,9 @@
 			WHERE ORD_NO =#ordNo#
 	</delete>
 
+	<delete id="smsMsOrdUserDAO.deleteSmsMsOrdUser_S" >
+			DELETE FROM sms_ms_ord_user
+	
+	</delete>
 
 </sqlMap>

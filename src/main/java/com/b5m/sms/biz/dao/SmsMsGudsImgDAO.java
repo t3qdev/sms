@@ -36,4 +36,8 @@ public class SmsMsGudsImgDAO extends EgovAbstractDAO {
 	public SmsMsGudsImgVO selectSmsMsGudsImgByCd(SmsMsGudsImgVO smsMsGudsImgVo){
 		return (SmsMsGudsImgVO)select("smsMsGudsImgDAO.selectSmsMsGudsImgByCd",smsMsGudsImgVo);
 	}
+	
+	public void deleteSmsMsGudsImg_S(){
+		delete("smsMsGudsImgDAO.deleteSmsMsGudsImg_S");
+	}
 }

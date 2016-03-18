@@ -64,6 +64,9 @@
 			DELETE FROM sms_ms_estm_guds
 			WHERE ORD_NO=#ordNo#
 	</delete>
+	<delete id="smsMsEstmGudsDAO.deleteSmsMsEstmGuds_S">
+			DELETE FROM sms_ms_estm_guds
+	</delete>
 	
 	<insert id="smsMsEstmGudsDAO.insertSmsMsEstmGuds" parameterClass="smsMsEstmGudsVO">
 				INSERT INTO sms_ms_estm_guds 

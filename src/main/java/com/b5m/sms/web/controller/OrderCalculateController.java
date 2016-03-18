@@ -25,11 +25,10 @@ public class OrderCalculateController {
 		
 	@RequestMapping(value="/orderCalculateView")
 	public String orderCalculate(String ordNo, Model model) throws Exception{
-		//1.정산내역을 조회 (작성자가 존재하면 첫정산이 완료된 내용)
+		//1.정산내역을 조회 (작성자가 존재하면 첫정산이 완료된 내용, statcde로도 구분가능)
 		String first="Y";
 		OrderCalculateVO ordcalc =orderService.selectSmsMsOrdCalculate(ordNo);
 		//<<select해서 해당값을 가져오는 부분>>
-		System.out.println(ordcalc);
 		if(ordcalc!=null){
 			if(!StringUtil.isNullOrEmpty(ordcalc.getBactRegrEml())){
 				first="N";
@@ -47,15 +46,18 @@ public class OrderCalculateController {
 	
 	@ResponseBody
 	@RequestMapping(value="/orderCalculateSave")
-	public void orderCalculateSave(OrderCalculateVO orderCalculateVO, Model model,String first) throws Exception{
-		System.out.println(orderCalculateVO);
-		System.out.println(first);
+	public Boolean orderCalculateSave(OrderCalculateVO orderCalculateVO, Model model,String first) throws Exception{
+
+		OrderCalculateVO ordcalc =orderService.selectSmsMsOrdCalculate(orderCalculateVO.getOrdNo());
+
+		if(!orderCalculateVO.getBactRegrEml().equals(ordcalc.getBactRegrEml())&&!"Y".equals(first)){
+			return false;
+		}
+		
 		
 		//히스토리와 calculate를 동시에 관리해야하므로 Service에서 처리
 		orderService.updateSmsMsOrdCalculate(orderCalculateVO, first);
-
-
-		
+		return true;		
 	}
 	
 	

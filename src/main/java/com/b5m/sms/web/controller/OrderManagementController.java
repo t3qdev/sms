@@ -83,10 +83,6 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping("/orderManagementSearch.ajax")
 	public List<SmsMsOrdVO> orderManagementSearch(SmsMsOrdVO smsMsOrdVO, String rowInput, String pageInput , HttpSession session, Model model, String filters) throws Exception {
 
-		System.out.println(smsMsOrdVO.toString());
-		System.out.println("rowInput : "+rowInput);
-		System.out.println("pageInput : "+pageInput);
-		
 		int row=0;
 		int page=0;
 		if(rowInput==null || "".equals(rowInput)){
@@ -106,13 +102,8 @@ public class OrderManagementController  extends AbstractFileController{
 //		if(searchKeyword==null || "".equals(searchKeyword)){
 //			smsMsOrdVO.setSearchKeyword(searchKeyword);
 //		}
-		System.out.println("row : " + row);
-		System.out.println("page : " +page);
-		System.out.println("setStart : " +smsMsOrdVO.getStart());
-		System.out.println("setEnd : " + smsMsOrdVO.getEnd());
-		System.out.println("searchKeyword : " + smsMsOrdVO.getSearchKeyword());
 
-		System.out.println(smsMsOrdVO.toString());
+
 		List<SmsMsOrdVO> smsMsOrdVOList = null;
 		smsMsOrdVOList = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
 		for(int i=0; i<smsMsOrdVOList.size(); i++){
@@ -131,7 +122,6 @@ public class OrderManagementController  extends AbstractFileController{
 			smsMsOrdVOList.get(i).setPage(page);
 			smsMsOrdVOList.get(i).setRow(row);
 		}
-		System.out.println("size : " + smsMsOrdVOList.size());
 
 		return smsMsOrdVOList;
 
@@ -139,16 +129,16 @@ public class OrderManagementController  extends AbstractFileController{
 	@ResponseBody
 	@RequestMapping("/orderManagementSave.ajax")
 	public String orderManagementSave(SmsMsOrdVO smsMsOrdVO) throws Exception{
-		System.out.println("controller로  들어온  vo : ");
-		System.out.println("1"+smsMsOrdVO.toString());
-		System.out.println("2"+smsMsOrdVO.getOrdNo()+smsMsOrdVO.getOrdSumAmt());;
-		System.out.println("3"+smsMsOrdVO.getPaptDpstAmt()+smsMsOrdVO.getPaptDpstDt()+smsMsOrdVO.getPaptDpstRate());
-		System.out.println("4"+smsMsOrdVO.getWrhsDlvDestCd()+smsMsOrdVO.getWrhsDlvDt());
-		System.out.println("5"+smsMsOrdVO.getDptrDlvDestCd()+smsMsOrdVO.getDptrDlvDt());
-		System.out.println("6"+smsMsOrdVO.getArvlDlvDestCd()+smsMsOrdVO.getArvlDlvDt());
-		System.out.println("7"+smsMsOrdVO.getPoDlvDt()+smsMsOrdVO.getPoDlvDestCd());
-		System.out.println("8"+smsMsOrdVO.getRaptDpstAmt()+smsMsOrdVO.getRaptDpstDt()+smsMsOrdVO.getRaptDpstRate());
-		System.out.println("9"+smsMsOrdVO.getB5mBuyCont());
+//		System.out.println("controller로  들어온  vo : ");
+//		System.out.println("1"+smsMsOrdVO.toString());
+//		System.out.println("2"+smsMsOrdVO.getOrdNo()+smsMsOrdVO.getOrdSumAmt());;
+//		System.out.println("3"+smsMsOrdVO.getPaptDpstAmt()+smsMsOrdVO.getPaptDpstDt()+smsMsOrdVO.getPaptDpstRate());
+//		System.out.println("4"+smsMsOrdVO.getWrhsDlvDestCd()+smsMsOrdVO.getWrhsDlvDt());
+//		System.out.println("5"+smsMsOrdVO.getDptrDlvDestCd()+smsMsOrdVO.getDptrDlvDt());
+//		System.out.println("6"+smsMsOrdVO.getArvlDlvDestCd()+smsMsOrdVO.getArvlDlvDt());
+//		System.out.println("7"+smsMsOrdVO.getPoDlvDt()+smsMsOrdVO.getPoDlvDestCd());
+//		System.out.println("8"+smsMsOrdVO.getRaptDpstAmt()+smsMsOrdVO.getRaptDpstDt()+smsMsOrdVO.getRaptDpstRate());
+//		System.out.println("9"+smsMsOrdVO.getB5mBuyCont());
 		
 		if(smsMsOrdVO.getPaptDpstDt() != null) smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getPaptDpstDt().replace("-",""));
 		if(smsMsOrdVO.getWrhsDlvDt() != null) smsMsOrdVO.setWrhsDlvDt(smsMsOrdVO.getWrhsDlvDt().replace("-",""));
@@ -197,10 +187,9 @@ public class OrderManagementController  extends AbstractFileController{
 	@Scheduled(fixedDelay = 3600000)   //1시간마다 실행
 	@RequestMapping(value="/smsMsOrdBatch")
 	public void smsMsOrdBatch() throws Exception{
-		LOGGER.debug("=================배치 시작=================" );
+		LOGGER.debug("=================Batch Start=================" );
 		orderService.batchSmsMsOrd();
-		System.out.println("batchSmsMsOrd 배치 함수 완료");
-		LOGGER.debug("=================배치 종료=================" );
+		LOGGER.debug("=================Batch End=================" );
 	}
 
 	
@@ -238,7 +227,6 @@ public class OrderManagementController  extends AbstractFileController{
 
         Date d = new Date();
         SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
-        System.out.println("현재날짜 : "+ today.format(d));
 		String filename = "[StatusReport]"+today.format(d)+".xls";
 		String sheetname = today.format(d);
 		
@@ -336,7 +324,22 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping(value="/orderManagementExcelTemplateDownload.do")
 	public void orderManagementExcelTemplateDownload(HttpServletRequest request, HttpServletResponse response) throws Exception{
 
-		
-//		downloadFile(HttpServletRequest request, HttpServletResponse response, final String fullPath);
+//		final String = "\\templates\\[Request]EstimateRequest.xlsx";
+//		downloadFile(request,response, fullPath);
 	}
+	
+	
+	// DELETE
+	// 개발 및 안정화 과정 중에서, DB 를 지우고 다시 Batch 해야 하는 상황 때문에 만든 함수입니다.
+	// 서비스가 진행되고 나서는 이 부분은 삭제 해야 합니다.
+	@RequestMapping(value="/deleteBeforeFirstBatch")
+	public String deleteBeforeFirstBatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		orderService.deleteBeforeFirstBatch();
+		String result = "orderManagement";
+		return result;
+	}
+	
+	
+	
+	
 }

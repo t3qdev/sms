@@ -98,6 +98,9 @@
 			)
 	</insert>
 
-
+	<delete id="smsMsOrdHistDAO.deleteSmsMsOrdHist_S" >
+			DELETE FROM sms_ms_ord_hist
+	
+	</delete>
 
 </sqlMap>

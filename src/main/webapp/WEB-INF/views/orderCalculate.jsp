@@ -72,7 +72,13 @@ $(function(){
 			async: false,
 			cache : false,
 			success:function(result){
-				alert("成功保存");
+				if(result){
+					alert("成功保存");	
+				}else{
+					alert("저장실패");
+				}
+				
+				
 				opener.parent.location.reload();
 				window.open("about:blank","_self").close();
 			}

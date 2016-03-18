@@ -9,8 +9,15 @@ public class OrderCalculateVO {
 	private String bactPrvdMemoCont;		//정산지급메모
 	private String bactRegrEml;		//정산지급자이메일
 	private String bactRegDt;			//정산 등록일 (사용안됨)
+	private String ordStatCd;		//상태가 정산인지 확인 할때 사용
 	
 	
+	public String getOrdStatCd() {
+		return ordStatCd;
+	}
+	public void setOrdStatCd(String ordStatCd) {
+		this.ordStatCd = ordStatCd;
+	}
 	public String getOrdNo() {
 		return ordNo;
 	}
@@ -53,9 +60,10 @@ public class OrderCalculateVO {
 		return "OrderCalculateVO [ordNo=" + ordNo + ", bactPrvdDt="
 				+ bactPrvdDt + ", bactPrvdAmt=" + bactPrvdAmt
 				+ ", bactPrvdMemoCont=" + bactPrvdMemoCont + ", bactRegrEml="
-				+ bactRegrEml + ", bactRegDt=" + bactRegDt + "]";
+				+ bactRegrEml + ", bactRegDt=" + bactRegDt + ", ordStatCd="
+				+ ordStatCd + "]";
 	}
-
+	
 	
 	
 	

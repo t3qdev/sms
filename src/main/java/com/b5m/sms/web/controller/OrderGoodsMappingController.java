@@ -41,11 +41,9 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		smsMsGudsVo.setGudsUpcId(UpcId);
 		 
 		smsMsGudsList=goodsService.selectSmsMsGudsByVO(smsMsGudsVo);	
-		System.out.println(smsMsGudsVo);
 		
 		//2.해당상품이 존재하면 img경로를 검색한다. 
 		for(SmsMsGudsVO vo : smsMsGudsList){
-			System.out.println(vo);
 			List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());	//한 guds_id에 이미지 여러개일수 있음
 			if(!gudsImgList.isEmpty()){ 
 				if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){				//첫번째이미지를 파일이미지로 사용
@@ -53,7 +51,6 @@ public class OrderGoodsMappingController extends AbstractFileController{
 				}
 			}			
 		}	
-		System.out.println(smsMsGudsList);
 
 		//3.model에 검색된 상품 출력
 		model.addAttribute("smsMsGudsList", smsMsGudsList);
@@ -69,7 +66,6 @@ public class OrderGoodsMappingController extends AbstractFileController{
 	@RequestMapping(value="/orderGoodsMappingSearch")
 	public List<SmsMsGudsVO> orderGoodsMappingSearch(Model model, String searchText) throws Exception{
 		//1.입력된 값으로 상품명, 바코드로 검색한다
-		System.out.println(searchText);
 		SmsMsGudsVO smsMsGudsVo = new SmsMsGudsVO();
 		smsMsGudsVo.setGudsKorNm(searchText);
 		smsMsGudsVo.setGudsCnsNm(searchText);
@@ -78,7 +74,6 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		
 		
 		for(SmsMsGudsVO vo : smsMsGudsList){
-			System.out.println(vo);
 			List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());	//한 guds_id에 이미지 여러개일수 있음
 			if(!gudsImgList.isEmpty()){ 
 				if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){				//첫번째이미지를 파일이미지로 사용
@@ -101,7 +96,6 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		smsMsOrdGudsVO.setGudsId(gudsId);
 		smsMsOrdGudsVO.setOrdNo(ordNo);
 		smsMsOrdGudsVO.setOrdGudsSeq(ordGudsSeq);
-		System.out.println("orderGoodsMappingSave [smsMsOrdGudsVO] : "+smsMsOrdGudsVO);
 		orderService.updateSmsMsOrdGudsMpng(smsMsOrdGudsVO);
 		
 

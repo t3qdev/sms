@@ -74,6 +74,10 @@
 			WHERE ORD_NO=#ordNo#
 	</delete>
 	
+	<delete id="smsMsEstmDAO.deleteSmsMsEstm_S" >
+			DELETE FROM sms_ms_estm
+			
+	</delete>
 	<insert id="smsMsEstmDAO.insertSmsMsEstm" parameterClass="smsMsEstmVO">
 			INSERT INTO sms_ms_estm 
 				( ORD_NO
