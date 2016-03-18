@@ -135,6 +135,9 @@
 				      <isNotEmpty  prepend="OR" property="gudsCnsNm">
 				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsCnsNm#,'%') ]]>
 				      </isNotEmpty >
+				      <isNotEmpty  prepend="OR" property="gudsKorNm">
+				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsKorNm#,'%') ]]>
+				      </isNotEmpty >
 				      <isNotEmpty  prepend="OR" property="gudsUpcId">
 				      		GUDS_UPC_ID =#gudsUpcId#
 				      </isNotEmpty >
@@ -170,7 +173,7 @@
 		
 		<select id="smsMsGudsDAO.selectSmsMsGudsGudsId" resultClass="String">
 			SELECT 
-	      		IFNULL(MAX(GUDS_ID),0)
+	      		IFNULL(MAX(CONVERT(guds_id, UNSIGNED)),0)
 	      	FROM 
 	      		sms_ms_guds
 		</select>

@@ -88,7 +88,7 @@ public class UserManagementController {
 					}else{
 						
 					}
-					smsMsUserVOList.get(i).setUserPwd(null);         // 패스워드는 암호화 되어 있다. 하지만 jsp 로 보내주지 않는다.
+					smsMsUserVOList.get(i).setUserPwd("**********");         // 패스워드는 암호화 되어 있다. 하지만 jsp 로 보내주지 않는다.
 				}
 			}
 		} catch (Exception e) {

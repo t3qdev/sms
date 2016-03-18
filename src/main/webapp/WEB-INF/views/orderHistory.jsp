@@ -91,7 +91,7 @@ $(function(){
             {name:'ordNo',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistSeq',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistRegDttm',align:'center',width:100,resizable:false,editable:true,editoptions:{readonly:'true'}},
-            {name:'ordStatCd',align:'center',width:70,resizable:false, formatter : formatterordStatCd, editable: true, edittype:"select",editoptions:{value:{N000550200:'进行',N000560100:'DROP'}} },
+            {name:'ordStatCd',align:'center',width:70,resizable:false, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550200:'进行',N000560100:'DROP'}} },
             {name:'ordHistWrtrEml',align:'center',width:70,resizable:false, editable:true,editoptions:{readonly:'true'}},
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
@@ -125,7 +125,7 @@ $(function(){
 				    "url" : '${web_ctx}/orderHistorySave.ajax',
 				    "extraparam" : {},
 				    "aftersavefunc" : function( response ) {
-// 				                          alert('saved : '+response);
+				                          alert('saved : '+response);
 				                      },
 				    "errorfunc": function( response ) {
 				                    	alert('error : '+response);
@@ -135,11 +135,11 @@ $(function(){
 				    "mtype" : "POST"
 				}
 			for(var i=0; i<id.length; i++){
-				var dataOrdStatCd = $('#jqgrid_a').getRowData(id[i]).ordStatCd;
-				alert("ordstatCd" + ordStatCd);
-				alert("dataOrdStatCd" + dataOrdStatCd);
+				jQuery("#jqgrid_a").jqGrid('saveRow',id[i]);
+				var dataOrdStatCd = $('#jqgrid_a').getCell(id[i], 'ordStatCd');
 				if(ordStatCd > dataOrdStatCd){
-					alert("negative");
+					alert("이전 단계로 돌아갈 수 없습니다.");
+					jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
 					return;
 				}
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);

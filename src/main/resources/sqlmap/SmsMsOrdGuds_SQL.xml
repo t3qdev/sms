@@ -69,7 +69,9 @@
 	
 	<select id="smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount"  resultClass="String">
 		SELECT 
-				IFNULL(      MAX(GUDS_ID)+1 , 1 ) AS GUDS_ID
+				IFNULL(      max(CONVERT(GUDS_ID, UNSIGNED))+1 , 1 ) AS GUDS_ID
+				
+				
 		FROM
 				sms_ms_ord_guds
 	</select>

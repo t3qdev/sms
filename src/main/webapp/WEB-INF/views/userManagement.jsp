@@ -74,13 +74,13 @@ $(function(){
             {name:'userEml',align:'center',editable:true, editrules:{required:true,email:true},editoptions:{readonly:'true'}},
             {name:'userAlasCnsNm',align:'center',width:80, editable: true, editrules:{required:true} },
 			{name:'userAlasEngNm',align:'center',width:80, editable: true, editrules:{required:true}},
-            {name:'userPwd',align:'center',formatter : formatterUserPwd, editable: true,editrules:{required:true}, edittype: "password"},
-            {name:'ognzDivCd',align:'center',width:80,formatter:formatterOgnzDivCd,editable: true, edittype:"select",editoptions:{value:{N000530100:'上海',N000530200:'韩国'}}},
-            {name:'roleGrpDivCd1',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},
-            {name:'roleGrpDivCd2',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
-            {name:'roleGrpDivCd3',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
-            {name:'roleGrpDivCd4',align:'center', formatter:formatterRoleGrpDivCd,editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
-            {name:'userStatCd',align:'center', formatter:formatterUserStatCd,editable: true, edittype:"select",editoptions:{value:"N000610100:재직;N000610200:휴직;N000610300:퇴직"}}		
+            {name:'userPwd',align:'center', editable: true,editrules:{required:true}, edittype: "password"},
+            {name:'ognzDivCd',align:'center',width:80,formatter:'select',editable: true, edittype:"select",editoptions:{value:{N000530100:'上海',N000530200:'韩国'}}},
+            {name:'roleGrpDivCd1',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},
+            {name:'roleGrpDivCd2',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
+            {name:'roleGrpDivCd3',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
+            {name:'roleGrpDivCd4',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
+            {name:'userStatCd',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:"N000610100:在职;N000610200:休假;N000610300:离职"}}		
         ],
     	onSelectRow: function(id){
     			jQuery('#jqgrid_a').jqGrid('editRow',id,false);
@@ -105,9 +105,15 @@ $(function(){
 		for(var i = 0; i <  allIds.length; i++ ){
 			jQuery("#jqgrid_a").jqGrid('saveRow',allIds[i]);
 			var userEml = $('#jqgrid_a').getCell(allIds[i], 'userEml');
+			var ind = $('#jqgrid_a').getInd(allIds[i],userAlasCnsNm);
+			
 			if(userEmlMap.has(userEml)){
 				alert("duplicated userEml");
-				jQuery('#jqgrid_a').jqGrid('editRow',allIds[i],false);
+				jQuery("#jqgrid_a").setGridParam({
+					url : "${web_ctx}/userManagementLoad.ajax",
+					ajaxGridOptions : {async:false},    // 동기로 변환
+					datatype : "json",
+				}).trigger('reloadGrid');
 				return;
 			}else{
 				userEmlMap.set(userEml,userEml);
@@ -115,13 +121,18 @@ $(function(){
 			var userAlasCnsNm = $('#jqgrid_a').getCell(allIds[i], 'userAlasCnsNm');
 			if(userAlasCnsNmMap.has(userAlasCnsNm)){
 				alert("duplicated CnsNM");
-				jQuery('#jqgrid_a').jqGrid('editRow',allIds[i],false);
+				jQuery("#jqgrid_a").setGridParam({
+					url : "${web_ctx}/userManagementLoad.ajax",
+					ajaxGridOptions : {async:false},    // 동기로 변환
+					datatype : "json",
+				}).trigger('reloadGrid');
 				return;
 			}else{
 				userAlasCnsNmMap.set(userAlasCnsNm,userAlasCnsNm);
 			}
+			
 		}
-		jQuery('#jqgrid_a').jqGrid('editRow',id,false);
+
 		// END: 이메일, 화명 중복 체크
 		
 		
@@ -140,6 +151,7 @@ $(function(){
 			    "mtype" : "POST"
 			}
 		for(var i=0; i<id.length; i++){
+				jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 		}
 		jQuery("#jqgrid_a").setGridParam({
@@ -183,6 +195,16 @@ $(function(){
 		}else{
 			return "";
 		}
+		return cellvalue;
+    }
+    function unformatterSelect1(cellvalue,options,rowObject){
+    	return $('#1_roleGrpDivCd' + options.rowId + ' option:selected').val();
+    }
+    function unformatterSelect2(cellvalue,options,rowObject){
+    	return $('#2_roleGrpDivCd' + options.rowId + ' option:selected').val();
+    }
+    function unformatterSelect(cellvalue,options,rowObject){
+    	return $('#2_roleGrpDivCd' + options.rowId + ' option:selected').val();
     }
 
     // jqgrid의 userStatCd 컬럼에 대한 formatter와 unformatter

@@ -462,7 +462,7 @@ private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IO
 				byte[] data = pictureData.getData();
 				String ext = pictureData.suggestFileExtension();
 
-				FileOutputStream out = new FileOutputStream(OPT_B5C_ETC+ordNo+ rowmark + ".jpg");
+				FileOutputStream out = new FileOutputStream(OPT_B5C_IMG+ordNo+ rowmark + ".jpg");
 				out.write(data);
 				out.close();
 
@@ -498,7 +498,7 @@ private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo) throws IO
 					byte[] data = pictureData.getData();
 					String ext = pictureData.suggestFileExtension();
 					
-					FileOutputStream out = new FileOutputStream(OPT_B5C_ETC+ordNo + ctMarker.getRow() + ".jpg");
+					FileOutputStream out = new FileOutputStream(OPT_B5C_IMG+ordNo + ctMarker.getRow() + ".jpg");
 					
 					out.write(data);
 					out.close();

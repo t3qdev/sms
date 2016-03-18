@@ -85,470 +85,369 @@ public class SmsMsOrdVO {
 	//orderManamentView 에서 바코드 OR 상품명으로 검색하기 위해서 필요
 	private String searchKeyword;
 
+	//orderManamentView 에서 딜규모에 환율 보여주기 위해서 필요
+	private BigDecimal korXchrAmt;
+	private BigDecimal cnsXchrAmt;
 	public String getOrdNo() {
 		return ordNo;
 	}
-
 	public void setOrdNo(String ordNo) {
 		this.ordNo = ordNo;
 	}
-
 	public String getOrdNm() {
 		return ordNm;
 	}
-
 	public void setOrdNm(String ordNm) {
 		this.ordNm = ordNm;
 	}
-
 	public String getOrdStatCd() {
 		return ordStatCd;
 	}
-
 	public void setOrdStatCd(String ordStatCd) {
 		this.ordStatCd = ordStatCd;
 	}
-
 	public String getB5cOrdNo() {
 		return b5cOrdNo;
 	}
-
 	public void setB5cOrdNo(String b5cOrdNo) {
 		this.b5cOrdNo = b5cOrdNo;
 	}
-
 	public String getDlvModeCd() {
 		return dlvModeCd;
 	}
-
 	public void setDlvModeCd(String dlvModeCd) {
 		this.dlvModeCd = dlvModeCd;
 	}
-
 	public String getDlvDestCd() {
 		return dlvDestCd;
 	}
-
 	public void setDlvDestCd(String dlvDestCd) {
 		this.dlvDestCd = dlvDestCd;
 	}
-
 	public String getCustId() {
 		return custId;
 	}
-
 	public void setCustId(String custId) {
 		this.custId = custId;
 	}
-
 	public BigDecimal getOrdSumAmt() {
 		return ordSumAmt;
 	}
-
 	public void setOrdSumAmt(BigDecimal ordSumAmt) {
 		this.ordSumAmt = ordSumAmt;
 	}
-
 	public String getOrdEstmDt() {
 		return ordEstmDt;
 	}
-
 	public void setOrdEstmDt(String ordEstmDt) {
 		this.ordEstmDt = ordEstmDt;
 	}
-
 	public String getOrdReqDt() {
 		return ordReqDt;
 	}
-
 	public void setOrdReqDt(String ordReqDt) {
 		this.ordReqDt = ordReqDt;
 	}
-
 	public String getOrdExpDt() {
 		return ordExpDt;
 	}
-
 	public void setOrdExpDt(String ordExpDt) {
 		this.ordExpDt = ordExpDt;
 	}
-
 	public String getOrdHopeArvlDt() {
 		return ordHopeArvlDt;
 	}
-
 	public void setOrdHopeArvlDt(String ordHopeArvlDt) {
 		this.ordHopeArvlDt = ordHopeArvlDt;
 	}
-
 	public String getOrdArvlDt() {
 		return ordArvlDt;
 	}
-
 	public void setOrdArvlDt(String ordArvlDt) {
 		this.ordArvlDt = ordArvlDt;
 	}
-
 	public String getStdXchrKindCd() {
 		return stdXchrKindCd;
 	}
-
 	public void setStdXchrKindCd(String stdXchrKindCd) {
 		this.stdXchrKindCd = stdXchrKindCd;
 	}
-
 	public BigDecimal getStdXchrAmt() {
 		return stdXchrAmt;
 	}
-
 	public void setStdXchrAmt(BigDecimal stdXchrAmt) {
 		this.stdXchrAmt = stdXchrAmt;
 	}
-
 	public String getBactRegDt() {
 		return bactRegDt;
 	}
-
 	public void setBactRegDt(String bactRegDt) {
 		this.bactRegDt = bactRegDt;
 	}
-
 	public String getBactRegrEml() {
 		return bactRegrEml;
 	}
-
 	public void setBactRegrEml(String bactRegrEml) {
 		this.bactRegrEml = bactRegrEml;
 	}
-
 	public String getBactPrvdDt() {
 		return bactPrvdDt;
 	}
-
 	public void setBactPrvdDt(String bactPrvdDt) {
 		this.bactPrvdDt = bactPrvdDt;
 	}
-
 	public BigDecimal getBactPrvdAmt() {
 		return bactPrvdAmt;
 	}
-
 	public void setBactPrvdAmt(BigDecimal bactPrvdAmt) {
 		this.bactPrvdAmt = bactPrvdAmt;
 	}
-
 	public String getBactPrvdMemoCont() {
 		return bactPrvdMemoCont;
 	}
-
 	public void setBactPrvdMemoCont(String bactPrvdMemoCont) {
 		this.bactPrvdMemoCont = bactPrvdMemoCont;
 	}
-
 	public String getPoSchdDt() {
 		return poSchdDt;
 	}
-
 	public void setPoSchdDt(String poSchdDt) {
 		this.poSchdDt = poSchdDt;
 	}
-
 	public String getPymtPrvdModeCont() {
 		return pymtPrvdModeCont;
 	}
-
 	public void setPymtPrvdModeCont(String pymtPrvdModeCont) {
 		this.pymtPrvdModeCont = pymtPrvdModeCont;
 	}
-
 	public String getCtrtTmplYn() {
 		return ctrtTmplYn;
 	}
-
 	public void setCtrtTmplYn(String ctrtTmplYn) {
 		this.ctrtTmplYn = ctrtTmplYn;
 	}
-
 	public String getSmplReqYn() {
 		return smplReqYn;
 	}
-
 	public void setSmplReqYn(String smplReqYn) {
 		this.smplReqYn = smplReqYn;
 	}
-
 	public String getQlfcReqYn() {
 		return qlfcReqYn;
 	}
-
 	public void setQlfcReqYn(String qlfcReqYn) {
 		this.qlfcReqYn = qlfcReqYn;
 	}
-
 	public String getCustOrdProcCont() {
 		return custOrdProcCont;
 	}
-
 	public void setCustOrdProcCont(String custOrdProcCont) {
 		this.custOrdProcCont = custOrdProcCont;
 	}
-
 	public String getPaptDpstDt() {
 		return paptDpstDt;
 	}
-
 	public void setPaptDpstDt(String paptDpstDt) {
 		this.paptDpstDt = paptDpstDt;
 	}
-
 	public BigDecimal getPaptDpstAmt() {
 		return paptDpstAmt;
 	}
-
 	public void setPaptDpstAmt(BigDecimal paptDpstAmt) {
 		this.paptDpstAmt = paptDpstAmt;
 	}
-
 	public BigDecimal getPaptDpstRate() {
 		return paptDpstRate;
 	}
-
 	public void setPaptDpstRate(BigDecimal paptDpstRate) {
 		this.paptDpstRate = paptDpstRate;
 	}
-
 	public String getRaptDpstDt() {
 		return raptDpstDt;
 	}
-
 	public void setRaptDpstDt(String raptDpstDt) {
 		this.raptDpstDt = raptDpstDt;
 	}
-
 	public BigDecimal getRaptDpstAmt() {
 		return raptDpstAmt;
 	}
-
 	public void setRaptDpstAmt(BigDecimal raptDpstAmt) {
 		this.raptDpstAmt = raptDpstAmt;
 	}
-
 	public BigDecimal getRaptDpstRate() {
 		return raptDpstRate;
 	}
-
 	public void setRaptDpstRate(BigDecimal raptDpstRate) {
 		this.raptDpstRate = raptDpstRate;
 	}
-
 	public String getWrhsDlvDt() {
 		return wrhsDlvDt;
 	}
-
 	public void setWrhsDlvDt(String wrhsDlvDt) {
 		this.wrhsDlvDt = wrhsDlvDt;
 	}
-
 	public String getWrhsDlvDestCd() {
 		return wrhsDlvDestCd;
 	}
-
 	public void setWrhsDlvDestCd(String wrhsDlvDestCd) {
 		this.wrhsDlvDestCd = wrhsDlvDestCd;
 	}
-
 	public String getDptrDlvDt() {
 		return dptrDlvDt;
 	}
-
 	public void setDptrDlvDt(String dptrDlvDt) {
 		this.dptrDlvDt = dptrDlvDt;
 	}
-
 	public String getDptrDlvDestCd() {
 		return dptrDlvDestCd;
 	}
-
 	public void setDptrDlvDestCd(String dptrDlvDestCd) {
 		this.dptrDlvDestCd = dptrDlvDestCd;
 	}
-
 	public String getArvlDlvDt() {
 		return arvlDlvDt;
 	}
-
 	public void setArvlDlvDt(String arvlDlvDt) {
 		this.arvlDlvDt = arvlDlvDt;
 	}
-
 	public String getArvlDlvDestCd() {
 		return arvlDlvDestCd;
 	}
-
 	public void setArvlDlvDestCd(String arvlDlvDestCd) {
 		this.arvlDlvDestCd = arvlDlvDestCd;
 	}
-
 	public String getPoDlvDt() {
 		return poDlvDt;
 	}
-
 	public void setPoDlvDt(String poDlvDt) {
 		this.poDlvDt = poDlvDt;
 	}
-
 	public String getPoDlvDestCd() {
 		return poDlvDestCd;
 	}
-
 	public void setPoDlvDestCd(String poDlvDestCd) {
 		this.poDlvDestCd = poDlvDestCd;
 	}
-
 	public String getOrdMemoCont() {
 		return ordMemoCont;
 	}
-
 	public void setOrdMemoCont(String ordMemoCont) {
 		this.ordMemoCont = ordMemoCont;
 	}
-
 	public String getOrdTypeCd() {
 		return ordTypeCd;
 	}
-
 	public void setOrdTypeCd(String ordTypeCd) {
 		this.ordTypeCd = ordTypeCd;
 	}
-
 	public String getB5mBuyCont() {
 		return b5mBuyCont;
 	}
-
 	public void setB5mBuyCont(String b5mBuyCont) {
 		this.b5mBuyCont = b5mBuyCont;
 	}
-
 	public String getUserEml() {
 		return userEml;
 	}
-
 	public void setUserEml(String userEml) {
 		this.userEml = userEml;
 	}
-
 	public String getUserAlasCnsNm() {
 		return userAlasCnsNm;
 	}
-
 	public void setUserAlasCnsNm(String userAlasCnsNm) {
 		this.userAlasCnsNm = userAlasCnsNm;
 	}
-
 	public String getClientNm() {
 		return clientNm;
 	}
-
 	public void setClientNm(String clientNm) {
 		this.clientNm = clientNm;
 	}
-
 	public String getOrderedGudsNm() {
 		return orderedGudsNm;
 	}
-
 	public void setOrderedGudsNm(String orderedGudsNm) {
 		this.orderedGudsNm = orderedGudsNm;
 	}
-
 	public String getShowDetail() {
 		return showDetail;
 	}
-
 	public void setShowDetail(String showDetail) {
 		this.showDetail = showDetail;
 	}
-
 	public String getKorMng() {
 		return korMng;
 	}
-
 	public void setKorMng(String korMng) {
 		this.korMng = korMng;
 	}
-
 	public String getCnsMng() {
 		return cnsMng;
 	}
-
 	public void setCnsMng(String cnsMng) {
 		this.cnsMng = cnsMng;
 	}
-
 	public String getHistDetail() {
 		return histDetail;
 	}
-
 	public void setHistDetail(String histDetail) {
 		this.histDetail = histDetail;
 	}
-
 	public int getStart() {
 		return start;
 	}
-
 	public void setStart(int start) {
 		this.start = start;
 	}
-
 	public int getEnd() {
 		return end;
 	}
-
 	public void setEnd(int end) {
 		this.end = end;
 	}
-
 	public String getBactPrvdDtPlusbactPrvdAmt() {
 		return bactPrvdDtPlusbactPrvdAmt;
 	}
-
 	public void setBactPrvdDtPlusbactPrvdAmt(String bactPrvdDtPlusbactPrvdAmt) {
 		this.bactPrvdDtPlusbactPrvdAmt = bactPrvdDtPlusbactPrvdAmt;
 	}
-
 	public String getCount() {
 		return count;
 	}
-
 	public void setCount(String count) {
 		this.count = count;
 	}
-
 	public int getPage() {
 		return page;
 	}
-
 	public void setPage(int page) {
 		this.page = page;
 	}
-
 	public int getRow() {
 		return row;
 	}
-
 	public void setRow(int row) {
 		this.row = row;
 	}
-
 	public String getSearchKeyword() {
 		return searchKeyword;
 	}
-
 	public void setSearchKeyword(String searchKeyword) {
 		this.searchKeyword = searchKeyword;
 	}
-
+	public BigDecimal getKorXchrAmt() {
+		return korXchrAmt;
+	}
+	public void setKorXchrAmt(BigDecimal korXchrAmt) {
+		this.korXchrAmt = korXchrAmt;
+	}
+	public BigDecimal getCnsXchrAmt() {
+		return cnsXchrAmt;
+	}
+	public void setCnsXchrAmt(BigDecimal cnsXchrAmt) {
+		this.cnsXchrAmt = cnsXchrAmt;
+	}
 	@Override
 	public String toString() {
 		return "SmsMsOrdVO [ordNo=" + ordNo + ", ordNm=" + ordNm
@@ -583,9 +482,12 @@ public class SmsMsOrdVO {
 				+ ", start=" + start + ", end=" + end
 				+ ", bactPrvdDtPlusbactPrvdAmt=" + bactPrvdDtPlusbactPrvdAmt
 				+ ", count=" + count + ", page=" + page + ", row=" + row
-				+ ", searchKeyword=" + searchKeyword + "]";
+				+ ", searchKeyword=" + searchKeyword + ", korXchrAmt="
+				+ korXchrAmt + ", cnsXchrAmt=" + cnsXchrAmt + "]";
 	}
 
+	
+	
 	
 	
 	

@@ -331,5 +331,12 @@ public class OrderManagementController  extends AbstractFileController{
 			return date;
 		}
 	}
-	
+	// ordManagement.jsp  에서 엑셀다운로드 클릭하면, JQgrid 를 그대로 가져와서 엑셀 다운로드 되게 만들어준다.
+	@ResponseBody
+	@RequestMapping(value="/orderManagementExcelTemplateDownload.do")
+	public void orderManagementExcelTemplateDownload(HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+		
+//		downloadFile(HttpServletRequest request, HttpServletResponse response, final String fullPath);
+	}
 }

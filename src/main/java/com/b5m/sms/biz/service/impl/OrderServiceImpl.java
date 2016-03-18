@@ -184,6 +184,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		BigDecimal stdXchrAmt = null;			//  기준환율 - 기준환율 테이블 참조
 		String ordHopeArvlDt = null;      //  희망인도일자 - B5C의 ESTM_RCP_REQ_DT
 		
+		String ordSumAmt = null;   // 딜규모  - sql 에서 계산해옴
+
 //		if("N000620100".equals(ordTypeCd)){
 //			b5cOrdNoList = tbMsOrdDAO.selectTbMsOrdForSmsMsOrd();
 //		}else if("N000620200".equals(ordTypeCd)){
@@ -200,7 +202,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			stdXchrKindCd = tbMsOrdVOList.get(i).getStdXchrKindCd();
 			if(tbMsOrdVOList.get(i).getStdXchrAmt() !=null) stdXchrAmt = new BigDecimal(tbMsOrdVOList.get(i).getStdXchrAmt());
 			ordHopeArvlDt = tbMsOrdVOList.get(i).getOrdHopeArvlDt();
-			
+			ordSumAmt = tbMsOrdVOList.get(i).getOrdSumAmt();
+
 			
 			SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();
 			smsMsOrdVO.setOrdNo(ordNo);
@@ -214,8 +217,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
 			smsMsOrdVO.setStdXchrKindCd(stdXchrKindCd);
 			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
-			
-
+			if(ordSumAmt != null) smsMsOrdVO.setOrdSumAmt(new BigDecimal(ordSumAmt));
+		
 
 
 			// SMS_MS_ORD_GUDS 추가.
@@ -231,17 +234,17 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 
 			
 			
-			// 아래에는, 오더의 딜규모 컬럼에,  관계된 상품들의 상품단가*가격  을 합산한 값을 넣어주는 로직이 들어가야 한다.
-			BigDecimal ordSumAmt = new BigDecimal("0");       // 딜규모
-			for(int k=0; k<tbMsOrdBatchVOList.size(); k++){
-				if(tbMsOrdBatchVOList.get(k).getOrdGudsQty()!= null && tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc()!=null){
-					BigDecimal ordGudsQty = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsQty());
-					BigDecimal ordGudsSalePrc = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc());
-					BigDecimal plus = ordGudsQty.add(ordGudsSalePrc);
-					ordSumAmt = ordSumAmt.add(plus);
-				}
-			}
-			smsMsOrdVO.setOrdSumAmt(ordSumAmt);
+//			// 아래에는, 오더의 딜규모 컬럼에,  관계된 상품들의 상품단가*가격  을 합산한 값을 넣어주는 로직이 들어가야 한다.
+//			BigDecimal ordSumAmt = new BigDecimal("0");       // 딜규모
+//			for(int k=0; k<tbMsOrdBatchVOList.size(); k++){
+//				if(tbMsOrdBatchVOList.get(k).getOrdGudsQty()!= null && tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc()!=null){
+//					BigDecimal ordGudsQty = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsQty());
+//					BigDecimal ordGudsSalePrc = new BigDecimal(tbMsOrdBatchVOList.get(k).getOrdGudsSalePrc());
+//					BigDecimal plus = ordGudsQty.add(ordGudsSalePrc);
+//					ordSumAmt = ordSumAmt.add(plus);
+//				}
+//			}
+//			smsMsOrdVO.setOrdSumAmt(ordSumAmt);
 			
 			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  														// order 이동 
 			batch2(tbMsOrdBatchVOList);																					// 상품 이동batch()

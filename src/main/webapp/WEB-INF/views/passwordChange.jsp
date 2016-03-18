@@ -88,17 +88,95 @@
 				},
 				userPwd: {
 					required : true,
-					maxlength :20
+// 					minlength:6,
+					maxlength :20,
+					pwcheck : true
 				},
 				userPwd_again : {
 					required : true,
-					equalTo : "#userPwd"
+// 					minlength:6,
+					equalTo : "#userPwd",
+					pwcheck : true
 				}
 			},
+			 messages: {
+				 userPwd_old: {
+					 required: "required"
+                 },
+                 userPwd: {
+                	 required: "required"
+                 },
+                 userPwd_again:{
+                	 required: "required"
+                 }
+			},
 			submitHandler: function(form){
+//		 	    var newPassword = document.getElementById('changePasswordForm').newPassword.value;
+//		 	    var minNumberofChars = 6;
+//		 	    var maxNumberofChars = 16;
+//		 	    var regularExpression  = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+//		 	    alert(newPassword); 
+//		 	    if(newPassword.length < minNumberofChars || newPassword.length > maxNumberofChars){
+//		 	        return false;
+//		 	    }
+//		 	    if(!regularExpression.test(newPassword)) {
+//		 	        alert("password should contain atleast one number and one special character");
+//		 	        return false;
+//		 	    }
+
+
 				form.submit();
 			}
+
 		});
+// 		checkPwd = function() {
+// 		    var str = document.getElementById('pass').value;
+// 		    if (str.length < 6) {
+// 		        alert("too_short");
+// 		        return("too_short");
+// 		    } else if (str.length > 50) {
+// 		        alert("too_long");
+// 		        return("too_long");
+// 		    } else if (str.search(/\d/) == -1) {
+// 		        alert("no_num");
+// 		        return("no_num");
+// 		    } else if (str.search(/[a-zA-Z]/) == -1) {
+// 		        alert("no_letter");
+// 		        return("no_letter");
+// 		    } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+\.\,\;\:]/) != -1) {
+// 		        alert("bad_char");
+// 		        return("bad_char");
+// 		    }
+// 		    alert("oukey!!");
+// 		    return("ok");
+// 		}
+		 $.validator.addMethod("pwcheck",
+		     function(value, element) {
+	 		    if (value.length < 6) {
+
+		        return false;
+		    } else if (value.length > 50) {
+
+		        return false;
+		    } else if (value.search(/\d/) == -1) {
+
+		        return false;
+		    } else if (value.search(/[a-zA-Z]/) == -1) {
+
+		        return false;
+		    } else if (value.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+\.\,\;\:]/) != -1) {
+
+		        return false;
+		    }
+
+		    return true;
+		        
+		 },"password should contain atleast one number, minlength is 6");
+
+//         $.validator.addMethod("pwcheck",
+//                 function(value, element) {
+//                     return /^[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(value);
+//             },"password should contain atleast one number and one special character");
 		
 	});
 </script>

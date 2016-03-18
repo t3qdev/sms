@@ -667,10 +667,9 @@ public class OrderDetailController extends AbstractFileController{
 				//담당자 찾기 
 				List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
 				for(SmsMsUserVO vo : oprList){
-					if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 상해팀
-						/*String oprCns =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
-						orderDetail.setOprCns(oprCns);*/
-						orderDetailVO.setOprCns(vo.getUserEml());
+					if(("N000530200").equals(vo.getOgnzDivCd())){			//N000530200 한국팀
+
+						orderDetailVO.setOprKr(vo.getUserAlasCnsNm());
 					}
 				}
 				//1-1.견적서이름
@@ -798,7 +797,7 @@ public class OrderDetailController extends AbstractFileController{
 				Cell newCell9 = sourceRow.getCell(9);		//URL
 				newCell9.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUrlAddr());
 				Cell newCell10= sourceRow.getCell(10);		//담당자
-				newCell10.setCellValue(orderDetailVO.getOprCns());
+				newCell10.setCellValue(orderDetailVO.getOprKr());
 				
 				//요약정보 표시
 
@@ -886,7 +885,7 @@ public class OrderDetailController extends AbstractFileController{
 			                	}
 			                    break;
 			                case 10:		
-			                	newCell.setCellValue(orderDetailVO.getOprCns());
+			                	newCell.setCellValue(orderDetailVO.getOprKr());
 			                    break;
 			                case 14:		//요약정보-단가
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){

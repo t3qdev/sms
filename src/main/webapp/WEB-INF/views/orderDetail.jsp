@@ -186,7 +186,7 @@
                     	<input type="hidden" id="imgSrcPath" name="imgSrcPath" value="${smsMsOrdGuds.imgSrcPath}">
                     	<input type="hidden" id="ordGudsSeq" name="ordGudsSeq" value="${smsMsOrdGuds.ordGudsSeq}">
                     	<input type="hidden" id="gudsId" name="gudsId" value="${smsMsOrdGuds.gudsId}">                                	
-                        <td><div><input type="text" id="ordGudsUpcId" name="ordGudsUpcId" value="${smsMsOrdGuds.ordGudsUpcId}"></div></td>
+                        <td><div><input type="text" id="ordGudsUpcId" name="ordGudsUpcId" value="${smsMsOrdGuds.ordGudsUpcId}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsCnsNm" name="ordGudsCnsNm" value="${smsMsOrdGuds.ordGudsCnsNm}"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsQty" name="ordGudsQty" value="${smsMsOrdGuds.ordGudsQty}" class="tac"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsSizeVal" name="ordGudsSizeVal" value="${smsMsOrdGuds.ordGudsSizeVal}" class="tac"></div></td>
@@ -352,12 +352,22 @@ $(function(){
 	var ordStatCd = '${orderDetail.ordStatCd }';
 	
 	//버튼핸들링
-	if(ordStatCd=='N000550400' ){
+	if(ordStatCd==''){
+		$('#btn_01').hide();	//PO업로드
+		$("#btn_proc01").hide();	//PO확인
+		$('#poExcelDownload').hide();
+		$("#btn_proc02").hide();	//정산
+		$(".btn-search").hide();		//상품 매핑
+		$("#excelDownload").hide();	//주문내역 다운로드
+		$("#orderFileUpload").hide();//파일업로드
+		$("#orderFile").hide();	//파일선택창
+	}
+	if(ordStatCd=='N000550100' || ordStatCd=='N000550400' ){
 		$('#btn_01').hide();	//PO업로드
 	}
 	if(ordStatCd=='N000550100' || ordStatCd=='N000550200'){
 		$("#btn_proc01").hide();	//PO확인
-		$('#poExcelDownload').hide();
+		$('#poExcelDownload').hide(); 
 		$("#btn_proc02").hide();	//정산
 		
 	}
@@ -367,9 +377,9 @@ $(function(){
 		$(":text").attr("disabled","true");
 		$(".selectbox").attr("disabled","true");
 	}
-	if('${isSaved}'=='N'){
+/* 	if('${isSaved}'=='N'){
 		$(".btn-search").hide();
-	}
+	} */
 	
 		
 	

@@ -37,7 +37,12 @@
 		<result property="ordEstmDt" column="ORD_ESTM_DT" />
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" />
 		<result property="stdXchrAmt" column="STD_XCHR_AMT" />
+		<result property="rmbXchrAmt" column="STD_XCHR_AMT" />
+		<result property="ordSumAmt" column="ORD_SUM_AMT" />
+
 		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" />
+		
+		
 	</resultMap>
 	
 	<select id="tbMsOrdDAO.selectTbMsOrdForSmsMsOrd"  resultMap="tbMsOrd">
@@ -49,6 +54,13 @@
 					,DATE_FORMAT(SYS_REG_DTTM,"%Y%m%d") AS ORD_ESTM_DT
 					,'N000590100' AS STD_XCHR_KIND_CD
 					, USD_XCHR_AMT AS STD_XCHR_AMT
+					,RMB_XCHR_AMT AS RMB_XCHR_AMT
+					
+					,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC)
+								FROM tb_ms_ord_guds_opt x
+								WHERE A.CUST_ID = X.CUST_ID
+								AND A.ORD_ID = X.ORD_ID) AS ORD_SUM_AMT
+
 					, A.ESTM_RCP_REQ_DT AS ORD_HOPE_ARVL_DT
 	  
 	  FROM tb_ms_ord A LEFT OUTER JOIN tb_ms_xchr B

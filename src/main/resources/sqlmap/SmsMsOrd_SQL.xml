@@ -97,8 +97,6 @@
 		<result property="cnsMng" column="CNS_MNG" />
 		<result property="ordTypeCd" column="ORD_TYPE_CD" />
 		<result property="histDetail" column="HIST_DETAIL" />
-		
-		
 		<result property="ordStatCd" column="ORD_STAT_CD" />
 		<result property="bactPrvdDt" column="BACT_PRVD_DT" />
 		<result property="bactPrvdAmt" column="BACT_PRVD_AMT" />
@@ -123,7 +121,43 @@
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
 
-		
+	</resultMap>
+	<resultMap id="smsMsOrdViewWithXchr" class="com.b5m.sms.vo.SmsMsOrdVO">
+		<result property="ordNo" column="ORD_NO" />
+		<result property="ordReqDt" column="ORD_REQ_DT" />
+		<result property="clientNm" column="CLIENT_NM" />
+		<result property="orderedGudsNm" column="ORDERED_GUDS_NM" />
+		<result property="showDetail" column="SHOW_DETAIL" />
+		<result property="ordSumAmt" column="ORD_SUM_AMT" />
+		<result property="korMng" column="KOR_MNG" />
+		<result property="cnsMng" column="CNS_MNG" />
+		<result property="ordTypeCd" column="ORD_TYPE_CD" />
+		<result property="histDetail" column="HIST_DETAIL" />
+		<result property="ordStatCd" column="ORD_STAT_CD" />
+		<result property="bactPrvdDt" column="BACT_PRVD_DT" />
+		<result property="bactPrvdAmt" column="BACT_PRVD_AMT" />
+		<result property="paptDpstDt" column="PAPT_DPST_DT" />
+		<result property="paptDpstAmt" column="PAPT_DPST_AMT"/>
+		<result property="paptDpstRate" column="PAPT_DPST_RATE" />
+		<result property="wrhsDlvDt" column="WRHS_DLV_DT" />
+		<result property="wrhsDlvDestCd" column="WRHS_DLV_DEST_CD" />
+		<result property="dptrDlvDt" column="DPTR_DLV_DT" />
+		<result property="dptrDlvDestCd" column="DPTR_DLV_DEST_CD" />
+		<result property="arvlDlvDt" column="ARVL_DLV_DT" />
+		<result property="arvlDlvDestCd" column="ARVL_DLV_DEST_CD" />
+		<result property="poDlvDt" column="PO_DLV_DT" />
+		<result property="poDlvDestCd" column="PO_DLV_DEST_CD" />
+		<result property="raptDpstDt" column="RAPT_DPST_DT" />
+		<result property="raptDpstAmt" column="RAPT_DPST_AMT" />
+		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
+		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
+		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
+		<result property="count" column="COUNT"/>
+		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
+		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
+		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
+		<result property="korXchrAmt" column="KOR_XCHR_AMT"/>
+		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/>
 	</resultMap>
 		
 	<insert id="smsMsOrdDAO.insertSmsMsOrd_S" parameterClass="smsMsOrdVO">
@@ -247,7 +281,9 @@
 	
 	<select id="smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo"   resultClass="String">
 		SELECT 
-			IFNULL(      MAX(ORD_NO)+1 , CONCAT(DATE_FORMAT(NOW(),"%Y%m%d"),"000")            ) 
+			IFNULL(      max(CONVERT(ORD_NO, UNSIGNED))+1 , CONCAT(DATE_FORMAT(NOW(),"%Y%m%d"),"000")            ) 
+			
+			
 		FROM 
 			sms_ms_ord
 		WHERE 
@@ -403,7 +439,7 @@
 			]]>
 	</update>
 	
-	<select id="smsMsOrdDAO.selectSmsMsOrdForOrderManamentView" parameterClass="smsMsOrdVO" resultMap="smsMsOrdView">
+	<select id="smsMsOrdDAO.selectSmsMsOrdForOrderManamentView" parameterClass="smsMsOrdVO" resultMap="smsMsOrdViewWithXchr">
 	SELECT 
 	
 				A.ORD_NO AS ORD_NO
@@ -443,9 +479,17 @@
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
-	    		
+	    	  ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.USD_XCHR_AMT) 
+		           FROM tb_ms_ord_guds_opt x
+				  WHERE A.CUST_ID = X.CUST_ID
+		            AND A.B5C_ORD_NO = X.ORD_ID) AS KOR_XCHR_AMT
+		       ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.RMB_XCHR_AMT) 
+		           FROM tb_ms_ord_guds_opt x
+				  WHERE A.CUST_ID = X.CUST_ID
+		            AND A.B5C_ORD_NO = X.ORD_ID) AS CNS_XCHR_AMT
 		FROM
-				 sms_ms_ord A
+				 sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
+   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -2)
 		WHERE 1=1 
 				<isNotEmpty property="ordNo">			 
 					 AND ORD_NO = #ordNo#

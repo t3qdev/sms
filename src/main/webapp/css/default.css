@@ -1,6 +1,6 @@
 /* RESET */
 *{box-sizing:border-box;outline:none}
-html{font-family:Malgun gothic,Verdana,Arial,sans-serif;font-size:12px}
+html{font-family:'돋움',dotum,Verdana,Arial,sans-serif;font-size:12px}
 body{width:100%;min-width:1200px;height:100%;margin:0;padding:0;background:#fff;-webkit-text-size-adjust:none}
 body.pop{width:100%;min-width:auto}
 header,footer,section,nav,article,aside,div{margin:0;padding:0}
@@ -16,8 +16,8 @@ hr{overflow:hidden;margin-top:50px;margin-bottom:10px;border-width:1px 0 0;borde
 section hr{margin:5px 0}
 p{margin:0;padding:6px 0}
 input{margin:0;padding:0;vertical-align:top;}
-input[type=text],input[type=password]{height:24px;padding:2px 4px;border:1px solid #ccc;background-color:#fefefe;font-size:12px;outline:none}
-input[type=text]:hover,input[type=password]:hover,input[type=text]:focus,input[type=password]:focus,input[type=file]:hover,input[type=file]:focus{border-color:#ff8e00}
+input[type=text],input[type=password]{height:24px;padding:2px 4px;border:1px solid #ccc;background-color:#fefefe;font-size:12px;outline:none;font-family:'돋움',dotum,Verdana,Arial,sans-serif;}
+input[type=text]:hover,input[type=password]:hover,input[type=text]:focus,input[type=password]:focus,input[type=file]:hover,input[type=file]:focus{border-color:#2c3e50}
 input[type=file]{height:24px;padding:1px;border:1px solid #ccc;background-color:#fefefe;font-size:12px;outline:none}
 input[type=checkbox],input[type=radio]{margin-top:-2px;vertical-align:middle}
 input[readonly=readonly],textarea[readonly=readonly]{border-color:#e5e5e5!important;background:#f5f5f5;color:#afafaf}
@@ -30,10 +30,10 @@ img{margin:0;padding:0;border:0}
 .tac{text-align:center!important}
 .tal{text-align:left!important}
 /* HEADER */
-header{position:relative;min-width:900px;height:80px;background:#444}
+header{position:relative;min-width:900px;height:90px;background:#2c3e50}
 header h1{display:block;width:452px;height:50px;margin-left:10px;padding:5px 0;background:url(../images/logo.png) 0 5px no-repeat}
 header h1 span{display:block;overflow:hidden;width:0;height:0;color:#ff8e00;text-indent:-9999px}
-header .sms_theme{ position:absolute;top:58px; right:10px; z-index:20}
+header .sms_theme{display:none; position:absolute;top:58px; right:10px; z-index:20}
 header .sms_theme li{float:left;margin-left:3px}
 header .sms_theme li a{display:block;width:15px; height:15px; background:#fff; box-sizing:border-box; padding:1px; border:1px solid #ccc;}
 header .sms_theme li a span{display:block;width:11px; height:11px;background:#000; box-sizing:border-box;}
@@ -45,12 +45,13 @@ header nav{position:absolute;top:50px;right:0;left:0;height:30px;border-top:1px 
 header nav:LAST-CHILD{position:absolute;top:0;height:50px;border-bottom:1px solid #333}
 header nav ul{display:inline-block}
 header nav ul li{float:left}
-header nav ul li a{display:block;height:29px;margin:0;padding:6px 0;text-decoration:none}
-header nav ul li a span{display:inline-block;padding:0 20px;font-weight:bold;font-size:13px;line-height:16px;color:#eee;vertical-align:top}
-header nav ul li a.ui-state-active{border:0;background:#fff;color:#444}
+header nav ul li a{display:block;height:39px;margin:0;padding:6px 0;text-decoration:none}
+header nav ul li a span{display:inline-block;padding:0 20px;font-weight:bold;font-size:14px;line-height:30px;color:#eee;vertical-align:top}
+header nav ul li a.ui-state-active{border:0;background:#fff;color:#444;border-radius:10px 10px 0 0;}
 header nav ul li a.ui-state-active span{color:#444}
 /*header nav ul li a:HOVER span{color:#ff8e00}*/
-header nav ul li:FIRST-CHILD a span{/*padding-left:42px;background:url(../images/ic_home.png) 15px 0 no-repeat;*/color:#ff8e00}
+header nav ul li:FIRST-CHILD a span{/*padding-left:42px;background:url(../images/ic_home.png) 15px 0 no-repeat;*/color:#fff}
+header nav ul li:FIRST-CHILD a.ui-state-active span{/*padding-left:42px;background:url(../images/ic_home.png) 15px 0 no-repeat;*/color:#444;font-size:16px}
 header nav:LAST-CHILD ul{float:right}
 header nav:LAST-CHILD ul li a{height:30px;margin:0;padding:5px 10px 0 0;text-decoration:none}
 header nav:LAST-CHILD ul li a span{padding:0;background:transparent;font-weight:normal;font-size:12px;line-height:14px;color:#eee;vertical-align:top}
@@ -58,7 +59,7 @@ header nav:LAST-CHILD ul li:FIRST-CHILD a span{}
 header nav:LAST-CHILD ul li:FIRST-CHILD a span:FIRST-CHILD{padding:0 5px 0 0}
 
 /* FOOTER */
-footer{padding:20px;color:#eee;text-align:center; background:#222}
+footer{padding:20px;color:#eee;text-align:center; background:#2c3e50}
 .dialog footer{ background:#fff !Important;}
 footer nav{text-align:center}
 footer nav ul{display:inline-block}
@@ -84,7 +85,7 @@ article nav:FIRST-CHILD li a.ui-state-active span{font-weight:bold;color:#444}
 article nav:FIRST-CHILD li a:HOVER span{color:#ff8e00}
 
 article>h1{position:relative;margin-bottom:10px;border-bottom:1px solid #ddd}
-article>h1 span{display:inline-block;margin-bottom:-1px;padding:20px 0 6px;border-bottom:3px solid #ff8e00;font-size:1.5em}
+article>h1 span{display:inline-block;margin-bottom:-1px;padding:20px 0 6px;border-bottom:3px solid #e74c3c;font-size:1.5em}
 article>h1 a{position:absolute;right:0;bottom:0}
 article>h1 a span{border:0;font-size:12px;font-weight:normal;color:#666}
 article>h1 a:hover span{color:#ff8e00}
@@ -116,7 +117,7 @@ section table tbody th{padding:4px 0;text-align:left}
 section table td{padding:4px 0;text-align:right}
 section table th span,section table td span{padding:0 4px}
 
-div.ui-layout-single>section{margin:10px 0;background:#f2f2f2}
+div.ui-layout-single>section{margin:10px 0;background:#ecf0f1}
 div.ui-layout-double{padding:0!important}
 div.ui-layout-double >section,div.ui-layout-double >ul{float:left;width:49%;background:#f2f2f2}
 div.ui-layout-double>section:nth-child(odd),div.ui-layout-double>ul:nth-child(odd){margin:10px 2% 10px 0}
@@ -292,11 +293,11 @@ a.icon-left span{display:inline-block;display:block;padding-left:15px!important}
 
 li .ui-button,td .ui-button{height:24px;border:0!important}
 .ui-button span.ui-button-text{margin:0!important;padding-top:2px!important;padding-bottom:2px!important}
-.ui-button.ui-state-default{background:#ff8e00;color:#fff}
-.ui-button.ui-state-active{background:#ff8e00;color:#fff}
-.ui-button.ui-state-hover{background:#ff8e00;color:#fff}
+.ui-button.ui-state-default{background:#e74c3c;color:#fff}
+.ui-button.ui-state-active{background:#e74c3c;color:#fff}
+.ui-button.ui-state-hover{background:#e74c3c;color:#fff}
 .ui-button.ui-state-default .ui-icon{background-image:url(../images/ui-icons_ffffff_256x240.png)}
-.ui-button.ui-state-active .ui-icon{background-image:url(../images/ui-icons_ff8e00_256x240.png)}
+.ui-button.ui-state-active .ui-icon{background-image:url(../images/ui-icons_e74c3c_256x240.png)}
 .ui-button.ui-state-hover .ui-icon{background-image:url(../images/ui-icons_ffffff_256x240.png)}
 .ui-button-icon-only{width:28px;height:28px}
 .ui-buttonset label{height:26px!important;padding:0!important}
@@ -321,8 +322,8 @@ li .ui-button,td .ui-button{height:24px;border:0!important}
 .h400{height:400px!important}
 .ui-login{background:#fefefe}
 .ui-login #login_form .ui-dialog-titlebar{display:none!important}
-.ui-login #login_form article section{background:#f4f4f4}
-.ui-login #login_form article section label{min-width:70px}
+.ui-login #login_form article section{background:#ecf0f1}
+.ui-login #login_form article section label{min-width:70px;font-size:13px;}
 .ui-login #login_form article section button{min-width:87px}
 .ui-login #login_form footer a span{color:#999}
 .ui-login #login_form footer p{line-height:18px;color:#666}
@@ -338,7 +339,6 @@ li .ui-button,td .ui-button{height:24px;border:0!important}
 .view-payment>ul:nth-child(2) label{min-width:50px}
 .view-highlight{background:#ffffba!important}
 
-#ff8e00
 .dialog{display:none}
 .ui-dialog .ui-layout-grid-a table{width:100%}
 .ui-dialog .ui-layout-grid-a table th,.ui-dialog .ui-layout-grid-a table td{text-align:center!important}
@@ -422,7 +422,7 @@ div.ui-layout-single>section.category_area{margin-top:0}
 
 .order_table{ border-spacing:0; table-layout:fixed;border-collapse:collapse}
 .order_table th,.order_table td{border:1px solid #CCC; padding:7px 10px; text-align:left; background:#fff}
-.order_table th{ background:#444444;color:#ff8e00}
+.order_table th{ background:#2c3e50;color:#ecf0f1}
 .order_table thead th{ text-align:center; font-size:16px;}
 .order_table tfoot th textarea{width:100%;height:100px;}
 .order_table .tdc th{ text-align:center}
@@ -432,7 +432,7 @@ div.ui-layout-single>section.category_area{margin-top:0}
 
 .order_table2{ border-spacing:0; table-layout:fixed;border-collapse:collapse;margin-top:-1px}
 .order_table2 th,.order_table2 td{border:1px solid #CCC; padding:7px 10px; text-align:left; background:#fff}
-.order_table2 th{ background:#444444;color:#ff8e00}
+.order_table2 th{ background:#2c3e50;color:#ecf0f1}
 .order_table2 th{ text-align:center;}
 .order_table2 tfoot th textarea{width:100%;height:100px;}
 .order_table2 .tdc th{ text-align:center}
@@ -444,7 +444,7 @@ div.ui-layout-single>section.category_area{margin-top:0}
 .order_table2.tar td{ text-align:right;}
 .order_table2.tac td{ text-align:center;}
 .order_table2 tfoot th.tar{color:#fff; font-weight:normal}
-.order_table2 tfoot th{color:#ff8e00}
+.order_table2 tfoot th{color:#ecf0f1}
 .order_table2 .nodata{padding:30px 0;}
 .order_table2 .btn-download{ }
 .order_table2 .btn-download .ui-button-text{height:20px; line-height:20px;text-decoration:none;color:#fff}
@@ -551,6 +551,14 @@ td[colindex="10"]+td button.ui-multiselect.ui-widget.ui-state-default.ui-corner-
 #gsh_jqgrid_a_17 .ui-search-input,
 #gsh_jqgrid_a_18 .ui-search-input,
 #gsh_jqgrid_a_9 .ui-search-input{display:none}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{ background:#2c3e50}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{color:#ecf0f1}
+.ui-state-hover .ui-icon,.ui-state-focus .ui-icon{background-image: url("../images/ui-icons_ff8e00_256x240.png");}
+.ui-state-active .ui-icon{background-image: url("../images/ui-icons_ff8e00_256x240.png");}
+.ui-widget-content.jqgrow.ui-row-ltr.ui-state-highlight.ui-state-hover .ui-icon{background-image: url("../images/ui-icons_444444_256x240.png");}
+
+
 /*ui blue 변경*/
 .theme_blue header{ background:#5b95fe}
 .theme_blue header nav{border-top:1px solid #4e82e0}
@@ -737,8 +745,13 @@ td[colindex="10"]+td button.ui-multiselect.ui-widget.ui-state-default.ui-corner-
 .history_step2{ background-position:0 -48px}
 .history_step3{ background-position:0 -96px}
 .history_step4{ background-position:0 -144px}
+.history_step5{ background-position:0 -192px}
 
 .ui-layout-single{position:relative;}
+.ui-jqgrid .ui-jqgrid-htable th div{top:2px}
 
 .s_select{ position:absolute;top:0;left:10px;}
 .s_area{position:absolute;top:0;left:115px;}
+
+.ui-widget-content.jqgrow.ui-row-ltr.ui-state-highlight a{color:#444!important}
+.ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr{font-weight:bold}

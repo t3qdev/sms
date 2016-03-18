@@ -6,7 +6,13 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
-
+<STYLE>
+        .bold {
+/*             background-color: green; */
+            font-weight: bold;
+            font-weight: 900;
+        }
+</STYLE>
 <article>
 	<h1>
 		<span>订单/交易管理</span>
@@ -238,7 +244,7 @@ $(function(){
         width: 1200,
         //height: 250,
         colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买'
-                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd'],
+                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','korXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
@@ -256,9 +262,9 @@ $(function(){
 // 					 //dataInit: dataInitMultiselect
 // 				 }
 			},
-            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input'},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input'},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "} },		
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold'},
+            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'bold'},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}, classes: 'bold' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false 
 //             ,	formatter: 'select',
 // 				 edittype:'select', editoptions:{
@@ -354,7 +360,9 @@ $(function(){
             {name:'row',index:'row',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'bactPrvdMemoCont',index:'bactPrvdMemoCont',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'stdXchrAmt',index:'stdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
-            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"}
+            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'korXchrAmt',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'cnsXchrAmt',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"}
         ],
     	onSelectRow: function(id){
 
@@ -422,16 +430,20 @@ $(function(){
             	//딜규모에 마우스를 오버하면 다양한(\, ¥, $) 환율이 표기된다.
             	//환율정보는 PO확정 전에는 주문의 환율, PO확정 후에는 PO의 환율을 사용
             	var content = "";   // 환율 정보가 들어갈 곳
-            	var  stdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrAmt;
             	var stdXchrKindCd = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrKindCd;
+            	
+            	var  stdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrAmt;
+            	var cnsXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).cnsXchrAmt;
+            	var korXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).korXchrAmt;
+            	
             	if(stdXchrKindCd == 'N000590100'){
-            		content = "$ ";
+            		content = "$ "+stdXchrAmt+"\n₩ "+korXchrAmt+"\n¥ "+cnsXchrAmt;
             	}else if(stdXchrKindCd == 'N000590200'){
             		content = "₩ ";
             	}else if(stdXchrKindCd == 'N000590300'){
             		content = "¥ ";
             	}
-            	content += stdXchrAmt;
+//             	content += stdXchrAmt;
 				jQuery("#jqgrid_a").jqGrid('setCell', ids[i],"ordSumAmt", jQuery("#jqgrid_a").getRowData(ids[i]).ordSumAmt ,"", {title: content});
             	
             	var bactPrvdMemoCont = jQuery("#jqgrid_a").getRowData(ids[i]).bactPrvdMemoCont;
