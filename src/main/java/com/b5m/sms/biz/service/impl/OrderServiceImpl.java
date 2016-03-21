@@ -527,9 +527,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
 				tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByETC(dlvDestCd);
 				if(tbMsCmnCdVOList.size() == 1){
-					
 					dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
-
 				}else{
 					dlvDestCd = null;
 				}
