@@ -650,7 +650,7 @@ public class OrderDetailController extends AbstractFileController{
 				
 				XSSFWorkbook wb = (XSSFWorkbook) WorkbookFactory.create(templateFile);
 				XSSFSheet sheet = wb.getSheetAt(0);
-				
+				String oprKr_alas_eng=null;		//한국담당자 약칭 저장용
 				
 				//1.기본정보입력 
 				OrderDetailVO orderDetailVO = orderService.selectSmsMsOrdDetail(ordNo);
@@ -659,7 +659,7 @@ public class OrderDetailController extends AbstractFileController{
 				List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
 				for(SmsMsUserVO vo : oprList){
 					if(("N000530200").equals(vo.getOgnzDivCd())){			//N000530200 한국팀
-
+						oprKr_alas_eng = vo.getUserAlasEngNm();
 						orderDetailVO.setOprKr(vo.getUserAlasCnsNm());
 					}
 				}
@@ -908,7 +908,8 @@ public class OrderDetailController extends AbstractFileController{
 				// 다운로드 될 템플릿 파일 이름 형식 : ORDER_DETAIL+_년월일시분초.xls
 				 Date d = new Date();
 			     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
-			     String downloadedTemplateName = "[Estimate]"+smsMsOrdGudsList.get(0).getOrdGudsCnsNm()+"_("+orderDetailVO.getCustId()+")_"+orderDetailVO.getOprKr()+"_"+today.format(d)+"_ver.2.xls";
+			     
+			     String downloadedTemplateName = "[Estimate]"+smsMsOrdGudsList.get(0).getOrdGudsCnsNm()+"_("+orderDetailVO.getCustId()+")_"+oprKr_alas_eng+"_"+today.format(d)+"_ver.2.xls";
 
 				
 				//String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
@@ -1090,9 +1091,9 @@ public class OrderDetailController extends AbstractFileController{
 					
 					 Date d = new Date();
 				     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
-				     String filename = "[SReport]"+poGudsList.get(0).getOrdGudsCnsNm()+"("+orderDetailVo.getCustId()+")_"+orderDetailVo.getOprKr()+"_"+today.format(d)+".xls";
+				     String downloadedTemplateName = "[SReport]"+poGudsList.get(0).getOrdGudsCnsNm()+"("+orderDetailVo.getCustId()+")_"+getUserInfo(orderDetailVo.getOprKr()).getUserAlasEngNm()+"_"+today.format(d)+".xls";
 					
-					String downloadedTemplateName = "PURCHASE_PO" + "_" + poNo + ".xlsx";
+				//	String downloadedTemplateName = "PURCHASE_PO" + "_" + poNo + ".xlsx";
 					
 					
 					
@@ -1105,4 +1106,12 @@ public class OrderDetailController extends AbstractFileController{
 				writeExcelListForDownload(response, excelNmList, wbList);
 	}
 
+
+	public SmsMsUserVO getUserInfo(String userEml) throws Exception{
+		SmsMsUserVO vo = new SmsMsUserVO();
+		vo.setUserEml(userEml);	
+		List<SmsMsUserVO> oprList =userService.selectSmsMsUser(vo);
+		
+		return oprList.get(0);
+	}
 }

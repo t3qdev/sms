@@ -640,8 +640,9 @@ public class AbstractFileController {
     			
     			//3.생성되었던 폴더 및 파일 삭제
     			if (dir.exists()) {
+
     				deleteAllFiles(tempFolderName);
-    				deleteAllFiles(zipName);
+    				downloadFile.delete();
     				LOGGER.debug("다운로드를 위한 임의 파일 삭제 완료");
     			}
     }

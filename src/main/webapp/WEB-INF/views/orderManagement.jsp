@@ -322,6 +322,7 @@ $(function(){
 	
 // 					 , dataInit: dataInitMultiselect
 				 },
+				 search : 'true',
 				 stype:'select', searchoptions: {
 					sopt: ['eq']
 // 					, multiple: true
@@ -335,6 +336,7 @@ $(function(){
 					 defaultValue:'none',
 // 					 multiple: true
 				 },
+				 search : 'true',
 				 stype:'select', searchoptions: {
 					 value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
 					 sopt: ['eq']
@@ -452,7 +454,6 @@ $(function(){
 				jQuery('#jqgrid_a').jqGrid('editRow',id,false);
 			}
 		},
-
 		pagination:true,
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
@@ -758,9 +759,12 @@ $(function(){
 		stringResult:true
 		, searchOnEnter:true
 		, defaultSearch:"cn"
+		, groupOp:'OR'
+// 		,searchOperators :true
+
 		}
 	);
-
+// 	$("#jqgrid_a").toggleToolbar();
 
 	$("#jqgrid_a").jqGrid('setFrozenColumns');
     $('#jqgrid_a').setGridWidth($(".ui-layout-jqgrid").width() - 2);

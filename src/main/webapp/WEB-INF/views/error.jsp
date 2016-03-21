@@ -24,7 +24,7 @@
 	<div id="login_form" class="dialog">
 		<article>
 			<h1>
-				<span>시스템 오류</span>
+				<span>系统出错</span>
 			</h1>
 			<section class="ui-layout-form-b">
 				<%				
@@ -43,7 +43,7 @@
 				%>
 				</h4>
 
-				에러발생시의 상황을 자세히 입력해 주세요.
+				请输入发生错误的详细过程
 
 				<!-- 메일로 보내기 위해 textArea에 넣어둔다. -->
 				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;"></textarea>
@@ -65,10 +65,10 @@
 				</textarea>
 				<br>
 				<br>
-				<button type="button" class="button btn-sendError" id="myBtn">오류 내용 관리자에게 전송</button>
+				<button type="button" class="button btn-sendError" id="myBtn">错误信息发送给管理者</button>
 				<br>
 				<br>
-				문의전화: 02-3404-7288 (오전 9시 - 오후 6시. 토/일/공휴일 제외)
+				联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
 
 			</section>
 		</article>
