@@ -15,7 +15,7 @@
 	<h1>
 		<span>密码管理</span>
 	</h1>
-	<form method="post" action="${web_ctx}/passwordChangeUpdate.do" id="passwordChangeForm" name="passwordChangeForm">
+	<form method="post" action="${web_ctx}/passwordChangeUpdate.ajax" id="passwordChangeForm" name="passwordChangeForm">
 	    <div class="ui-layout-single">
 	        <section class="ui-layout-form-b"> 
 	            <ul>
@@ -65,31 +65,12 @@
 
 
 	$(function() {
+		   
+		// 브라우저에 따라 caching 때문에 ajax 최신정보가 보이지 않게됨을 막음.
+		jQuery.ajaxSetup({cache:false});   
 		
-/* 		var isCloseOK = "No";
-		isCloseOK = "${param.isCloseOK}";
-		if (isCloseOK == 'Yes'){
-			alert("성공적으로 저장 되었습니다.");
-			opener.parentReload();
-			// window.close();
-			window.open('about:blank', '_self').close(); // 익스플로러에서 확인창 뜨는것 방지
-		}
-		else if(isCloseOK == 'fail'){
-			alert("저장에 실패 하였습니다.");
-			opener.parentReload();
-			// window.close();
-			window.open('about:blank', '_self').close(); // 익스플로러에서 확인창 뜨는것 방지
-		} */
-	    // ajaxform
-	    $('#passwordChangeForm').ajaxForm({
-	        success: function(data){
-	            alert('订单保存成功');
-
-	          },
-	          error : function(data){
-	        	  alert('订单保存失败');
-	          }
-	    }); 	
+	
+		var num = 1;
 		$('#passwordChangeForm').validate({
 			rules : {
 				userPwd_old :{
@@ -120,45 +101,32 @@
                  }
 			},
 			submitHandler: function(form){
-//		 	    var newPassword = document.getElementById('changePasswordForm').newPassword.value;
-//		 	    var minNumberofChars = 6;
-//		 	    var maxNumberofChars = 16;
-//		 	    var regularExpression  = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-//		 	    alert(newPassword); 
-//		 	    if(newPassword.length < minNumberofChars || newPassword.length > maxNumberofChars){
-//		 	        return false;
-//		 	    }
-//		 	    if(!regularExpression.test(newPassword)) {
-//		 	        alert("password should contain atleast one number and one special character");
-//		 	        return false;
-//		 	    }
 
+				$('#passwordChangeForm').ajaxSubmit({
+			        
+					type : "POST",
+					async: false,
+					cache : false,				
+					datatype : "json",
+					success: function(data){
 
-				form.submit();
+				        	if(data=="success"){
+				            	alert("保存成功");  // 저장성공
+				            }else{
+				            	alert("false");
+				            }
+
+			          },
+			          error : function(data){
+			        	  alert('error');
+			          }
+		        });   
+				location.reload();
+
 			}
 
 		});
-// 		checkPwd = function() {
-// 		    var str = document.getElementById('pass').value;
-// 		    if (str.length < 6) {
-// 		        alert("too_short");
-// 		        return("too_short");
-// 		    } else if (str.length > 50) {
-// 		        alert("too_long");
-// 		        return("too_long");
-// 		    } else if (str.search(/\d/) == -1) {
-// 		        alert("no_num");
-// 		        return("no_num");
-// 		    } else if (str.search(/[a-zA-Z]/) == -1) {
-// 		        alert("no_letter");
-// 		        return("no_letter");
-// 		    } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+\.\,\;\:]/) != -1) {
-// 		        alert("bad_char");
-// 		        return("bad_char");
-// 		    }
-// 		    alert("oukey!!");
-// 		    return("ok");
-// 		}
+
 		 $.validator.addMethod("pwcheck",
 		     function(value, element) {
 	 		    if (value.length < 6) {
@@ -182,10 +150,7 @@
 		        
 		 },"password should contain atleast one number, minlength is 6");
 
-//         $.validator.addMethod("pwcheck",
-//                 function(value, element) {
-//                     return /^[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(value);
-//             },"password should contain atleast one number and one special character");
+
 		
 	});
 </script>
