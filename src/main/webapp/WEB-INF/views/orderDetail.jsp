@@ -266,7 +266,15 @@
 	                  <tr>
 	                    	<td class="tac">${file.ordFileRegDttm}</td>
 	                        <td class="tac">${file.userAlasCnsNm }(${file.userAlasEngNm })</td>
-	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
+	                        <c:choose>
+		                        <c:when test="${fn:contains(file.ordFileSysFileNm, 'xls')}">
+		                        	<td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
+		                        </c:when>
+		                        <c:otherwise>
+		                        	<td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_jpg fileDown">${file.ordFileOrgtFileNm }</a></td>
+		                        </c:otherwise>
+	                        </c:choose>
+<%-- 	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td> --%>
 	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download fileDown" id="btnFileDownload${status.index }">다운로드</a></td>
 	                  </tr>
 	                   </c:forEach> 
