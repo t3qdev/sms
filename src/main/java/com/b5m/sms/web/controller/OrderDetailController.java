@@ -491,8 +491,8 @@ public class OrderDetailController extends AbstractFileController{
 		String[] ordGudsCnsNm= new String[0];
 		String[] ordGudsQty= new String[0];
 		String[] ordGudsSizeVal= new String[0];
-		String[] ordGudsOrgPrc= new String[0];
-//		String[] ordGudsSalePrc= new String[0];
+//		String[] ordGudsOrgPrc= new String[0];
+		String[] ordGudsSalePrc= new String[0];
 		String[] ordGudsUrlAddr= new String[0];
 		String[] gudsId= new String[0];
 		orderDetailVo.setOrdNo(ordNo);
@@ -504,8 +504,8 @@ public class OrderDetailController extends AbstractFileController{
 			String gudsCnsNm=smsMsOrdGudsVO.getOrdGudsCnsNm().replace("," , " , ");
 			String gudsQty=smsMsOrdGudsVO.getOrdGudsQty().replace("," , " , ");
 			String gudsSizeVal=smsMsOrdGudsVO.getOrdGudsSizeVal().replace("," , " , ");
-			String gudsOrgPrc= smsMsOrdGudsVO.getOrdGudsOrgPrc().replace("," , " , ");
-//			String gudsSalePrc= smsMsOrdGudsVO.getOrdGudsSalePrc().replace("," , " , ");
+//			String gudsOrgPrc= smsMsOrdGudsVO.getOrdGudsOrgPrc().replace("," , " , ");
+			String gudsSalePrc= smsMsOrdGudsVO.getOrdGudsSalePrc().replace("," , " , ");
 			String gudsUrlAddr=smsMsOrdGudsVO.getOrdGudsUrlAddr().replace("," , " , ");
 			String gid=smsMsOrdGudsVO.getGudsId().replace("," , " , ");
 			
@@ -515,8 +515,8 @@ public class OrderDetailController extends AbstractFileController{
 			ordGudsCnsNm = gudsCnsNm.split(",");		//상품명	
 			ordGudsQty  =gudsQty.split(",");			//상품요청수량
 			ordGudsSizeVal =gudsSizeVal.split(",");		//상품규격
-			ordGudsOrgPrc = gudsOrgPrc.split(",");		//상품가격
-//			ordGudsSalePrc = gudsSalePrc.split(",");		//상품가격
+//			ordGudsOrgPrc = gudsOrgPrc.split(",");		//상품가격
+			ordGudsSalePrc = gudsSalePrc.split(",");		//상품가격
 			
 			gudsId=gid.split(",");
 			//String[] gudsInbxQty = smsMsOrdGudsVO.getGudsInbxQty().split(",");	//인박스수량, db에 존재안함
@@ -543,8 +543,8 @@ public class OrderDetailController extends AbstractFileController{
 			vo.setOrdGudsCnsNm(ordGudsCnsNm[i].trim());
 			vo.setOrdGudsQty(ordGudsQty[i].trim());
 			vo.setOrdGudsSizeVal(ordGudsSizeVal[i].trim());
-			vo.setOrdGudsOrgPrc(ordGudsOrgPrc[i].trim());
-//			vo.setOrdGudsSalePrc(ordGudsSalePrc[i].trim());
+//			vo.setOrdGudsOrgPrc(ordGudsOrgPrc[i].trim());
+			vo.setOrdGudsSalePrc(ordGudsSalePrc[i].trim());
 			vo.setOrdGudsUrlAddr(ordGudsUrlAddr[i].trim());
 			vo.setGudsId(gudsId[i].trim());
 			smsMsOrdGudsList.add(vo);
@@ -806,8 +806,8 @@ public class OrderDetailController extends AbstractFileController{
 				Cell newCell5 = sourceRow.getCell(5);		//인박스수량
 				newCell5.setCellValue(smsMsOrdGudsList.get(0).getGudsInbxQty());
 				Cell newCell6 = sourceRow.getCell(6);		//단가
-				//newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsSalePrc());
-				newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
+				newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsSalePrc());
+				//newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
 				Cell newCell7 = sourceRow.getCell(7);		//주문수량
 				newCell7.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsQty());
 				Cell newCell8 = sourceRow.getCell(8);		//금액
@@ -820,7 +820,8 @@ public class OrderDetailController extends AbstractFileController{
 				//요약정보 표시
 
 				Cell newCell14= sourceRow.getCell(14);		//단가
-				newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
+				//newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
+				newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsSalePrc());
 				Cell newCell15= sourceRow.getCell(15);		//주문수량
 				newCell15.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsQty());
 				Cell newCell16= sourceRow.getCell(16);		//총액
@@ -879,8 +880,8 @@ public class OrderDetailController extends AbstractFileController{
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
 			                		//newCell.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(j).getOrdGudsSalePrc()));;
-			                		//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc());
-			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
+			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc());
+			                		//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
 			                	}
 			                    break;
 			                case 7:		//주문수량
@@ -906,7 +907,8 @@ public class OrderDetailController extends AbstractFileController{
 			                case 14:		//요약정보-단가
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
-			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
+			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc());
+			                		//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
 			                	}
 			                    break;
 			                case 15:		//요약정보-주문수량
@@ -1084,7 +1086,8 @@ public class OrderDetailController extends AbstractFileController{
 					                	nowCell.setCellValue(Integer.parseInt(gudsVo.getOrdGudsQty()));
 					                    break;
 					                case 7:		//2-4.매입단가
-					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
+					                	//nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
+					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsSalePrc()));
 					                    break;
 					                case 8:		//2-5.매입합계
 					                	rowNo +=1;

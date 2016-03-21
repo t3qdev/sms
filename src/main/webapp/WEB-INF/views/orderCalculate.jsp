@@ -18,7 +18,7 @@ body{min-width:560px; background:#fff;}
 	<h1>
 		<span>结算</span>
 	</h1>
-    <form method="POST" action="${web_ctx}/orderCalculateSave.do" id="orderCalculateForm" name="orderCalculateForm">
+<%--     <form method="POST" action="${web_ctx}/orderCalculateSave.do" id="orderCalculateForm" name="orderCalculateForm"> --%>
 		<div class="ui-layout-single">
 	        <section class="ui-layout-form-b">
 	            <ul>
@@ -48,12 +48,12 @@ body{min-width:560px; background:#fff;}
 	                </section>
 	                <section class="ui-layout-action">
 	                    <button class="btn-cancel">取消</button>
-	                    <button class="btn-submit mr10" id="check">确认</button>
+	                    <button class="mr10" id="check">确认</button>
 	                </section> 
 	            </div>
 	        </section>
 	    </div>
-    </form>
+<%--     </form> --%>
     
 </article>
 
@@ -62,26 +62,35 @@ $(function(){
 	//시작시 날짜 초기화
 	$("#bactPrvdDt").val(dtToDate("${ordcalc.bactPrvdDt}"));
 	
+	//1.취소버튼
+	$('.btn-cancel').click(function(){
+		//1-1.업로드한 파일/사진/상품이미지등을 삭제한다. (덮어씌워줌으로 반드시 필요 X)
+		window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
+	});//end click
 	
 	$('#check').click(function(){
-		var formData = $("#orderCalculateForm").serialize();
-		$.ajax({
-			type : "POST",
-			url : '${web_ctx}/orderCalculateSave.do',
-			data:	formData,
-			async: false,
-			cache : false,
-			success:function(result){
-				if(result){
-					alert("结算确认");	
-					opener.parent.location.reload();
-					window.open("about:blank","_self").close();
-				}else{
-					alert("结算确认失败");
-					window.open("about:blank","_self").close();
+		if(!isNaN($("#bactPrvdAmt").val())){
+			var formData = $("#orderCalculateForm").serialize();
+			$.ajax({
+				type : "POST",
+				url : '${web_ctx}/orderCalculateSave.do',
+				data:	formData,
+				async: false,
+				cache : false,
+				success:function(result){
+					if(result){
+						alert("结算确认");	
+						opener.parent.location.reload();
+						window.open("about:blank","_self").close();
+					}else{
+						alert("结算确认失败");
+						window.open("about:blank","_self").close();
+					}
 				}
-			}
-		});//end $.ajax	
+			});//end $.ajax	
+		}else{//endif
+			alert("check 金额");
+		}
 
 	//	
 		
