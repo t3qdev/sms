@@ -860,3 +860,4 @@ function checkIndex(btnRole, userRole){
 }
 
 
+</script>
