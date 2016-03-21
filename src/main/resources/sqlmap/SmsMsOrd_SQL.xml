@@ -483,11 +483,11 @@
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
 	    	  ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.USD_XCHR_AMT) 
-		           FROM tb_ms_ord_guds_opt x
+		           FROM tb_ms_ord_guds_opt X
 				  WHERE A.CUST_ID = X.CUST_ID
 		            AND A.B5C_ORD_NO = X.ORD_ID) AS KOR_XCHR_AMT
 		       ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.RMB_XCHR_AMT) 
-		           FROM tb_ms_ord_guds_opt x
+		           FROM tb_ms_ord_guds_opt X
 				  WHERE A.CUST_ID = X.CUST_ID
 		            AND A.B5C_ORD_NO = X.ORD_ID) AS CNS_XCHR_AMT
 		FROM
