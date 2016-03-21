@@ -598,6 +598,7 @@ public class AbstractFileController {
     			
     			try {
     				for(int i=0; i<listSize;i++){
+    					System.out.println(fileNameList.get(i));
     					FileOutputStream outFile = new FileOutputStream(tempFolderName+File.separator+fileNameList.get(i));
     					
         				wbList.get(i).write(outFile);

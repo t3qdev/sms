@@ -326,16 +326,7 @@
 
 
 $(function(){
-	if("YES" =="${saved}"){
-		alert("订单保存成功");
-	}
-	if("NO"=="${saved}"){
-		alert("订单保存失败");
-	}
-	
-	if("YES"=="${reload}"){
-		opener.parent.location.reload();
-	}
+
 	//팝업페이지 연결
 	$(".btn_pop").each(function(){
        $(this).click(function(){
@@ -396,6 +387,7 @@ $(function(){
 	}
 	
 	
+	
 
 
 	//1.날짜정보는 초기화시 세팅해줘야함
@@ -451,7 +443,19 @@ $(function(){
 		$(".btn-search").hide();
 	} */
 	
-		
+	
+	
+	//초기정보에따라 변경
+	if("YES" =="${saved}"){
+		alert("订单保存成功");
+	}
+	if("NO"=="${saved}"){
+		alert("订单保存失败");
+	}
+	
+	if("YES"=="${reload}"){
+		opener.parent.location.reload();
+	}
 	
 	$('#dialog_upload').dialog({
 				modal: true,

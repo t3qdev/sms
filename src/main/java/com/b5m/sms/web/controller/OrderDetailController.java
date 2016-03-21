@@ -939,7 +939,7 @@ public class OrderDetailController extends AbstractFileController{
 				 Date d = new Date();
 			     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
 			     
-			     String downloadedTemplateName = "[Estimate]"+smsMsOrdGudsList.get(0).getOrdGudsCnsNm()+"_("+orderDetailVO.getCustId()+")_"+oprKr_alas_eng+"_"+today.format(d)+"_ver.2.xls";
+			     String downloadedTemplateName = "[Estimate]"+smsMsOrdGudsList.get(0).getOrdGudsCnsNm()+"_("+orderDetailVO.getCustId()+")_"+oprKr_alas_eng+"_"+today.format(d)+"_ver.2.xlsx";
 
 				
 				//String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
@@ -1003,7 +1003,6 @@ public class OrderDetailController extends AbstractFileController{
 				SmsMsEstmVO poVo = orderService.selectSmsMsEstmVO(ordNo);
 				List<SmsMsEstmGudsVO> poGudsList= goodsService.selectSmsMsEstmGuds(ordNo);
 				List<SmsMsEstmGudsVO> poPrvdList= goodsService.selectSmsMsEstmGudsGroupByPrvd(ordNo);
-				
 				int sourceRowNum =17;				//참고할 스타일행
 				
 				int prvdSize = poPrvdList.size();
@@ -1015,6 +1014,8 @@ public class OrderDetailController extends AbstractFileController{
 				//해당 상품 공급자 수 만큼 매입PO 엑셀을 만든다.
 				for(int prvdIndex=0;prvdIndex<prvdSize ;prvdIndex++){
 					int rowNo =sourceRowNum;				//소스넘버체크 
+					
+					//List<SmsMsEstmGudsVO> poGudsList= goodsService.selectSmsMsEstmGuds(ordNo, crn); 
 					
 					Workbook wb =  WorkbookFactory.create(templateFile);
 					
@@ -1046,9 +1047,12 @@ public class OrderDetailController extends AbstractFileController{
 					cell.setCellValue(poPrvdList.get(prvdIndex).getOrdGudsPrvdNm());
 					
 					
+					String gudsNmTemp = "";
 					
+					List<SmsMsEstmGudsVO> tempEstmGudsList = new ArrayList<SmsMsEstmGudsVO>();
 					for(int gudsIndex=0; gudsIndex<gudsSize;gudsIndex++){
 						if(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn().equals(poGudsList.get(gudsIndex).getOrdGudsPrvdCrn())){		//사업자번호가 같은경우 삽입
+							tempEstmGudsList.add(poGudsList.get(gudsIndex));
 							gudsNo++;
 						}
 					}
@@ -1056,8 +1060,10 @@ public class OrderDetailController extends AbstractFileController{
 					sheet.shiftRows(18, 34, gudsNo);		//상품이동
 					
 					for(int gudsIndex=0; gudsIndex<gudsNo;gudsIndex++){	
+						
+							gudsNmTemp = tempEstmGudsList.get(0).getOrdGudsCnsNm();
 				
-							SmsMsEstmGudsVO gudsVo = poGudsList.get(gudsIndex);		//gudsVO에 현재 po상품 삽입	
+							SmsMsEstmGudsVO gudsVo = tempEstmGudsList.get(gudsIndex);		//gudsVO에 현재 po상품 삽입	
 							Row newRow = sheet.createRow(sourceRowNum+1+gudsIndex);			//새로운row 생성 
 							newRow.setHeight(sourceRow.getHeight());
 							Row nowRow=sheet.getRow(sourceRowNum+gudsIndex);			
@@ -1120,9 +1126,11 @@ public class OrderDetailController extends AbstractFileController{
 					//파일 이름을 만들어 주기 위해 order정보를 받아온다
 					OrderDetailVO orderDetailVo = orderService.selectSmsMsOrdDetail(ordNo);
 					
+					
 					 Date d = new Date();
 				     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
-				     String downloadedTemplateName = "[SReport]"+poGudsList.get(0).getOrdGudsCnsNm()+"("+orderDetailVo.getCustId()+")_"+getUserInfo(orderDetailVo.getOprKr()).getUserAlasEngNm()+"_"+today.format(d)+".xls";
+				     // String downloadedTemplateName = "[SReport]"+poGudsList.get(0).getOrdGudsCnsNm()+"("+orderDetailVo.getCustId()+")_"+getUserInfo(orderDetailVo.getOprKr()).getUserAlasEngNm()+"_"+today.format(d)+".xlsx";
+				     String downloadedTemplateName = "[SReport]"+gudsNmTemp+"("+orderDetailVo.getCustId()+")_"+getUserInfo(orderDetailVo.getOprKr()).getUserAlasEngNm()+"_"+today.format(d)+"_"+((prvdIndex+101)+"").substring(1)+".xlsx";
 					
 				//	String downloadedTemplateName = "PURCHASE_PO" + "_" + poNo + ".xlsx";
 					
