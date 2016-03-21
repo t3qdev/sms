@@ -73,16 +73,19 @@ public class PasswordChangeController {
 		if(!bcrypt.matches(passwordChangeVo.getUserPwd_old(),userList.get(0).getUserPwd())){		//brcypt.matches(원본형태,암호화된형태)
 			model.addAttribute("userEml",	passwordChangeVo.getUserEml());
 			model.addAttribute("userAlas",passwordChangeVo.getUsrAlas());
-			return "passwordChange";
+			return "Wrong Password!";
 		}
 		
 		//3.두 비밀번호가 같은경우 
+		userList.get(0).setUserPwdStatCd("N000600200");		
+		userList.get(0).setUserPwd(bcrypt.encode(passwordChangeVo.getUserPwd().trim()));
 		paramUserVo.setUserPwdStatCd("N000600200");				//비밀번호상태 일반(N000600200)으로 변경
 		paramUserVo.setUserPwd(bcrypt.encode(passwordChangeVo.getUserPwd().trim()));		//새로운 비밀번호로 변경		
-		
-		userService.updateSmsMsUser(paramUserVo);		
+		System.out.println(paramUserVo.toString());
+		userService.updateSmsMsUser(userList.get(0));		
 		return "userManagement";
 		
 	}
 	
 }
+
