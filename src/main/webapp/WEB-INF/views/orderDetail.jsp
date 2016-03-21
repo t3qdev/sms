@@ -318,6 +318,12 @@
 
 
 $(function(){
+	if("YES" =="${saved}"){
+		alert("订单保存成功");
+	}
+	if("NO"=="${saved}"){
+		alert("订单保存失败");
+	}
 	
 	if("YES"=="${reload}"){
 		opener.parent.location.reload();
@@ -482,18 +488,20 @@ $(function(){
 			contentType : false,
 			cache : false,
 			success : function(result) {
-				console.log(result);
-				console.log(result.savedRealFileNm);
-				console.log(result.savedFileNm);
+				if(result=="success"){
+					alert("上传成功");
+					window.location.reload(true);
+				}else{
+					alert("上传失败");
+				}
 					
-				alert("成功上传文件");
-				window.location.reload(true);
+				
+				
 			}//success function
-			,
-			error : function(jqXHR, textStatus, errorThrown) {
+/* 			,error : function(jqXHR, textStatus, errorThrown) {
 				//Error시, 처리
 				alert("上传文件失败");
-			}
+			} */
 		});//ajax
 	});
 	

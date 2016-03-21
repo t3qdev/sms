@@ -84,7 +84,7 @@ public class OrderDetailController extends AbstractFileController{
 	private SmsMsOrdHistDAO smsMsOrdHistDAO;
 	
 	@RequestMapping(value="/orderDetailView")
-	public String orderDetail(Model model, String ordNo, String reload) throws Exception{
+	public String orderDetail(Model model, String ordNo, String reload,String saved) throws Exception{
 		
 		//1.selectBox 구성용 모델
 		//1-1.담당자를 고를수 있는 SmsMsUser (중국담당자list/ 한국담당자list)
@@ -178,6 +178,9 @@ public class OrderDetailController extends AbstractFileController{
 		
 		//부모창 새로고침
 		model.addAttribute("reload", reload);		
+		
+		//디비저장여부 alert
+		model.addAttribute("saved", saved);
 		return "orderDetail";
 		
 	}
@@ -533,22 +536,26 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		
 
-		
-		orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml   );
-		
+		try{
+			orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml );
+		}catch(Exception e){
+			return "redirect:orderDetailView.do?ordNo="+ordNo+"&reload=YES&saved=NO";
+		}
 
-		
-		return "redirect:orderDetailView.do?ordNo="+ordNo+"&reload=YES";
+		return "redirect:orderDetailView.do?ordNo="+ordNo+"&reload=YES&saved=YES";
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/orderDetailFileUpload" , method = RequestMethod.POST)
-	public FileResultVO orderDetailFileUpload(MultipartHttpServletRequest request,String ordNo, String wrtrEml) throws Exception	{
+	public String orderDetailFileUpload(MultipartHttpServletRequest request,String ordNo, String wrtrEml) throws Exception	{
 
+		String result="success";
+		try{
 		//1.로컬에 업로드한 파일 저장
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf = request.getFile(itr.next());
-		FileResultVO fileResultVO = uploadMultipartFileToDisk(mpf); 
+		FileResultVO fileResultVO = uploadMultipartFileToDisk(mpf);
+
 		LOGGER.debug(fileResultVO.toString());
 //		System.out.println(fileResultVO.getSavedRealFileNm());		//원본 파일 이름
 //		System.out.println(fileResultVO.getSavedFileNm());				//시스템 파일이름
@@ -564,9 +571,14 @@ public class OrderDetailController extends AbstractFileController{
 		ordFileVo.setOrdFileSysFileNm(fileResultVO.getSavedFileNm());  //실제 저장된 파일 이름
 		ordFileVo.setOrdNo(ordNo);		//주문번호
 		ordFileVo.setOrdFileSeq(orderService.selectSmsMsOrdFileSeqNext(ordNo));
-		orderService.insertSmsMsOrdFile(ordFileVo);			
 		
-		return fileResultVO;
+			orderService.insertSmsMsOrdFile(ordFileVo);
+			
+		}catch(Exception e){
+			result="fail";
+		}
+		return result;
+		//return fileResultVO;
 	}
 	
 	@RequestMapping(value = "/orderDetailFileDownload", method = RequestMethod.GET)

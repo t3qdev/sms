@@ -49,9 +49,9 @@ public class AbstractFileController {
 	//final static String OPT_B5C_DISK = File.separator + "opt" + File.separator + "b5c-disk" + File.separator;
 	protected static String OPT_B5C_DISK;
 	
-	//final static String OPT_B5C_IMG = File.separator + "opt" + File.separator + "b5c + File.separator + "img" + File.separator;
+	//final static String OPT_B5C_IMG = File.separator + "opt" + File.separator + "sms-disk + File.separator + "img" + File.separator;
 	protected static String OPT_B5C_IMG;
-	//final static String OPT_B5C_ETC = File.separator + "opt" + File.separator + "b5c + File.separator + "etc" + File.separator;
+	//final static String OPT_B5C_ETC = File.separator + "opt" + File.separator + "sms-disk + File.separator + "doc" + File.separator;
 	protected static String OPT_B5C_ETC;
 	
 	protected static String[] imgExt = {"jpeg","png","jpg","bmp"};

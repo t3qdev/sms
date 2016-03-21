@@ -250,10 +250,14 @@ public class OrderPOController extends AbstractFileController{
 	
 	@ResponseBody
 	@RequestMapping(value="/orderPOSave")
-	public void orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt,FileResultVO fileResultVo) throws Exception{
-
-		orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt,fileResultVo);
-		
+	public String orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt,FileResultVO fileResultVo) throws Exception{
+		String result="success";
+		try{
+			orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt,fileResultVo);
+		}catch(Exception e){
+			result="fail";
+		}
+		return result;
 	}
 	
 	@RequestMapping(value="/orderPOInsert")

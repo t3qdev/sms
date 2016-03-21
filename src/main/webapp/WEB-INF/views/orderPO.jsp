@@ -305,9 +305,13 @@ $(function(){
 			async: false,
 			cache : false,
 			success:function(result){
-				alert("保存成功");
-				opener.parent.location.reload();
-				window.open("about:blank","_self").close();
+				if(result=="success"){
+					alert("PO确定");
+					opener.parent.location.reload();
+					window.open("about:blank","_self").close();
+				}else{
+					alert("PO确定失败");
+				}					
 			}
 		});//end $.ajax	
 
