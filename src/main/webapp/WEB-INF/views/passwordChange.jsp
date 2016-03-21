@@ -80,7 +80,16 @@
 			// window.close();
 			window.open('about:blank', '_self').close(); // 익스플로러에서 확인창 뜨는것 방지
 		} */
-		
+	    // ajaxform
+	    $('#passwordChangeForm').ajaxForm({
+	        success: function(data){
+	            alert('订单保存成功');
+
+	          },
+	          error : function(data){
+	        	  alert('订单保存失败');
+	          }
+	    }); 	
 		$('#passwordChangeForm').validate({
 			rules : {
 				userPwd_old :{
