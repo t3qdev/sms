@@ -78,6 +78,7 @@ public class SmsMsOrdDAO extends EgovAbstractDAO {
 		delete("smsMsOrdDAO.deleteSmsMsOrd_S");
 	}
 	
-	
-	
+	public String selectSmsMsOrdCount(SmsMsOrdVO smsMsOrdVO) throws Exception{
+		return (String) select("smsMsOrdDAO.selectSmsMsOrdCount",smsMsOrdVO);
+	}
 }

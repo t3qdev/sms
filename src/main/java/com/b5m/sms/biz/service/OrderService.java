@@ -106,5 +106,6 @@ public interface OrderService {
 	// SMS_MS_USER 뺴고 모두 지운다 -> 배치 처음 하기 전으로 돌아가 배치를 다시 돌려보기 위함
 	public void deleteBeforeFirstBatch() throws Exception;
 	
+	public String selectSmsMsOrdCount(SmsMsOrdVO smsMsOrdVO) throws Exception;
 }
 

@@ -211,6 +211,14 @@ $(function(){
 // 		});
 
 	});
+	
+	// 기본 템플릿 엑셀 다운로드
+	jQuery("#templateExcelDownload").click( function() {
+		var form = "<form action='${web_ctx}/orderManagementExcelTemplateDownload.do' method='post'>"; 
+		form += "</form>"; 
+		jQuery(form).appendTo("body").submit().remove(); 
+	});
+	
 	// [+신규주문등록] Dialog Control
 	$('#dialog_upload').dialog({
 		modal: true,
@@ -761,6 +769,20 @@ $(function(){
 		, defaultSearch:"cn"
 		, groupOp:'OR'
 // 		,searchOperators :true
+              ,  beforeClear: function () {
+                    $(this.grid.hDiv).find(".ui-search-toolbar .ui-search-input>select[multiple] option").each(function () {
+                        this.selected = false; // unselect all options
+                    });
+
+                    $(this.grid.hDiv).find(".ui-search-toolbar button.ui-multiselect").each(function () {
+                        $(this).prev("select[multiple]").multiselect("refresh");
+                    }).css({
+                        width: "98%",
+                        marginTop: "1px",
+                        marginBottom: "1px",
+                        paddingTop: "3px"
+                    });
+                }
 
 		}
 	);

@@ -8,5 +8,5 @@
 	
 	
 	
-	<div style="text-align:right"><a href="${web_ctx}/sms/deleteBeforeFirstBatch.do" id="userManagement" >.</a></div>
+	<div style="text-align:right"><a href="${web_ctx}/deleteBeforeFirstBatch.do" id="userManagement" >.</a></div>
 </footer>

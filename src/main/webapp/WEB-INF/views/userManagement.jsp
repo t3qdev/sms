@@ -116,30 +116,28 @@ $(function(){
 		var allIds =jQuery("#jqgrid_a").jqGrid('getDataIDs');
 		var userAlasCnsNmMap = new Map();
 		var userEmlMap = new Map();
+
+		
 		for(var i = 0; i <  allIds.length; i++ ){
 			jQuery("#jqgrid_a").jqGrid('saveRow',allIds[i]);
 			var userEml = $('#jqgrid_a').getCell(allIds[i], 'userEml');
 			var ind = $('#jqgrid_a').getInd(allIds[i],userAlasCnsNm);
 			
 			if(userEmlMap.has(userEml)){
-				alert("duplicated userEml");
-				jQuery("#jqgrid_a").setGridParam({
-					url : "${web_ctx}/userManagementLoad.ajax",
-					ajaxGridOptions : {async:false},    // 동기로 변환
-					datatype : "json",
-				}).trigger('reloadGrid');
+				for(var j=0; j< id.length; j++){
+					jQuery('#jqgrid_a').jqGrid('editRow',id[j],false);
+				}
+				alert("Duplicated userEml");
 				return;
 			}else{
 				userEmlMap.set(userEml,userEml);
 			}	
 			var userAlasCnsNm = $('#jqgrid_a').getCell(allIds[i], 'userAlasCnsNm');
 			if(userAlasCnsNmMap.has(userAlasCnsNm)){
-				alert("duplicated CnsNM");
-				jQuery("#jqgrid_a").setGridParam({
-					url : "${web_ctx}/userManagementLoad.ajax",
-					ajaxGridOptions : {async:false},    // 동기로 변환
-					datatype : "json",
-				}).trigger('reloadGrid');
+				for(var j=0; j< id.length; j++){
+					jQuery('#jqgrid_a').jqGrid('editRow',id[j],false);
+				}
+				alert("Duplicated CnsNM");
 				return;
 			}else{
 				userAlasCnsNmMap.set(userAlasCnsNm,userAlasCnsNm);
