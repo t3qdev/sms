@@ -143,12 +143,12 @@ $(function(){
 					return;
 				}
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+				
 			}
-			jQuery("#jqgrid_a").setGridParam({
-				url : "${web_ctx}/orderHistoryLoad.ajax",
-				ajaxGridOptions : {async:false},    // 동기로 변환
-				datatype : "json",
-			}).trigger('reloadGrid');
+			
+			// 저장하면, 부모창의 상태도 reload 하고, 현재도 reload(상태 navigator refresh 때문)
+			location.reload();
+			opener.parent.location.reload();
 		}
   });
     

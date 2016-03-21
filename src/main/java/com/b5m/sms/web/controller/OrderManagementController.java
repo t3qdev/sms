@@ -199,8 +199,8 @@ public class OrderManagementController  extends AbstractFileController{
 		LOGGER.debug("=================Batch End=================" );
 	}
 
-	
-	@RequestMapping(value = "/orderManagementInsert", method = RequestMethod.POST)
+	@ResponseBody
+	@RequestMapping(value = "/orderManagementInsert.ajax", method = RequestMethod.POST)
 	public String orderManagementInsert(@RequestParam("file") MultipartFile[] fileArray, HttpSession session, HttpServletRequest request) throws Exception {
 		String result = "false";
 		// 파일 load

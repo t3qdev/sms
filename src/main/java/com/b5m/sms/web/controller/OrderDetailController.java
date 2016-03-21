@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.b5m.sms.biz.dao.SmsMsOrdHistDAO;
+import com.b5m.sms.biz.dao.TbMsCmnCdDAO;
 import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.biz.service.UserService;
@@ -65,6 +66,7 @@ import com.b5m.sms.vo.SmsMsOrdFileVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdUserVO;
 import com.b5m.sms.vo.SmsMsUserVO;
+import com.b5m.sms.vo.TbMsCmnCdVO;
 
 @Controller
 public class OrderDetailController extends AbstractFileController{
@@ -82,6 +84,9 @@ public class OrderDetailController extends AbstractFileController{
 	
 	@Resource(name="smsMsOrdHistDAO")
 	private SmsMsOrdHistDAO smsMsOrdHistDAO;
+	
+	@Resource(name="tbMsCmnCdDAO")
+	private TbMsCmnCdDAO tbMsCmnCdDAO;
 	
 	@RequestMapping(value="/orderDetailView")
 	public String orderDetail(Model model, String ordNo, String reload) throws Exception{
@@ -181,8 +186,9 @@ public class OrderDetailController extends AbstractFileController{
 		return "orderDetail";
 		
 	}
+	
 	////////////////////////////////////////////////////////
-	@RequestMapping(value="/orderDetailSpecialView")
+	@RequestMapping(value="/orderDetailSpecialView.do")
 	public String orderDetail(@RequestParam("file") MultipartFile[] fileArray, Model model, String ordNo) throws Exception{
 		
 		/////////////////////////////////////////// 스페셜 오더, 견적서 엑셀 로드 - KJY ///////////////////////////////////////////
@@ -248,6 +254,17 @@ public class OrderDetailController extends AbstractFileController{
 			}
 		}
 
+		// 배송 방법은- Code 테이블에서 직접 가져오고, 정확하지 않으면 null 처리 한다.
+		if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
+			List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
+			tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByETC(dlvDestCd);
+			if(tbMsCmnCdVOList.size() == 1){
+				dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
+			}else{
+				dlvDestCd = null;
+			}
+		}
+		
 		ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
 		if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
 		else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							

@@ -61,7 +61,7 @@
         </section>
     </div>
         <div id="dialog_upload" title="上传客户询盘单">
-		 	<form id="dialog_upload_form" action="${web_ctx}/orderManagementInsert.do" method="post" enctype="multipart/form-data">
+		 	<form id="dialog_upload_form" action="${web_ctx}/orderManagementInsert.ajax" method="post" enctype="multipart/form-data">
 				<section class="ui-layout-form-b">
 					<ul>
 						<li>
@@ -188,27 +188,8 @@ $(function(){
 		$.ajaxSettings.traditional = true;
 
 		var form = "<form action='${web_ctx}/orderManagementExcelDownload.do?dataList="+ JSON.stringify(dataList)+"' method='post'>"; 
-// 		form += "<input type='hidden' name='resultData' value='"+JSON.stringify(dataList)+"' />"; 
 		form += "</form>"; 
 		jQuery(form).appendTo("body").submit().remove(); 
-		
-// 		$.ajax({
-// 			type : "POST",
-// 			url : "${web_ctx}/orderManagementExcelDownload.do",
-// 			async: false,
-// // 			dataType: "json",
-// 			data : {
-// 				"dataList" :JSON.stringify(dataList)
-// 			},
-// 			success : function(data, textStatus, jqXHR) {
-// 				//Sucess시, 처리
-// // 				alert("성공");
-// 			},
-// 			error : function(jqXHR, textStatus, errorThrown) {
-// 				//Error시, 처리
-// 				alert("에러");
-// 			}
-// 		});
 
 	});
 	
@@ -219,7 +200,10 @@ $(function(){
 		jQuery(form).appendTo("body").submit().remove(); 
 	});
 	
+
+		
 	// [+신규주문등록] Dialog Control
+	
 	$('#dialog_upload').dialog({
 		modal: true,
 		autoOpen: false,
@@ -232,13 +216,31 @@ $(function(){
 	 			}else{
 	 				if (confirm("确认要上传所选中的文件?")) {
 		 				$('#dialog_upload_form').submit();
-						$('#dialog_upload').dialog('close');
-						$('#inputExcelFile').val('');
 	 				} 
 	 			}
 			}
 		}
 	});
+    // ajaxform
+    $('#dialog_upload_form').ajaxForm({
+        success: function(data){
+            alert('订单保存成功');
+			$('#dialog_upload').dialog('close');
+			$('#inputExcelFile').val('');
+// 			location.reload();
+			jQuery("#jqgrid_a").setGridParam({
+				url : "${web_ctx}/orderManagementSearch.ajax",
+				ajaxGridOptions : {async:false},    // 동기로 변환
+				postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":""},
+				rowNum : $('#rownum option:selected').val(),
+				datatype : "json",
+			}).trigger('reloadGrid');
+          },
+          error : function(data){
+        	  alert('订单保存失败');
+          }
+    }); 	
+
 	
 	// [Special + 접수] Dialog Control
 	$('#dialog_upload_special').dialog({
@@ -265,6 +267,7 @@ $(function(){
 			}
 		}
 	});
+
 
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
