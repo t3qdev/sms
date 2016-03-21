@@ -78,6 +78,7 @@ $(function(){
 					window.open("about:blank","_self").close();
 				}else{
 					alert("结算确认失败");
+					window.open("about:blank","_self").close();
 				}
 			}
 		});//end $.ajax	

@@ -311,6 +311,7 @@ $(function(){
 					window.open("about:blank","_self").close();
 				}else{
 					alert("PO确定失败");
+					window.open("about:blank","_self").close();
 				}					
 			}
 		});//end $.ajax	
