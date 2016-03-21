@@ -117,7 +117,7 @@
 		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
 		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
 		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
-		<result property="count" column="COUNT"/>
+<!-- 		<result property="count" column="COUNT"/> -->
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
@@ -153,12 +153,12 @@
 		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
 		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
 		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
-		<result property="count" column="COUNT"/>
+<!-- 		<result property="count" column="COUNT"/> -->
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
-		<result property="korXchrAmt" column="KOR_XCHR_AMT"/>
-		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/>
+<!-- 		<result property="korXchrAmt" column="KOR_XCHR_AMT"/> -->
+<!-- 		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/> -->
 	</resultMap>
 		
 	<insert id="smsMsOrdDAO.insertSmsMsOrd_S" parameterClass="smsMsOrdVO">
@@ -450,8 +450,8 @@
 			    ,A.CUST_ID AS CLIENT_NM
 				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
                 ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
-                      THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
-                      ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
+                      THEN CONCAT(IFNULL (A.CUST_ID, "未知"),"_", A.ORD_NO)
+                      ELSE CONCAT(IFNULL ("B5C", "未知"),"_", A.B5C_ORD_NO)
 				 END AS SHOW_DETAIL
 			    ,A.ORD_SUM_AMT	AS ORD_SUM_AMT
 				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
@@ -478,14 +478,14 @@
 			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
 			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
 			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
-	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT
+<!-- 	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT -->
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
 	    	  ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.USD_XCHR_AMT) 
 		           FROM tb_ms_ord_guds_opt X
 				  WHERE A.CUST_ID = X.CUST_ID
-		            AND A.B5C_ORD_NO = X.ORD_ID) AS KOR_XCHR_AMT
+		            AND A.B5C_ORD_NO = X.ORD_ID) AS USD_XCHR_AMT
 		       ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.RMB_XCHR_AMT) 
 		           FROM tb_ms_ord_guds_opt X
 				  WHERE A.CUST_ID = X.CUST_ID
@@ -527,6 +527,44 @@
 		LIMIT #start#,#row#
 	
 	</select>
+	
+	<select id="smsMsOrdDAO.selectSmsMsOrdCount" parameterClass="smsMsOrdVO" resultClass="String">
+  				SELECT COUNT(*) AS COUNT 
+  				FROM 
+						 sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
+		   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)
+  				WHERE 1=1 
+						<isNotEmpty property="ordNo">			 
+							 AND ORD_NO = #ordNo#
+						</isNotEmpty>
+						<isNotEmpty property="ordReqDt">			 
+						 	 AND ORD_REQ_DT = #ordReqDt#
+						</isNotEmpty>
+						<isNotEmpty property="custId">			 
+							 AND CUST_ID = #custId#
+						</isNotEmpty>
+						<isNotEmpty property="cnsMng">			 
+							 AND CNS_MNG = #cnsMng#
+						</isNotEmpty>
+						<isNotEmpty property="korMng">			 
+							 AND KOR_MNG = #korMng#
+						</isNotEmpty>
+						<isNotEmpty property="ordTypeCd">			 
+							 AND ORD_TYPE_CD = #ordTypeCd#
+						</isNotEmpty>
+						<isNotEmpty property="ordStatCd">			 
+							 AND ORD_STAT_CD = #ordStatCd#
+						</isNotEmpty>
+						 <isNotEmpty property="searchKeyword">
+		      			  AND A.ord_no IN (SELECT B.ord_no
+								FROM sms_ms_ord_guds B
+								WHERE B.ord_guds_kor_nm LIKE CONCAT('%', #searchKeyword#, '%')
+								OR B.ord_guds_cns_nm LIKE CONCAT('%', #searchKeyword#, '%')
+								OR B.ord_guds_upc_id = #searchKeyword#)
+						</isNotEmpty>
+	
+	</select>
+	
 		<select id="smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo" parameterClass="smsMsOrdVO" resultMap="smsMsOrdView">
 	SELECT 
 	
@@ -535,8 +573,8 @@
 			    ,A.CUST_ID AS CLIENT_NM
 				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
                 ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
-                      THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
-                      ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
+                      THEN CONCAT(IFNULL (A.CUST_ID, "未知"),"_", A.ORD_NO)
+                      ELSE CONCAT(IFNULL ("B5C", "未知"),"_", A.B5C_ORD_NO)
 				 END AS SHOW_DETAIL
 			    ,A.ORD_SUM_AMT	AS ORD_SUM_AMT
 				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
@@ -563,7 +601,7 @@
 			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
 			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
 			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
-	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT
+<!-- 	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT -->
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
@@ -584,8 +622,8 @@
 			    ,A.CUST_ID AS CLIENT_NM
 				,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
                 ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
-                      THEN CONCAT(IFNULL (A.CUST_ID, "미확인"),"_", A.ORD_NO)
-                      ELSE CONCAT(IFNULL ("B5C", "미확인"),"_", A.B5C_ORD_NO)
+                      THEN CONCAT(IFNULL (A.CUST_ID, "未知"),"_", A.ORD_NO)
+                      ELSE CONCAT(IFNULL ("B5C", "未知"),"_", A.B5C_ORD_NO)
 				 END AS SHOW_DETAIL
 			    ,A.ORD_SUM_AMT	AS ORD_SUM_AMT
 				,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
@@ -615,7 +653,7 @@
 			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
 			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
 			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
-	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT
+<!-- 	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT -->
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT

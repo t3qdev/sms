@@ -1,5 +1,6 @@
 package com.b5m.sms.web.controller;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,11 +92,14 @@ public class OrderManagementController  extends AbstractFileController{
 		}else{
 			row = (Integer.parseInt(rowInput));
 		}
+		
+		System.out.println("pageInput" + pageInput);
 		if(pageInput==null || "".equals(pageInput)){
 			page = 1;
 		}else{
 			page = (Integer.parseInt(pageInput));
 		}
+		
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
 		
@@ -106,6 +111,8 @@ public class OrderManagementController  extends AbstractFileController{
 
 		List<SmsMsOrdVO> smsMsOrdVOList = null;
 		smsMsOrdVOList = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
+		String count = orderService.selectSmsMsOrdCount(smsMsOrdVO);
+		
 		for(int i=0; i<smsMsOrdVOList.size(); i++){
 			if(smsMsOrdVOList.get(i).getBactPrvdDt() != null && smsMsOrdVOList.get(i).getBactPrvdAmt() !=null ){
 				
@@ -118,7 +125,7 @@ public class OrderManagementController  extends AbstractFileController{
 			smsMsOrdVOList.get(i).setDptrDlvDt(formatterDate(smsMsOrdVOList.get(i).getDptrDlvDt()))  ;
 			smsMsOrdVOList.get(i).setArvlDlvDt(formatterDate(smsMsOrdVOList.get(i).getArvlDlvDt()))  ;
 			smsMsOrdVOList.get(i).setPoDlvDt(formatterDate(smsMsOrdVOList.get(i).getPoDlvDt()))  ;
-			
+			smsMsOrdVOList.get(i).setCount(count);
 			smsMsOrdVOList.get(i).setPage(page);
 			smsMsOrdVOList.get(i).setRow(row);
 		}
@@ -323,9 +330,12 @@ public class OrderManagementController  extends AbstractFileController{
 	@ResponseBody
 	@RequestMapping(value="/orderManagementExcelTemplateDownload.do")
 	public void orderManagementExcelTemplateDownload(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		ServletContext context = request.getSession().getServletContext();
+		String Path = request.getContextPath();
+		String appPath = context.getRealPath("") + File.separator;
+		String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "[Request]EstimateRequest.xlsx";
 
-//		final String = "\\templates\\[Request]EstimateRequest.xlsx";
-//		downloadFile(request,response, fullPath);
+		downloadFile(request,response, fullPath);
 	}
 	
 	

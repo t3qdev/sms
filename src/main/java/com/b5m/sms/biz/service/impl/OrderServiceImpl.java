@@ -179,7 +179,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		String ordHistSeq=null;
 		String ordHistWrtrEml="SYSTEM";
 		String ordHistRegDttm=null;
-		String ordHistHistCont="주문 접수";
+		String ordHistHistCont=null;             // 
 		String ordReqDt=null;     //주문등록일
 		String dlvModeCd = null;
 		
@@ -190,11 +190,11 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		
 		String ordSumAmt = null;   // 딜규모  - sql 에서 계산해옴
 
-//		if("N000620100".equals(ordTypeCd)){
-//			b5cOrdNoList = tbMsOrdDAO.selectTbMsOrdForSmsMsOrd();
-//		}else if("N000620200".equals(ordTypeCd)){
-//			b5cOrdNoList = tbMsOrdSplDAO.selectTbMsOrdSplForSmsMsOrd();
-//		}
+		if("N000620100".equals(ordTypeCd)){
+			ordHistHistCont = "B5C 已生成";               // 일반상품
+		}else if("N000620200".equals(ordTypeCd)){
+			ordHistHistCont = "B5C Special 已在进行";   // 스페셜
+		}
 
 		for(int i=0; i<tbMsOrdVOList.size();i++){
 			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
@@ -623,7 +623,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdHistVO.setOrdStatCd("N000550100");       // 주문상태 코드 : 접수(N000550100)
 			smsMsOrdHistVO.setOrdHistWrtrEml(user.getUsername());  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
 //				smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
-			smsMsOrdHistVO.setOrdHistHistCont("주문 접수");
+			smsMsOrdHistVO.setOrdHistHistCont("线下订单 已在进行");   // "오프라인 주문 접수"
 //			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
 
 			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);								// SMS_MS_ORD_HIST 에 INSERT		//////////////////////////////////////////////
@@ -1047,7 +1047,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		}
 		
 		// orderManagementView 에서 excel 다운 로드할 때 사용.
-		public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO){
+		public SmsMsOrdVO selectSmsMsOrdForOrderManamentViewByOrdNo(SmsMsOrdVO smsMsOrdVO) throws Exception{
+			String count = smsMsOrdDAO.selectSmsMsOrdCount(smsMsOrdVO);
 			return smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(smsMsOrdVO);
 		}
 
@@ -1083,6 +1084,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsEstmDAO.deleteSmsMsEstm_S();
 			smsMsEstmGudsDAO.deleteSmsMsEstmGuds_S();
 			smsMsOrdFileDAO.deleteSmsMsOrdFile_S();
+		}
+		
+		public String selectSmsMsOrdCount(SmsMsOrdVO smsMsOrdVO) throws Exception{
+			return smsMsOrdDAO.selectSmsMsOrdCount(smsMsOrdVO);
 		}
 		
 }//end class
