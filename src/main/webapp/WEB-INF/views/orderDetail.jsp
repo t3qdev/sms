@@ -190,8 +190,8 @@
                         <td><div><input type="text" id="ordGudsCnsNm" name="ordGudsCnsNm" value="${smsMsOrdGuds.ordGudsCnsNm}"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsQty" name="ordGudsQty" value="${smsMsOrdGuds.ordGudsQty}" class="tac"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsSizeVal" name="ordGudsSizeVal" value="${smsMsOrdGuds.ordGudsSizeVal}" class="tac"></div></td>
-<%--                         <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
-                        <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="汇率&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td>
+                        <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> 
+<%--                         <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="汇率&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
                         <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsUrlAddr" name="ordGudsUrlAddr" value="${smsMsOrdGuds.ordGudsUrlAddr}"></div></a></td>
                         
