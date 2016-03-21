@@ -266,7 +266,15 @@
 	                  <tr>
 	                    	<td class="tac">${file.ordFileRegDttm}</td>
 	                        <td class="tac">${file.userAlasCnsNm }(${file.userAlasEngNm })</td>
-	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
+	                        <c:choose>
+		                        <c:when test="${fn:contains(file.ordFileSysFileNm, 'xls')}">
+		                        	<td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
+		                        </c:when>
+		                        <c:otherwise>
+		                        	<td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_jpg fileDown">${file.ordFileOrgtFileNm }</a></td>
+		                        </c:otherwise>
+	                        </c:choose>
+<%-- 	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td> --%>
 	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download fileDown" id="btnFileDownload${status.index }">다운로드</a></td>
 	                  </tr>
 	                   </c:forEach> 
@@ -318,6 +326,12 @@
 
 
 $(function(){
+	if("YES" =="${saved}"){
+		alert("订单保存成功");
+	}
+	if("NO"=="${saved}"){
+		alert("订单保存失败");
+	}
 	
 	if("YES"=="${reload}"){
 		opener.parent.location.reload();
@@ -482,18 +496,20 @@ $(function(){
 			contentType : false,
 			cache : false,
 			success : function(result) {
-				console.log(result);
-				console.log(result.savedRealFileNm);
-				console.log(result.savedFileNm);
+				if(result=="success"){
+					alert("上传成功");
+					window.location.reload(true);
+				}else{
+					alert("上传失败");
+				}
 					
-				alert("成功上传文件");
-				window.location.reload(true);
+				
+				
 			}//success function
-			,
-			error : function(jqXHR, textStatus, errorThrown) {
+/* 			,error : function(jqXHR, textStatus, errorThrown) {
 				//Error시, 처리
 				alert("上传文件失败");
-			}
+			} */
 		});//ajax
 	});
 	

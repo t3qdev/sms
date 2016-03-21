@@ -452,7 +452,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				 seq=Integer.toString(tempSeq);
 				 histVo.setOrdHistSeq(seq);
 				 histVo.setOrdHistWrtrEml(vo.getBactRegrEml());
-				 histVo.setOrdHistHistCont("정산");			//자동생성되는 정산코멘트
+				 histVo.setOrdHistHistCont("PO已结算");			//자동생성되는 정산코멘트
 				 histVo.setOrdStatCd("N000550400");		//주문상태코드 : N000550400 정산
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
@@ -763,7 +763,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 histVo.setOrdHistWrtrEml(wrtrEml);
 			 //2-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
 			if("N000550100".equals(ordStatCd)){					//접수 
-				 histVo.setOrdHistHistCont("주문이 진행되었습니다.");			//자동생성되는 진행코멘트 
+				 histVo.setOrdHistHistCont("B5C or B5C Special or 线下订单' 已在进行");			//자동생성되는 진행코멘트 
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
@@ -773,7 +773,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
 				
 			}else if("N000550200".equals(ordStatCd)){			//진행
-				 histVo.setOrdHistHistCont("주문이 변경되었습니다.");			//자동생성되는 진행코멘트
+				 histVo.setOrdHistHistCont("订单信息已修改.");			//자동생성되는 진행코멘트
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
@@ -954,7 +954,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 
 			 //5-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
 				if("N000550200".equals(ordStatCd)){					//진행 
-					 histVo.setOrdHistHistCont("PO가 확정되었습니다.");			//자동생성되는 진행코멘트 
+					 histVo.setOrdHistHistCont("PO已确定");			//자동생성되는 진행코멘트 
 					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 					 
 					 //주문테이블의 스탯도 변경해줘야한다
@@ -964,7 +964,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					 smsMsOrdDAO.updateSmsMsOrdStatCd(statVo);
 					
 				}else if("N000550300".equals(ordStatCd)){			//확정
-					 histVo.setOrdHistHistCont("PO가 변경되었습니다.");			//자동생성되는 진행코멘트
+					 histVo.setOrdHistHistCont("PO已修改");			//자동생성되는 진행코멘트
 					 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 					 
 					 //주문테이블의 스탯도 변경해줘야한다
