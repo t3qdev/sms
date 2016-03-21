@@ -6,11 +6,14 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.b5m.sms.biz.dao.SmsMsRoleUserDAO;
 import com.b5m.sms.biz.dao.SmsMsUserDAO;
 import com.b5m.sms.biz.service.UserService;
+import com.b5m.sms.vo.PasswordChangeVO;
 import com.b5m.sms.vo.SmsMsRoleUserVO;
 import com.b5m.sms.vo.SmsMsUserVO;
 
@@ -18,6 +21,7 @@ import com.b5m.sms.vo.SmsMsUserVO;
 public class UserServiceImpl implements UserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
+	
 	@Resource(name="smsMsUserDAO")
 	private SmsMsUserDAO smsMsUserDAO;
 	
@@ -125,6 +129,34 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<SmsMsUserVO> selectSmsMsUserByOrdNo(String ordNo)	throws Exception {
 		return smsMsUserDAO.selectSmsMsUserbyOrdNo(ordNo);
+	}
+
+	
+	@Autowired
+	private PasswordEncoder bcrypt;
+	
+	@Override
+	public String passwordChangeUpdate(PasswordChangeVO passwordChangeVo) throws Exception {
+		//1.비밀번호체크를 위해 해당 유저아이디의 정보를 받아온다.
+		SmsMsUserVO paramUserVo = new SmsMsUserVO();
+		paramUserVo.setUserEml(passwordChangeVo.getUserEml());
+		List<SmsMsUserVO> userList = smsMsUserDAO.selectSmsMsUser(paramUserVo);	//userList.get(0)		<<-select 함수의 return 형태는 List이므로
+		
+		//2.두 비밀번호가 다른경우		
+		if(!bcrypt.matches(passwordChangeVo.getUserPwd_old(),userList.get(0).getUserPwd())){		//brcypt.matches(원본형태,암호화된형태)
+
+			return "false";
+		}
+		
+		//3.두 비밀번호가 같은경우 
+		userList.get(0).setUserPwdStatCd("N000600200");		
+		userList.get(0).setUserPwd(bcrypt.encode(passwordChangeVo.getUserPwd().trim()));
+		paramUserVo.setUserPwdStatCd("N000600200");				//비밀번호상태 일반(N000600200)으로 변경
+		paramUserVo.setUserPwd(bcrypt.encode(passwordChangeVo.getUserPwd().trim()));		//새로운 비밀번호로 변경		
+		System.out.println(paramUserVo.toString());
+		smsMsUserDAO.updateSmsMsUser(userList.get(0));		
+		return "success";   //저장성공
+		
 	}
 	
 	
