@@ -8,11 +8,13 @@
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
 <sec:authentication var="user" property="principal" />
 <STYLE>
-        .boldqwer {
-/*             background-color: green;  */
-            font-weight: bold;
-/*             font-weight: 900; */
-        }
+        .bold {
+            font-weight: bold !important;
+		}
+        .boldAndBlue a {
+       		color:#3498d8 !important;
+            font-weight: bold !important; 
+	    }
 </STYLE>
 <article>
 	<h1>
@@ -256,7 +258,7 @@ $(function(){
 	 				if (confirm("确认要上传所选中的文件?")) {
 // 		 				$('#dialog_upload_form_special').submit();
 						$("#dialog_upload_form_special").attr('target', 'popUp');
-						var newWindow=window.open("",'popUp',1500,800);
+						var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
 						$("#dialog_upload_form_special").submit();
 						$('#dialog_upload_special').dialog('close');
 						$('#inputExcelFileSpecial').val('');
@@ -298,9 +300,9 @@ $(function(){
 // 					 //dataInit: dataInitMultiselect
 // 				 }
 			},
-            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'boldqwer'},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldqwer'},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'boldqwer' },		
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold'},
+            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue'},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false 
 //             ,	formatter: 'select',
 // 				 edittype:'select', editoptions:{
