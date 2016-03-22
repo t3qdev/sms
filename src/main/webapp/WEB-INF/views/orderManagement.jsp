@@ -78,18 +78,26 @@
 		<div id="dialog_upload_special" title="上传特殊订单客户询价单">
 		 	<form id="dialog_upload_form_special" action="${web_ctx}/orderDetailSpecialView.do" method="post" enctype="multipart/form-data">
 				<section class="ui-layout-form-b">
-					<ul>
+					<ul class="so_layer">
 					<li>
 					<label for="">订单编号</label><input name="ordNo" id="ordNoSpecial" value="" readonly/>
 					</li>
-						<li>
-							<label for="">excel样式文件</label>
-	                        <input name="file" id="inputExcelFileSpecial" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
-						</li>
+                    <li>
+						<div class="img_area">
+							<img id="special_img" src="http://placehold.it/80x80">
+						</div>
+                        <div class="text_area">
+                        	<textarea id="special_text">safsadf</textarea>
+                        </div>
+					</li>
+                    <li>
+                        <label for="">excel样式文件</label>
+                        <input name="file" id="inputExcelFileSpecial" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+                    </li>
 					</ul>
 				</section>
 			</form>
-		</div>			
+		</div>		
 </article>
 
 <script>
