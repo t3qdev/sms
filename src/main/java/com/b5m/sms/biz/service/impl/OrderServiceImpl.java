@@ -184,8 +184,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		String dlvModeCd = null;
 		
 		String ordEstmDt = null;			// 견적일자 - 주문발생일자 - B5C(일반)의 경우 견적일자 = 문의일자
-		String stdXchrKindCd = null;      //  기준화폐종류코드 - B5C의 경우 무조건 USD 사용
-		BigDecimal stdXchrAmt = null;			//  기준환율 - 기준환율 테이블 참조
+		String stdXchrKindCd = "N000590200";      //  기준화폐종류코드 - B5C의 경우 무조건 원화 사용
+		BigDecimal stdXchrAmt = new BigDecimal("1");			//  기준환율 테이블이 원화로 되어 있으므로 1로 세팅
 		String ordHopeArvlDt = null;      //  희망인도일자 - B5C의 ESTM_RCP_REQ_DT
 		
 		String ordSumAmt = null;   // 딜규모  - sql 에서 계산해옴
@@ -203,8 +203,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			custId = tbMsOrdVOList.get(i).getCustId();		
 			dlvModeCd = tbMsOrdVOList.get(i).getDlvModeCd();
 			ordEstmDt = tbMsOrdVOList.get(i).getOrdEstmDt();
-			stdXchrKindCd = tbMsOrdVOList.get(i).getStdXchrKindCd();
-			if(tbMsOrdVOList.get(i).getStdXchrAmt() !=null) stdXchrAmt = new BigDecimal(tbMsOrdVOList.get(i).getStdXchrAmt());
 			ordHopeArvlDt = tbMsOrdVOList.get(i).getOrdHopeArvlDt();
 			ordSumAmt = tbMsOrdVOList.get(i).getOrdSumAmt();
 
