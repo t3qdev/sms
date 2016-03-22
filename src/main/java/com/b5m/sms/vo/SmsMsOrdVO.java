@@ -86,7 +86,7 @@ public class SmsMsOrdVO {
 	private String searchKeyword;
 
 	//orderManamentView 에서 딜규모에 환율 보여주기 위해서 필요
-	private BigDecimal korXchrAmt;
+	private BigDecimal krwXchrAmt;
 	private BigDecimal usdXchrAmt;
 	private BigDecimal cnsXchrAmt;
 	public String getOrdNo() {
@@ -437,11 +437,11 @@ public class SmsMsOrdVO {
 	public void setSearchKeyword(String searchKeyword) {
 		this.searchKeyword = searchKeyword;
 	}
-	public BigDecimal getKorXchrAmt() {
-		return korXchrAmt;
+	public BigDecimal getKrwXchrAmt() {
+		return krwXchrAmt;
 	}
-	public void setKorXchrAmt(BigDecimal korXchrAmt) {
-		this.korXchrAmt = korXchrAmt;
+	public void setKrwXchrAmt(BigDecimal krwXchrAmt) {
+		this.krwXchrAmt = krwXchrAmt;
 	}
 	public BigDecimal getUsdXchrAmt() {
 		return usdXchrAmt;
@@ -489,12 +489,11 @@ public class SmsMsOrdVO {
 				+ ", start=" + start + ", end=" + end
 				+ ", bactPrvdDtPlusbactPrvdAmt=" + bactPrvdDtPlusbactPrvdAmt
 				+ ", count=" + count + ", page=" + page + ", row=" + row
-				+ ", searchKeyword=" + searchKeyword + ", korXchrAmt="
-				+ korXchrAmt + ", usdXchrAmt=" + usdXchrAmt + ", cnsXchrAmt="
+				+ ", searchKeyword=" + searchKeyword + ", krwXchrAmt="
+				+ krwXchrAmt + ", usdXchrAmt=" + usdXchrAmt + ", cnsXchrAmt="
 				+ cnsXchrAmt + "]";
 	}
 
-	
 	
 	
 	

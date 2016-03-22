@@ -282,7 +282,7 @@ $(function(){
         width: 1200,
         //height: 250,
         colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买'
-                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','korXchrAmt','usdXchrAmt','cnsXchrAmt'],
+                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
@@ -401,7 +401,7 @@ $(function(){
             {name:'bactPrvdMemoCont',index:'bactPrvdMemoCont',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'stdXchrAmt',index:'stdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"},
-            {name:'korXchrAmt',index:'korXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
+            {name:'krwXchrAmt',index:'krwXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'usdXchrAmt',index:'usdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'cnsXchrAmt',index:'cnsXchrAmt',align:'center',width:160,resizable:false,hidden:"true"}
         ],
@@ -486,13 +486,13 @@ $(function(){
             	
             	var  stdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrAmt;
             	
-            	var korXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).korXchrAmt;
+            	var krwXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).krwXchrAmt;
             	var usdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).usdXchrAmt;
             	var cnsXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).cnsXchrAmt;
         		if(stdXchrAmt == ""){
         			content = "none";
         		}else{
-	              		content = "\n₩ "+korXchrAmt+ "\n$ "+usdXchrAmt+"\n¥ "+cnsXchrAmt;
+	              		content = "\n₩ "+krwXchrAmt+ "\n$ "+usdXchrAmt+"\n¥ "+cnsXchrAmt;
         		}
 
 //             	content += stdXchrAmt;
