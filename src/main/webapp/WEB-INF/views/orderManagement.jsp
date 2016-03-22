@@ -360,6 +360,8 @@ $(function(){
     	onSelectRow: function(id){
    		   if(!checkIndex(RolesEditordSumAmt,roles)){
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+   		   }else{
+   			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
    		   }
     		var ordStatCd =  $('#jqgrid_a').getCell(id, 'ordStatCd');
 			if(ordStatCd=="N000550300" || ordStatCd=="N000550400" ){
@@ -369,7 +371,12 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});	
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});	
 				}
+				
 				if(!checkIndex(RolesEditShipping,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:false});
@@ -379,11 +386,24 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:true});
 				}
 				if(!checkIndex(RolesEditRapt,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 				}
 				var paptDpstRate = $('#jqgrid_a').getCell(id, 'paptDpstRate');
 				var raptDpstRate = $('#jqgrid_a').getCell(id, 'raptDpstRate');
@@ -396,6 +416,13 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 				}
 				if(checkIndex(RolesSaveBtn,roles)){
 					jQuery('#jqgrid_a').jqGrid('editRow',id,false);
@@ -529,17 +556,25 @@ $(function(){
 			
 	   		   if(!checkIndex(RolesEditordSumAmt,roles)){
 	      			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+	      		   }else{
+	      			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 	      		   }
 			// 이 이유는, multiselect 했을 때, 마지막 editable 여부에 따라, 값이 날아가고 안날아가고의 차이가 있기 때문.
 			// 임시방편으로, 1개의 row 가 save 될 때, 그 직전에 그 row의 상태를 한번 더 확인하고, 전송여부를 판단하여 editable을 다시 설정해주고 전송한다.
 			var ordStatCd =  $('#jqgrid_a').getCell(id[i],'ordStatCd');
 			if(ordStatCd=="N000550300" || ordStatCd=="N000550400" ){
 // 				PO확정 이후, 선금, 잔금, 입고일, 출항일, 도착일, P/O도착일 등 수정가능
+				
 				if(!checkIndex(RolesEditPapt,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});	
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});	
 				}
+				
 				if(!checkIndex(RolesEditShipping,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:false});
@@ -549,11 +584,24 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','dptrDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','arvlDlvDestCd',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','poDlvDestCd',{editable:true});
 				}
 				if(!checkIndex(RolesEditRapt,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 				}
 				var paptDpstRate = $('#jqgrid_a').getCell(id, 'paptDpstRate');
 				var raptDpstRate = $('#jqgrid_a').getCell(id, 'raptDpstRate');
@@ -566,6 +614,13 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+				}else{
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
+					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 				}
 // 				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:true});
 			}else{
@@ -634,8 +689,7 @@ $(function(){
 
 	//[현재상태 상세내용] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowHistory(cellvalue,options,rowObject){
-		var address = "${web_ctx}/orderHistoryView.do?ordNo="+rowObject.ordNo;
-		return '<a data-href="'+address+'" class="btn_pop ico_history" data-popw="800" data-poph="500"><span class="ui-icon ui-icon-calendar"></span>'+cellvalue+'</a>';
+		return '<a href="#" onclick="popUpHistory('+rowObject.ordNo+')">'+cellvalue+'</a>';
 	}
  
 	//Date 형식 formatter  (db 에는 varchar(8) 로 되어 있어서, formatter로 형식변환)
@@ -761,6 +815,11 @@ function dialogSpecialExcel(ordNo){
 function popUp(ordNo){
 	var address = "${web_ctx}/orderDetailView.do?ordNo="+ordNo;
 	window.open( address, "idcheck", "top=0, left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=1300, height=700" );
+}
+// [현재상태 상세보기] 클릭 했을 때, 새 창
+function popUpHistory(ordNo){
+	var address = "${web_ctx}/orderHistoryView.do?ordNo="+ordNo;
+	window.open( address, "idcheck", "top=0, left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=800, height=500" );
 }
 
 
