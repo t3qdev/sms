@@ -466,7 +466,8 @@ $(function(){
 					'上传P/O 相关文件': function(evt){
 
 						$("#dialog_upload_form").attr('target', 'popUp');
-						var newWindow=window.open("",'popUp',1500,800);
+					//	var newWindow=window.open("",'popUp',1500,800);
+						 var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
 						$("#dialog_upload_form").submit();
 						  $('#dialog_upload').dialog('close');
 						//$('#dialog_upload_form').submit();
