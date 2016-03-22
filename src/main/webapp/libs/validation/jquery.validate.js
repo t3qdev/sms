@@ -310,7 +310,7 @@ $.extend( $.validator, {
 	},
 
 	messages: {
-		required: "필수 입력 항목입니다.",
+		required: "ㅂㅈㄷ 입력 항목입니다.",
 		remote: "입력항목을 수정해 주세요.",//"Please fix this field.",
 		email: "입력값이 이메일 형식에 맞지 않습니다.",
 		url: "입력값이 URL형식에 맞지 않습니다.",

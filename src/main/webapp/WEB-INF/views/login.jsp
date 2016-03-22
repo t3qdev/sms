@@ -46,70 +46,15 @@
 		<footer>
 			<p class="tal">
             忘记登录帐号或密码时请联系管理者<br>
-            。中国负责人 : 常遇春 (changyuchun@b5m.com)<br>
-            。韩国负责人 : 汤和 (tanghe@b5m.com)
+            中国负责人 : 常遇春 (changyuchun@b5m.com)<br>
+            韩国负责人 : 汤和 (tanghe@b5m.com)
       	   </p>
 		</footer>
 	</form>
 </div>
 
 
-<!-- dialog -->
-<div id="dialog_id" class="dialog" title="아이디 찾기">
-	<section class="ui-layout-form-b">
-		<ul>
-			<li>
-				<label for="">사업자등록번호</label>
-			<!-- 	<input id="crn1" name="crn1" type="text" size="12" maxlength="3" />
-				<span>-</span>
-				<input id="crn2" name="crn2" type="text" size="12" maxlength="2" />
-				<span>-</span>
-				<input id="crn3" name="crn3" type="text" size="6" maxlength="5" /> -->
-				<input id="crn" name="crn" type="text" size="12" maxlength="12" />
-			</li>
-		</ul>
-		<p>
-			로그인 정보를 잊으셨다면 B5M Brandstore 관리자에게 문의해 주시기 바랍니다.
-			<br />
-			 문의전화: 02-3404-7288 (오전 9시 - 오후 6시. 토/일/공휴일 제외)
-		</p>
-	</section>
-</div>
-<div id="dialog_pw" class="dialog" title="비밀번호 찾기">
-	<section class="ui-layout-form-b">
-		<ul>
-			<li>
-				<label for="">아이디</label>
-				<input id="Id" name="Id" type="text" size="12" />
-			</li>
-			<li>
-				<label for="">사업자등록번호</label>
-			<!-- 	<input id="crn11" name="crn11" type="text" size="12" maxlength="3" />
-				<span>-</span>
-				<input id="crn22" name="crn22" type="text" size="6" maxlength="2" />
-				<span>-</span>
-				<input id="crn33" name="crn33" type="text" size="12" maxlength="5" /> -->
-				<input id="crn_pwd" name="crn_pwd" type="text" size="12" maxlength="12" />
-			</li>
-		</ul>
-		<p>
-			로그인 정보를 잊으셨다면 B5M Brandstore 관리자에게 문의해 주시기 바랍니다.
-			<br />
-			 문의전화: 02-3404-7288 (오전 9시 - 오후 6시. 토/일/공휴일 제외)
-		</p>
-	</section>
-</div>
-<div id="dialog_id_submit" class="dialog" title="아이디 찾기 결과">
 
-	<section class="ui-layout-form-b">
-		<p id="mySllrId" name="mySllrId" />
-	</section>
-</div>
-<div id="dialog_pw_submit" class="dialog" title="비밀번호 찾기 결과">
-	<section class="ui-layout-form-b">
-		<p id="mySllrPwd"></p>
-	</section>
-</div>
 
 
 <!-- jQuery -->
@@ -140,7 +85,7 @@
 	        draggable: false,
 	        closeOnEscape: true,
 	        width:430,
-	        height: 400,
+	        height: 370,
 	        open: function (event, ui) {
 	            $(".ui-dialog-titlebar-close", $(this).parent()).hide();
 	            $(".ui-dialog .ui-dialog-titlebar").hide();
@@ -178,7 +123,7 @@
 				}
 			},
 			errorPlacement : function(error, element) {
-				alert(error.text());
+// 				alert(error.text());
 			},
 			submitHandler : function(form) {
 				if ($('input:checkbox[name=cb_remember_id]').is(':checked')) {

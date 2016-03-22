@@ -26,7 +26,7 @@
 	                <section class="ui-layout-action tar">
                 	<div class="s_area">
                     	<input type="text" id="searchKeyWord" size="30" style="height:30px; line-height:30px; box-sizing:border-box" />
-                        <button class="btn-search">검색</button>
+                        <button class="btn-search">搜索</button>
                     </div>
 	                	<div class="file_upoad_area">
 	                        <span class="bulk_tit"></span>
@@ -294,82 +294,26 @@ $(function(){
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
-            {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false
-//             	,
-//             	formatter: 'select',
-// 				 edittype:'select', editoptions:{
-// 					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
-// 					 defaultValue:'none',
-// 					 multiple: true
-// 				 },
-// 				 stype:'select', searchoptions: {
-// 					 sopt: ['eq','ne'],
-// 					 value:'미확인:미확인;XHS:XHS;WYKL:WYKL',
-// 					 //dataInit: dataInitMultiselect
-// 				 }
-			},
+            {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold'},
             {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue'},
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
-            {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false 
-//             ,	formatter: 'select',
-// 				 edittype:'select', editoptions:{
-// 					 value:'某某某(ZSZ):某某某(ZSZ);商鞅(SY):商鞅(SY);独孤方(DGF):独孤方(DGF)',
-// 					 defaultValue:'none',
-// 					 multiple: true
-// 				 },
-// 				 stype:'select', searchoptions: {
-// 					 sopt: ['eq','ne'],
-// 					 value:'某某某(ZSZ):某某某(ZSZ);商鞅(SY):商鞅(SY);独孤方(DGF):独孤方(DGF)',
-// 					 dataInit: dataInitMultiselect
-// 				 }
-				 },		
-            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true 
-// 					 , formatter: 'select',
-// 					 edittype:'select', editoptions:{
-// 						 value:'太公望(TGW):太公望(TGW);李小龙(LXL):李小龙(LXL)',
-// 						 defaultValue:'none',
-// 						 multiple: true
-// 					 },
-// 					 stype:'select', searchoptions: {
-// 						 sopt: ['eq','ne'],
-// 						 value:'太公望(TGW):太公望(TGW);李小龙(LXL):李小龙(LXL)',
-// 						 //dataInit: dataInitMultiselect
-// 					 }
-					 },
+            {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
+            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true  },
 			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
-				 edittype:'select', editoptions:{
-					 value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',
-	
-// 					 , dataInit: dataInitMultiselect
-				 },
+				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' },
 				 search : 'true',
-				 stype:'select', searchoptions: {
-					sopt: ['eq']
-// 					, multiple: true
-					, value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
-// 					,dataInit: dataInitMultiselect
-					
-				 }},
+				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'}
+				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
-				 edittype:'select', editoptions:{
-					 value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
-					 defaultValue:'none',
-// 					 multiple: true
-				 },
+				 edittype:'select', editoptions:{ value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',defaultValue:'none'},
 				 search : 'true',
-				 stype:'select', searchoptions: {
-					 value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',
-					 sopt: ['eq']
-// 					, dataInit: dataInitMultiselect
-				 }},	
+				 stype:'select', searchoptions: { value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP', sopt: ['eq'] }
+			},	
             {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
-				 edittype:'select', editoptions:{
-					 value:'N000550300:确定;N000550400:结算;N000560100:DROP',
-					 defaultValue:'none',
-					 multiple: true
-				 }, stype:'input'
+				 edittype:'select', editoptions:{ value:'N000550300:确定;N000550400:结算;N000560100:DROP', defaultValue:'none', multiple: true},
+				 stype:'input'
             },		
             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
@@ -520,17 +464,6 @@ $(function(){
 		shrinkToFit: false
         
   	  });
-// 	$('#jqgrid_a').jqGrid('navGrid','#pager_a',{add:false,edit:false,del:false});
-// 	$('#jqgrid_a').jqGrid('navButtonAdd','#pager_a',{
-//         caption:"Export to Excel", 
-//         onClickButton : function () { 
-//             jQuery("#list2").excelExport();
-//         } 
-//     });
-// // 	$('#jqgrid_a').jqGrid('navGrid','#pager_a',{excel:true, add:true});
-// 	$('#jqgrid_a').jqGrid('navButtonAdd', '#pager_a',{caption:"excel",onClickButton:function(){alert("d");}}
-           
-// 	);
 
 	// jqgrid가 로딩완료 되면, 이 pager로 jqgrid 아래에 pager를 지우고 새로 그린다.
 	// 이 페이저에는 goToSelectedPage() 함수가 링크 걸려 있다.
@@ -702,7 +635,7 @@ $(function(){
 	//[현재상태 상세내용] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowHistory(cellvalue,options,rowObject){
 		var address = "${web_ctx}/orderHistoryView.do?ordNo="+rowObject.ordNo;
-		return '<a data-href="'+address+'" class="btn_pop ico_history" data-popw="1200" data-poph="400"><span class="ui-icon ui-icon-calendar"></span>'+cellvalue+'</a>';
+		return '<a data-href="'+address+'" class="btn_pop ico_history" data-popw="800" data-poph="500"><span class="ui-icon ui-icon-calendar"></span>'+cellvalue+'</a>';
 	}
  
 	//Date 형식 formatter  (db 에는 varchar(8) 로 되어 있어서, formatter로 형식변환)
@@ -712,21 +645,11 @@ $(function(){
 		}else{
 			return cellvalue;
 		}
-// 		if(cellvalue!=null && cellvalue.length==8){
-// 			var yyyy = cellvalue.substr(0,4);
-// 			var mm = cellvalue.substr(4,2);
-// 			var dd = cellvalue.substr(6,2);
-// 			return yyyy+'-'+mm+'-'+dd;
-// 		}else{
-// 			return "";
-// 		}
 	}  
 
     // jqgrid의 DlvDestCd 컬럼에 대한 formatter
     function formatterDlvDestCd(cellvalue,options,rowObject){
-//     	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
-// 			+'N000511000:TSN;N000511100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
-    	
+  	
     	if(cellvalue == 'N000510100'){
 			return "ICN";
 		}else if(cellvalue == 'N000510200'){
@@ -764,13 +687,11 @@ $(function(){
 		useColSpanStyle: true, 
 		groupHeaders:[
 			{startColumnName: 'paptDpstDt', numberOfColumns: 3, titleText: '首付'},
-// 			{startColumnName: 'wrhsDlvDt', numberOfColumns: 8, titleText: 'Shipping'},
 			{startColumnName: 'wrhsDlvDt', numberOfColumns: 2, titleText: '入库'},
 			{startColumnName: 'dptrDlvDt', numberOfColumns: 2, titleText: '出港'},
 			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '到岸'},
 			{startColumnName: 'poDlvDt', numberOfColumns: 2, titleText: 'P/O'},
 			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '余款'}
-
 		]	
 	});
 	$("#jqgrid_a").jqGrid('filterToolbar',{
@@ -796,7 +717,6 @@ $(function(){
 
 		}
 	);
-// 	$("#jqgrid_a").toggleToolbar();
 
 	$("#jqgrid_a").jqGrid('setFrozenColumns');
     $('#jqgrid_a').setGridWidth($(".ui-layout-jqgrid").width() - 2);
@@ -837,7 +757,7 @@ function dialogSpecialExcel(ordNo){
 // [상세보기] 클릭 했을 때, 새 창
 function popUp(ordNo){
 	var address = "${web_ctx}/orderDetailView.do?ordNo="+ordNo;
-	window.open( address, "idcheck", "top=200, left=200, toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=1300, height=800" );
+	window.open( address, "idcheck", "top=0, left=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=1300, height=700" );
 }
 
 

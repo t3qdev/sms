@@ -755,7 +755,7 @@ td[colindex="10"]+td button.ui-multiselect.ui-widget.ui-state-default.ui-corner-
 .ui-jqgrid .ui-jqgrid-htable th div{top:2px}
 
 .s_select{ position:absolute;top:0;left:10px;}
-.s_area{position:absolute;top:0;left:115px;}
+.s_area{position:absolute;top:0;left:10px;}
 
 .ui-widget-content.jqgrow.ui-row-ltr.ui-state-highlight a{color:#444!important}
 .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr{font-weight:bold}
