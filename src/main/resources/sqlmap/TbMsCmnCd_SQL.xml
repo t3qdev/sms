@@ -121,7 +121,7 @@
 	
 
 
-	<select id="tbMsCmnCdDAO.selectCmnCdByETC" parameterClass="String" resultMap="tbMsCmnCd">
+	<select id="tbMsCmnCdDAO.selectCmnCdByEtcNCdVal" parameterClass="String" resultMap="tbMsCmnCd">
 		SELECT CD
 		, CD_NM
 		, CD_VAL
@@ -131,7 +131,7 @@
 		FROM tb_ms_cmn_cd
 		WHERE 1=1
 
-			AND ETC=#etc#
+			AND (ETC=#etc# OR CD_VAL=#etc#)
 
 
 	</select>

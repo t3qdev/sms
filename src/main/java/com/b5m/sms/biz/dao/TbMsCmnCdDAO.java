@@ -57,8 +57,8 @@ public class TbMsCmnCdDAO extends EgovAbstractDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<TbMsCmnCdVO> selectCmnCdByETC(String etc) {
-		return  (List<TbMsCmnCdVO>)list("tbMsCmnCdDAO.selectCmnCdByETC", etc);
+	public List<TbMsCmnCdVO> selectCmnCdByEtcNCdVal(String etc) {
+		return  (List<TbMsCmnCdVO>)list("tbMsCmnCdDAO.selectCmnCdByEtcNCdVal", etc);
 	}
 	
 }

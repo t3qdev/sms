@@ -8,10 +8,10 @@
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
 <sec:authentication var="user" property="principal" />
 <STYLE>
-        .bold {
-/*             background-color: green; */
+        .boldqwer {
+/*             background-color: green;  */
             font-weight: bold;
-            font-weight: 900;
+/*             font-weight: 900; */
         }
 </STYLE>
 <article>
@@ -298,9 +298,9 @@ $(function(){
 // 					 //dataInit: dataInitMultiselect
 // 				 }
 			},
-            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold'},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'bold'},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}, classes: 'bold' },		
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'boldqwer'},
+            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldqwer'},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'boldqwer' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false 
 //             ,	formatter: 'select',
 // 				 edittype:'select', editoptions:{
@@ -365,7 +365,7 @@ $(function(){
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
+            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}   },		
             {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
             {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
@@ -390,7 +390,7 @@ $(function(){
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}},
+            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}},
             {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
             {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
             {name:'count',index:'count',align:'center',width:160,resizable:false,hidden:"true"},

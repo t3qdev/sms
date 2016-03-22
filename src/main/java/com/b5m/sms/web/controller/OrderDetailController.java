@@ -259,7 +259,7 @@ public class OrderDetailController extends AbstractFileController{
 		// 배송 방법은- Code 테이블에서 직접 가져오고, 정확하지 않으면 null 처리 한다.
 		if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
 			List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
-			tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByETC(dlvDestCd);
+			tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvDestCd);
 			if(tbMsCmnCdVOList.size() == 1){
 				dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
 			}else{
