@@ -299,7 +299,7 @@ $(function(){
             {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue'},
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
-            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true  },
+            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   },
 			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
 				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' },
 				 search : 'true',
@@ -752,6 +752,9 @@ function dialogSpecialExcel(ordNo){
 	
 	//dialog 활성화.
 	$('#dialog_upload_special').dialog('open');
+	
+
+	
 };
 
 // [상세보기] 클릭 했을 때, 새 창
@@ -788,3 +791,6 @@ function checkIndex(btnRole, userRole){
 
 
 </script>
+<style>
+#jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}
+</style>
