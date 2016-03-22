@@ -218,7 +218,7 @@ $(function(){
 		modal: true,
 		autoOpen: false,
 		width: 500,
-		height: 240,
+		height: 150,
 		buttons: {
 			'上传文件': function(evt){
 		 		if($('#inputExcelFile').val()==""){
@@ -257,7 +257,7 @@ $(function(){
 		modal: true,
 		autoOpen: false,
 		width: 500,
-		height: 240,
+		height: 270,
 		buttons: {
 			'文件上传': function(evt){
 		 		if($('#inputExcelFileSpecial').val()==""){

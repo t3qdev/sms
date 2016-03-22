@@ -759,3 +759,8 @@ td[colindex="10"]+td button.ui-multiselect.ui-widget.ui-state-default.ui-corner-
 
 .ui-widget-content.jqgrow.ui-row-ltr.ui-state-highlight a{color:#444!important}
 .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr{font-weight:bold}
+
+.so_layer li{position:relative;}
+.so_layer li .img_area{position:absolute;top:3px;left:0;}
+.so_layer li .text_area{margin-left:140px; height:85px}
+.so_layer li .text_area textarea{height:80px;width:310px}
