@@ -34,11 +34,7 @@
 		<result property="custId" column="CUST_ID" />
 		<result property="dlvModeCd" column="DLV_MODE_CD" />
 		<result property="ordEstmDt" column="ORD_ESTM_DT" />
-		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD" />
-		<result property="stdXchrAmt" column="STD_XCHR_AMT" />
-		<result property="rmbXchrAmt" column="STD_XCHR_AMT" />
 		<result property="ordSumAmt" column="ORD_SUM_AMT" />
-
 		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" />
 	</resultMap>
 	
@@ -49,10 +45,6 @@
 					,CUST_ID AS CUST_ID
 					,DLV_MODE_CD AS DLV_MODE_CD
 					,DATE_FORMAT(SYS_REG_DTTM,"%Y%m%d") AS ORD_ESTM_DT
-					,'N000590200' AS STD_XCHR_KIND_CD
-					, USD_XCHR_AMT AS STD_XCHR_AMT
-					, RMB_XCHR_AMT AS RMB_XCHR_AMT
-					
 					,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC)
 								FROM tb_ms_ord_guds_opt X
 								WHERE A.CUST_ID = X.CUST_ID

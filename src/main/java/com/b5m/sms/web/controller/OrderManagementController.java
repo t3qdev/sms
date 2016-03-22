@@ -93,7 +93,7 @@ public class OrderManagementController  extends AbstractFileController{
 			row = (Integer.parseInt(rowInput));
 		}
 		
-		System.out.println("pageInput" + pageInput);
+//		System.out.println("pageInput" + pageInput);
 		if(pageInput==null || "".equals(pageInput)){
 			page = 1;
 		}else{
@@ -216,7 +216,7 @@ public class OrderManagementController  extends AbstractFileController{
 		}
 		//workbook 초기화
 		Workbook wb = WorkbookFactory.create(excelFile.getInputStream());
-		Sheet sheet = wb.getSheetAt(1);                    // 임시로 1번 한국어 시트로 함.
+		Sheet sheet = wb.getSheetAt(0);                    // 시트 번호
 		
 		//엑셀 업로드 할 때, 히스토리에 남기기 위해 user 정보 필요.
 	    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -207,7 +207,7 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		//workbook 초기화
 		Workbook wb = WorkbookFactory.create(excelFile.getInputStream());
-		Sheet sheet = wb.getSheetAt(1);                    // 임시로 1번 한국어 시트로 함.
+		Sheet sheet = wb.getSheetAt(0);                   
 
 		LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
 		// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO

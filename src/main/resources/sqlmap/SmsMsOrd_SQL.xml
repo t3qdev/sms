@@ -157,8 +157,9 @@
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
-<!-- 		<result property="korXchrAmt" column="KOR_XCHR_AMT"/> -->
-<!-- 		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/> -->
+		<result property="krwXchrAmt" column="KRW_XCHR_AMT"/>
+		<result property="usdXchrAmt" column="USD_XCHR_AMT"/>
+		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/>
 	</resultMap>
 		
 	<insert id="smsMsOrdDAO.insertSmsMsOrd_S" parameterClass="smsMsOrdVO">
@@ -478,21 +479,16 @@
 			    ,A.RAPT_DPST_RATE AS RAPT_DPST_RATE
 			    ,A.ORD_MEMO_CONT AS ORD_MEMO_CONT
 			    ,A.B5M_BUY_CONT AS B5M_BUY_CONT
-<!-- 	    		,(SELECT COUNT(*) FROM sms_ms_ord) AS COUNT -->
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
-	    	  ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.USD_XCHR_AMT) 
-		           FROM tb_ms_ord_guds_opt X
-				  WHERE A.CUST_ID = X.CUST_ID
-		            AND A.B5C_ORD_NO = X.ORD_ID) AS USD_XCHR_AMT
-		       ,(SELECT SUM(ORD_GUDS_QTY * ORD_GUDS_SALE_PRC * B.RMB_XCHR_AMT) 
-		           FROM tb_ms_ord_guds_opt X
-				  WHERE A.CUST_ID = X.CUST_ID
-		            AND A.B5C_ORD_NO = X.ORD_ID) AS CNS_XCHR_AMT
+                ,CASE A.STD_XCHR_KIND_CD WHEN 'N000590200' THEN  A.ORD_SUM_AMT                   WHEN 'N000590100' THEN (ORD_SUM_AMT / B.USD_XCHR_AMT) 					WHEN 'N000590300' THEN (ORD_SUM_AMT / B.RMB_XCHR_AMT)				 END AS KRW_XCHR_AMT
+                ,CASE A.STD_XCHR_KIND_CD WHEN 'N000590200' THEN (A.ORD_SUM_AMT / B.USD_XCHR_AMT) WHEN 'N000590100' THEN ORD_SUM_AMT 									WHEN 'N000590300' THEN (ORD_SUM_AMT / B.RMB_XCHR_AMT * USD_XCHR_AMT ) END AS USD_XCHR_AMT
+                ,CASE A.STD_XCHR_KIND_CD WHEN 'N000590200' THEN (A.ORD_SUM_AMT / B.RMB_XCHR_AMT) WHEN 'N000590100' THEN (ORD_SUM_AMT / B.USD_XCHR_AMT * B.RMB_XCHR_AMT)	WHEN 'N000590300' THEN 	ORD_SUM_AMT										END AS CNS_XCHR_AMT
+
 		FROM
 				 sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
-   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)
+   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -2)
 		WHERE 1=1 
 				<isNotEmpty property="ordNo">			 
 					 AND ORD_NO = #ordNo#
