@@ -383,7 +383,7 @@ $(function(){
 		$(".fileDown").click(function(a) {
 			a.preventDefault();
 			});
-		 //$(".fileDown").hide();		//상품 매핑
+		 $(".fileDown").hide();		//상품 매핑
 	}
 	
 	
