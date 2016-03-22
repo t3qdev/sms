@@ -170,14 +170,14 @@ public class OrderManagementController  extends AbstractFileController{
 		
 		if(smsMsOrdVO.getPaptDpstRate()  !=null && new BigDecimal("100").equals(smsMsOrdVO.getPaptDpstRate())){
 //			선금 100%, 잔금 0%
-				smsMsOrdVO.setRaptDpstAmt(null);
-				smsMsOrdVO.setRaptDpstRate(null);
-				smsMsOrdVO.setRaptDpstDt(null);
+				smsMsOrdVO.setRaptDpstAmt(new BigDecimal('0'));
+				smsMsOrdVO.setRaptDpstRate(new BigDecimal('0'));
+				smsMsOrdVO.setRaptDpstDt(smsMsOrdVO.getPaptDpstDt());
 		}else if(smsMsOrdVO.getRaptDpstRate()  != null && new BigDecimal("100").equals(smsMsOrdVO.getRaptDpstRate())){
 //			선금 0%, 잔금 100%
-				smsMsOrdVO.setPaptDpstAmt(null);
-				smsMsOrdVO.setPaptDpstRate(null);
-				smsMsOrdVO.setPaptDpstDt(null);
+				smsMsOrdVO.setPaptDpstAmt(new BigDecimal('0'));
+				smsMsOrdVO.setPaptDpstRate(new BigDecimal('0'));
+				smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getRaptDpstDt());
 		}else{
 			
 		}

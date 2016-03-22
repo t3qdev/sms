@@ -141,41 +141,96 @@ $(function(){
 	});
 	
 
+              $grid = $('#jqgrid_a'),
+              myDefaultSearch = "cn",
+              getColumnIndexByName = function (columnName) {
+                  var cm = $(this).jqGrid('getGridParam', 'colModel'), i, l = cm.length;
+                  for (i = 0; i < l; i += 1) {
+                      if (cm[i].name === columnName) {
+                          return i; // return the index
+                      }
+                  }
+                  return -1;
+              };
+              modifySearchingFilter = function (separator) {
 
-	
-        dataInitMultiselect = function (elem) {
-                setTimeout(function () {
-                    var $elem = $(elem), id = elem.id,
-                        inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
-                        options = {
-                            selectedList: 4,
-                            height: "auto",
-                            checkAllText: "all",
-                            uncheckAllText: "no",
-                            noneSelectedText: "Any",
-                            open: function () {
-                                var $menu = $(".ui-multiselect-menu:visible");
-                                $menu.width("auto");
-                                return;
-                            }
-                        },
-                        $options = $elem.find("option");
-                    if ($options.length > 0 && $options[0].selected) {
-                        $options[0].selected = false; // unselect the first selected option
-                    }
+                  var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel
+                  alert("1");
+                  alert(this.p.postData.filters);
+                  var     filters = $.parseJSON(this.p.postData.filters);
+					alert("2");
+                  if (filters && typeof filters.rules !== 'undefined' && filters.rules.length > 0) {
+                      rules = filters.rules;
+                      for (i = 0; i < rules.length; i++) {
+                          rule = rules[i];
+                          iCol = getColumnIndexByName.call(this, rule.field);
+                          cmi = cm[iCol];
+                          if (iCol >= 0 && ((typeof (cmi.searchoptions) === "undefined" ||
+                                typeof (cmi.searchoptions.sopt) === "undefined")
+                               && rule.op === myDefaultSearch) ||
+                                  (typeof (cmi.searchoptions) === "object" &&
+                                      $.isArray(cmi.searchoptions.sopt) &&
+                                      cmi.searchoptions.sopt[0] === rule.op)) {
+                              // make modifications only for the 'contains' operation
+                              parts = rule.data.split(separator);
+                              if (parts.length > 1) {
+                                  if (typeof filters.groups === 'undefined') {
+                                      filters.groups = [];
+                                  }
+                                  group = {
+                                      groupOp: 'OR',
+                                      groups: [],
+                                      rules: []
+                                  };
+                                  filters.groups.push(group);
+                                  for (j = 0, l = parts.length; j < l; j++) {
+                                      str = parts[j];
+                                      if (str) {
+                                          // skip empty '', which exist in case of two separaters of once
+                                          group.rules.push({
+                                              data: parts[j],
+                                              op: rule.op,
+                                              field: rule.field
+                                          });
+                                      }
+                                  }
+                                  rules.splice(i, 1);
+                                  i--; // to skip i++
+                              }
+                          }
+                      }
+                      this.p.postData.filters = JSON.stringify(filters);
+                  }
+              };
+              dataInitMultiselect = function (elem) {
+                   setTimeout(function () {
+                       var $elem = $(elem), id = elem.id,
+                           inToolbar = typeof id === "string" && id.substr(0,3) === "gs_";
+                           options = {
+                               selectedList: 2,
+                               height: "auto",
+                               checkAllText: "all",
+                               uncheckAllText: "no",
+                               noneSelectedText: "Any",
+                               open: function () {
+                                   var $menu = $(".ui-multiselect-menu:visible");
+                                   $menu.width("auto");
+                                   return;
+                               }
+                           };
+                       if (inToolbar) {
+                           options.minWidth = 'auto';
+                       }
+                       $elem.multiselect(options);
+                       $elem.siblings('button.ui-multiselect').css({
+                           width: inToolbar? "98%": "100%",
+                           marginTop: "1px",
+                           marginBottom: "1px",
+                           paddingTop: "3px"
+                       });
+                   }, 50);
+               };
 
-                    if (inToolbar) {
-                        options.minWidth = 'auto';
-                    }
-                    $elem.multiselect(options);
-                    $elem.siblings('button.ui-multiselect').css({
-                        width: inToolbar ? "98%" : "100%",
-                        marginTop: "1px",
-                        marginBottom: "1px",
-                        paddingTop: "3px"
-                    });
-                }, 50);
-            };
 	jQuery("#jqGridExcelDownload").click( function() {
 		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
 		// 또한 이들을 그대로 뽑아오기 위해서는 jqgrid.saverow 함수를 이용해야 하는데,
@@ -303,12 +358,12 @@ $(function(){
 			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
 				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' },
 				 search : 'true',
-				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'}
+				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',dataInit:dataInitMultiselect}
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',defaultValue:'none'},
 				 search : 'true',
-				 stype:'select', searchoptions: { value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP', sopt: ['eq'] }
+				 stype:'select', searchoptions: { sopt: ['eq'], value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' ,dataInit:dataInitMultiselect}
 			},	
             {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
@@ -451,6 +506,10 @@ $(function(){
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
+        
+        beforeRequest: function () {
+//             modifySearchingFilter.call(this, ',');
+        },
 
         gridComplete : function(e){
   
