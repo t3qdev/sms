@@ -383,7 +383,7 @@ $(function(){
 		$(".fileDown").click(function(a) {
 			a.preventDefault();
 			});
-		 //$(".fileDown").hide();		//상품 매핑
+		 $(".fileDown").hide();		//상품 매핑
 	}
 	
 	
@@ -467,7 +467,7 @@ $(function(){
 
 						$("#dialog_upload_form").attr('target', 'popUp');
 					//	var newWindow=window.open("",'popUp',1500,800);
-						 var newWindow=window.open("",'popUp','height=800,width=1900,top=0,left=0');
+						 var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
 						$("#dialog_upload_form").submit();
 						  $('#dialog_upload').dialog('close');
 						//$('#dialog_upload_form').submit();
