@@ -58,6 +58,7 @@ import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
+import com.b5m.sms.vo.TbMsOrdVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -93,12 +94,14 @@ public class OrderManagementController  extends AbstractFileController{
 			row = (Integer.parseInt(rowInput));
 		}
 		
-//		System.out.println("pageInput" + pageInput);
 		if(pageInput==null || "".equals(pageInput)){
 			page = 1;
 		}else{
 			page = (Integer.parseInt(pageInput));
 		}
+		
+		System.out.println("row" + row);
+		System.out.println("page" + page);
 		
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
@@ -336,7 +339,21 @@ public class OrderManagementController  extends AbstractFileController{
 		String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "[Request]EstimateRequest.xlsx";
 
 		downloadFile(request,response, fullPath);
+
 	}
+	@ResponseBody
+	@RequestMapping(value="/orderManagementSelectTbMsOrdSplReqCont.ajax")
+	public String orderManagementSelectTbMsOrdSplReqCont(String ordNo) throws Exception{
+
+		String result = "false";
+		TbMsOrdVO tbMsOrdVO = null;
+		tbMsOrdVO = orderService.selectTbMsOrdSplReqCont(ordNo);
+		result = tbMsOrdVO.getReqCont();
+		return result ;
+	}
+	
+	
+	
 	
 	
 	// DELETE

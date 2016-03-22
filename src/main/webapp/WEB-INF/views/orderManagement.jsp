@@ -84,10 +84,10 @@
 					</li>
                     <li>
 						<div class="img_area">
-							<img id="special_img" src="http://placehold.it/80x80">
+<!-- 							<img id="special_img" src="http://placehold.it/80x80"> -->
 						</div>
                         <div class="text_area">
-                        	<textarea id="special_text">safsadf</textarea>
+                        	<textarea id="special_req_cont">safsadf</textarea>
                         </div>
 					</li>
                     <li>
@@ -151,30 +151,26 @@ $(function(){
                       }
                   }
                   return -1;
-              };
+              },
               modifySearchingFilter = function (separator) {
-
-                  var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel
-                  alert("1");
-                  alert(this.p.postData.filters);
-                  var     filters = $.parseJSON(this.p.postData.filters);
-					alert("2");
-                  if (filters && typeof filters.rules !== 'undefined' && filters.rules.length > 0) {
+                  var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel,
+                      filters = $.parseJSON(this.p.postData.filters);
+                  if (filters && filters.rules !== undefined && filters.rules.length > 0) {
                       rules = filters.rules;
                       for (i = 0; i < rules.length; i++) {
                           rule = rules[i];
                           iCol = getColumnIndexByName.call(this, rule.field);
                           cmi = cm[iCol];
-                          if (iCol >= 0 && ((typeof (cmi.searchoptions) === "undefined" ||
-                                typeof (cmi.searchoptions.sopt) === "undefined")
-                               && rule.op === myDefaultSearch) ||
+                          if (iCol >= 0 &&
+                                  ((cmi.searchoptions === undefined || cmi.searchoptions.sopt === undefined)
+                                      && (rule.op === myDefaultSearch)) ||
                                   (typeof (cmi.searchoptions) === "object" &&
                                       $.isArray(cmi.searchoptions.sopt) &&
                                       cmi.searchoptions.sopt[0] === rule.op)) {
                               // make modifications only for the 'contains' operation
                               parts = rule.data.split(separator);
                               if (parts.length > 1) {
-                                  if (typeof filters.groups === 'undefined') {
+                                  if (filters.groups === undefined) {
                                       filters.groups = [];
                                   }
                                   group = {
@@ -201,35 +197,41 @@ $(function(){
                       }
                       this.p.postData.filters = JSON.stringify(filters);
                   }
-              };
+              },
               dataInitMultiselect = function (elem) {
-                   setTimeout(function () {
-                       var $elem = $(elem), id = elem.id,
-                           inToolbar = typeof id === "string" && id.substr(0,3) === "gs_";
-                           options = {
-                               selectedList: 2,
-                               height: "auto",
-                               checkAllText: "all",
-                               uncheckAllText: "no",
-                               noneSelectedText: "Any",
-                               open: function () {
-                                   var $menu = $(".ui-multiselect-menu:visible");
-                                   $menu.width("auto");
-                                   return;
-                               }
-                           };
-                       if (inToolbar) {
-                           options.minWidth = 'auto';
-                       }
-                       $elem.multiselect(options);
-                       $elem.siblings('button.ui-multiselect').css({
-                           width: inToolbar? "98%": "100%",
-                           marginTop: "1px",
-                           marginBottom: "1px",
-                           paddingTop: "3px"
-                       });
-                   }, 50);
-               };
+                  setTimeout(function () {
+                      var $elem = $(elem), id = elem.id,
+                          inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
+                          options = {
+                              selectedList: 2,
+                              height: "auto",
+                              checkAllText: "all",
+                              uncheckAllText: "no",
+                              noneSelectedText: "Any",
+                              open: function () {
+                                  var $menu = $(".ui-multiselect-menu:visible");
+                                  $menu.width("auto");
+                                  return;
+                              }
+                          },
+                          $options = $elem.find("option");
+                      if ($options.length > 0 && $options[0].selected) {
+                          $options[0].selected = false; // unselect the first selected option
+                      }
+                      if (inToolbar) {
+                          options.minWidth = 'auto';
+                      }
+                      //$elem.multiselect(options);
+                      $elem.multiselect(options).multiselectfilter({ placeholder: '' });
+                      $elem.siblings('button.ui-multiselect').css({
+                          width: inToolbar ? "98%" : "100%",
+                          marginTop: "1px",
+                          marginBottom: "1px",
+                          paddingTop: "3px"
+                      });
+                  }, 50);
+
+              };
 
 	jQuery("#jqGridExcelDownload").click( function() {
 		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
@@ -412,8 +414,12 @@ $(function(){
             {name:'usdXchrAmt',index:'usdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'cnsXchrAmt',index:'cnsXchrAmt',align:'center',width:160,resizable:false,hidden:"true"}
         ],
-    	onSelectRow: function(id){
-   		   if(!checkIndex(RolesEditordSumAmt,roles)){
+//     	onSelectRow: function(id){
+       onCellSelect: function(id, cid){
+   		   
+//     	   alert("id : "+id);
+//     	   alert("cid : " + cid);
+    	   if(!checkIndex(RolesEditordSumAmt,roles)){
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
    		   }else{
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
@@ -480,7 +486,9 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 				}
 				if(checkIndex(RolesSaveBtn,roles)){
+					
 					jQuery('#jqgrid_a').jqGrid('editRow',id,false);
+
 				}
 				
 			}else{
@@ -862,6 +870,20 @@ function dialogSpecialExcel(ordNo){
 	//dialog 에 해당 주문 번호 넘겨 주고,
 	$('#inputExcelFileSpecial').val('');
 	$('#ordNoSpecial').val(ordNo);
+	
+	$.ajax({
+		type : "POST",
+		url : '${web_ctx}/orderManagementSelectTbMsOrdSplReqCont.ajax',
+		data:	{"ordNo" : ordNo},
+		async: false,
+		cache : false,
+		success:function(result){
+	 		$('#special_req_cont').val(result);
+	 		
+		}
+	});//end $.ajax	
+	
+	
 	
 	//dialog 활성화.
 	$('#dialog_upload_special').dialog('open');

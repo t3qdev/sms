@@ -38,6 +38,10 @@
 		<result property="ordHopeArvlDt" column="ORD_HOPE_ARVL_DT" />
 	</resultMap>
 	
+	<resultMap id="tbMsOrdReqCont" class="com.b5m.sms.vo.TbMsOrdVO">
+		<result property="reqCont" column="REQ_CONT" />
+	</resultMap>
+	
 	<select id="tbMsOrdSplDAO.selectTbMsOrdSplForSmsMsOrd"  resultMap="tbMsOrd">
 		SELECT
 					ORD_ID  AS B5C_ORD_NO
@@ -107,7 +111,7 @@
 		       	)
 	</select>
 	
-		<select id="tbMsOrdDAO.selectTbMsOrdGudsOptForBatchSpecial"  parameterClass="smsMsOrdVO"  resultMap="tbMsOrdBatch">
+		<select id="tbMsOrdSplDAO.selectTbMsOrdGudsOptForBatchSpecial"  parameterClass="smsMsOrdVO"  resultMap="tbMsOrdBatch">
 		SELECT 
 			  A.ORD_ID  AS B5C_ORD_NO
 			, B.ORD_ID AS ORD_ID
@@ -141,6 +145,24 @@
 		AND C.GUDS_ID = D.GUDS_ID
 		AND D.SLLR_ID = F.SLLR_ID
 		AND B.ORD_ID = #b5cOrdNo#
+	</select>
+	<select id="tbMsOrdSplDAO.selectTbMsOrdSplReqCont" parameterClass="String" resultMap="tbMsOrdReqCont">
+			SELECT
+			A.REQ_CONT AS REQ_CONT
+
+		FROM	
+			tb_ms_ord_spl A
+		WHERE 
+				
+                A.ORD_ID = (
+							SELECT 
+									B5C_ORD_NO 
+							FROM 
+									sms_ms_ord
+							WHERE 
+									ord_no = #ordNo#
+							);
+	
 	</select>
 
 </sqlMap>
