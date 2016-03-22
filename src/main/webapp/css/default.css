@@ -427,6 +427,10 @@ div.ui-layout-single>section.category_area{margin-top:0}
 .order_table tfoot th textarea{width:100%;height:100px;}
 .order_table .tdc th{ text-align:center}
 .order_table .tdc td{ text-align:center}
+.order_table td div{}
+.order_table td div .ui-multiselect span+span{width:125px; overflow:hidden;white-space:nowrap;display:inline-block;text-overflow:ellipsis;color:#444;}
+.order_table td div button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all{ background:#fff}
+.order_table td div button.ui-multiselect .ui-icon{background-image:url("../images/ui-icons_444444_256x240.png")}
 .order_table td div input{width:100%}
 .order_table td div select{width:100%}
 

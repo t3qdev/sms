@@ -87,6 +87,7 @@ public class SmsMsOrdVO {
 
 	//orderManamentView 에서 딜규모에 환율 보여주기 위해서 필요
 	private BigDecimal korXchrAmt;
+	private BigDecimal usdXchrAmt;
 	private BigDecimal cnsXchrAmt;
 	public String getOrdNo() {
 		return ordNo;
@@ -442,6 +443,12 @@ public class SmsMsOrdVO {
 	public void setKorXchrAmt(BigDecimal korXchrAmt) {
 		this.korXchrAmt = korXchrAmt;
 	}
+	public BigDecimal getUsdXchrAmt() {
+		return usdXchrAmt;
+	}
+	public void setUsdXchrAmt(BigDecimal usdXchrAmt) {
+		this.usdXchrAmt = usdXchrAmt;
+	}
 	public BigDecimal getCnsXchrAmt() {
 		return cnsXchrAmt;
 	}
@@ -483,12 +490,10 @@ public class SmsMsOrdVO {
 				+ ", bactPrvdDtPlusbactPrvdAmt=" + bactPrvdDtPlusbactPrvdAmt
 				+ ", count=" + count + ", page=" + page + ", row=" + row
 				+ ", searchKeyword=" + searchKeyword + ", korXchrAmt="
-				+ korXchrAmt + ", cnsXchrAmt=" + cnsXchrAmt + "]";
+				+ korXchrAmt + ", usdXchrAmt=" + usdXchrAmt + ", cnsXchrAmt="
+				+ cnsXchrAmt + "]";
 	}
 
-	
-	
-	
 	
 	
 	
