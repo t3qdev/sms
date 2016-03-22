@@ -817,17 +817,25 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsEstmVo.setOrdArvlDt(StringUtil.dateToDt(orderPoVo.getOrdArvlDt()));
 			smsMsEstmVo.setPoMemoCont(orderPoVo.getPoMemoCont());
 			
+			List<TbMsCmnCdVO> tempCdList=null;
+			String dlvModeCd=null;
+			String stdXchrKindCd=null;
 			try{		//코드값이 제대로 지정이안되있는 경우가있는 관계로 임시 try
 			//코드값 변경이 필요한 부분
-				List<TbMsCmnCdVO> tempCdList =tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getDlvModeCd());
-				String dlvModeCd = tempCdList.get(0).getCd();
-				tempCdList=tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getStdXchrKindCd());
-				String stdXchrKindCd = tempCdList.get(0).getCd();
-				smsMsEstmVo.setDlvModeCd(dlvModeCd);				//코드값으로 변경_견적조건(dlvMode)
-				smsMsEstmVo.setStdXchrKindCd(stdXchrKindCd);		//코드값으로 변경_기준화폐(stdXchrKindCd)
+				tempCdList =tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getDlvModeCd());
+				dlvModeCd = tempCdList.get(0).getCd();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			try{		//코드값이 제대로 지정이안되있는 경우가있는 관계로 임시 try
+				tempCdList=tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getStdXchrKindCd());
+				stdXchrKindCd = tempCdList.get(0).getCd();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+				smsMsEstmVo.setDlvModeCd(dlvModeCd);				//코드값으로 변경_견적조건(dlvMode)
+				smsMsEstmVo.setStdXchrKindCd(stdXchrKindCd);		//코드값으로 변경_기준화폐(stdXchrKindCd)
+			
 			
 			smsMsEstmDAO.deleteSmsMsEstm(orderPoVo.getOrdNo());		//기존 PO정보 삭제
 			smsMsEstmDAO.insertSmsMsEstm(smsMsEstmVo);					//새로운 PO정보 삽입
