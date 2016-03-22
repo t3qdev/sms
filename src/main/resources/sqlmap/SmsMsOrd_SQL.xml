@@ -492,7 +492,7 @@
 		            AND A.B5C_ORD_NO = X.ORD_ID) AS CNS_XCHR_AMT
 		FROM
 				 sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
-   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)
+   									 ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -2)
 		WHERE 1=1 
 				<isNotEmpty property="ordNo">			 
 					 AND ORD_NO = #ordNo#
