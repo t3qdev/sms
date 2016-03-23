@@ -20,6 +20,7 @@ import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
 import com.b5m.sms.vo.TbMsCmnCdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
+import com.b5m.sms.vo.TbMsOrdVO;
 
 
 public interface OrderService {
@@ -107,5 +108,7 @@ public interface OrderService {
 	public void deleteBeforeFirstBatch() throws Exception;
 	
 	public String selectSmsMsOrdCount(SmsMsOrdVO smsMsOrdVO) throws Exception;
+	
+	public TbMsOrdVO selectTbMsOrdSplReqCont(String ordNo)throws Exception;
 }
 

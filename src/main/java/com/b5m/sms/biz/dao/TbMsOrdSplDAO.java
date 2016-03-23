@@ -26,7 +26,10 @@ public class TbMsOrdSplDAO extends EgovAbstractDAO{
 
 	@SuppressWarnings("unchecked")
 	public List<TbMsOrdBatchVO> selectTbMsOrdGudsOptForBatchSpecial(SmsMsOrdVO smsMsOrdVO)throws Exception{
-		return (List<TbMsOrdBatchVO> ) list ("tbMsOrdDAO.selectTbMsOrdGudsOptForBatchSpecial",smsMsOrdVO);
+		return (List<TbMsOrdBatchVO> ) list ("tbMsOrdSplDAO.selectTbMsOrdGudsOptForBatchSpecial",smsMsOrdVO);
+	}
+	public TbMsOrdVO selectTbMsOrdSplReqCont(String ordNo)throws Exception{
+		return (TbMsOrdVO) select ("tbMsOrdSplDAO.selectTbMsOrdSplReqCont",ordNo);
 	}
 
 }

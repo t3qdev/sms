@@ -58,6 +58,7 @@ import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
+import com.b5m.sms.vo.TbMsOrdVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -93,15 +94,20 @@ public class OrderManagementController  extends AbstractFileController{
 			row = (Integer.parseInt(rowInput));
 		}
 		
-//		System.out.println("pageInput" + pageInput);
 		if(pageInput==null || "".equals(pageInput)){
 			page = 1;
 		}else{
 			page = (Integer.parseInt(pageInput));
 		}
 		
+		System.out.println("row" + row);
+		System.out.println("page" + page);
+		
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
+		
+		System.out.println("start : " + smsMsOrdVO.getStart());
+		System.out.println("row : " + row);
 		
 		//화면단에서, 바코드 or 상품명으로 주문 검색 키워드
 //		if(searchKeyword==null || "".equals(searchKeyword)){
@@ -170,14 +176,14 @@ public class OrderManagementController  extends AbstractFileController{
 		
 		if(smsMsOrdVO.getPaptDpstRate()  !=null && new BigDecimal("100").equals(smsMsOrdVO.getPaptDpstRate())){
 //			선금 100%, 잔금 0%
-				smsMsOrdVO.setRaptDpstAmt(null);
-				smsMsOrdVO.setRaptDpstRate(null);
-				smsMsOrdVO.setRaptDpstDt(null);
+				smsMsOrdVO.setRaptDpstAmt(new BigDecimal('0'));
+				smsMsOrdVO.setRaptDpstRate(new BigDecimal('0'));
+				smsMsOrdVO.setRaptDpstDt(smsMsOrdVO.getPaptDpstDt());
 		}else if(smsMsOrdVO.getRaptDpstRate()  != null && new BigDecimal("100").equals(smsMsOrdVO.getRaptDpstRate())){
 //			선금 0%, 잔금 100%
-				smsMsOrdVO.setPaptDpstAmt(null);
-				smsMsOrdVO.setPaptDpstRate(null);
-				smsMsOrdVO.setPaptDpstDt(null);
+				smsMsOrdVO.setPaptDpstAmt(new BigDecimal('0'));
+				smsMsOrdVO.setPaptDpstRate(new BigDecimal('0'));
+				smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getRaptDpstDt());
 		}else{
 			
 		}
@@ -336,7 +342,21 @@ public class OrderManagementController  extends AbstractFileController{
 		String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "[Request]EstimateRequest.xlsx";
 
 		downloadFile(request,response, fullPath);
+
 	}
+	@ResponseBody
+	@RequestMapping(value="/orderManagementSelectTbMsOrdSplReqCont.ajax")
+	public String orderManagementSelectTbMsOrdSplReqCont(String ordNo) throws Exception{
+
+		String result = "false";
+		TbMsOrdVO tbMsOrdVO = null;
+		tbMsOrdVO = orderService.selectTbMsOrdSplReqCont(ordNo);
+		result = tbMsOrdVO.getReqCont();
+		return result ;
+	}
+	
+	
+	
 	
 	
 	// DELETE

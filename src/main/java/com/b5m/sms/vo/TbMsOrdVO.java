@@ -21,6 +21,8 @@ public class TbMsOrdVO {//주문번호
 
 	private String rmbXchrAmt;
 
+	private String reqCont;
+
 	public String getOrdId() {
 		return ordId;
 	}
@@ -133,6 +135,14 @@ public class TbMsOrdVO {//주문번호
 		this.rmbXchrAmt = rmbXchrAmt;
 	}
 
+	public String getReqCont() {
+		return reqCont;
+	}
+
+	public void setReqCont(String reqCont) {
+		this.reqCont = reqCont;
+	}
+
 	@Override
 	public String toString() {
 		return "TbMsOrdVO [ordId=" + ordId + ", ordCustNm=" + ordCustNm
@@ -142,7 +152,7 @@ public class TbMsOrdVO {//주문번호
 				+ ", ordEstmDt=" + ordEstmDt + ", stdXchrKindCd="
 				+ stdXchrKindCd + ", stdXchrAmt=" + stdXchrAmt + ", ordSumAmt="
 				+ ordSumAmt + ", ordHopeArvlDt=" + ordHopeArvlDt
-				+ ", rmbXchrAmt=" + rmbXchrAmt + "]";
+				+ ", rmbXchrAmt=" + rmbXchrAmt + ", reqCont=" + reqCont + "]";
 	}
 	
 	
