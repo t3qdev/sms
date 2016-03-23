@@ -142,7 +142,9 @@ $(function(){
 	});
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $grid = $('#jqgrid_a'),
+    ////// 필터
+	
+	$grid = $('#jqgrid_a'),
     myDefaultSearch = "cn",
     getColumnIndexByName = function (columnName) {
         var cm = $(this).jqGrid('getGridParam', 'colModel'), i, l = cm.length;
@@ -154,9 +156,9 @@ $(function(){
         return -1;
     },
     modifySearchingFilter = function (separator) {
-        alert("1");
+//         alert("1");
     	var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel;
-    	alert("2");
+//     	alert("2");
         var    filters = $.parseJSON(this.p.postData.filters);
         
         
@@ -367,7 +369,8 @@ $(function(){
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
             {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   },
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            {name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
+    		////// 필터
+			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
 				 edittype:'select', editoptions:{ 
 					 										value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
 								 								,defaultValue:'none'
@@ -396,6 +399,7 @@ $(function(){
 					 								, attr: {multiple: 'multiple', size: 5}
 					 								}
 			},	
+		    //////end: 필터2
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
@@ -556,7 +560,7 @@ $(function(){
         rowNum:20,
         
         beforeRequest: function () {
-            modifySearchingFilter.call(this, ',');
+//             modifySearchingFilter.call(this, ',');
         },
 
         gridComplete : function(e){
@@ -870,6 +874,9 @@ $(function(){
 			
 		]	
 	});
+ 	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////// 필터
 	$("#jqgrid_a").jqGrid('filterToolbar',{
 		stringResult:true
 		, searchOnEnter:true
@@ -893,6 +900,7 @@ $(function(){
 
 		}
 	);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	$("#jqgrid_a").jqGrid('setFrozenColumns');
     $('#jqgrid_a').setGridWidth($(".ui-layout-jqgrid").width() - 2);
