@@ -85,10 +85,7 @@ public class OrderManagementController  extends AbstractFileController{
 	@ResponseBody
 	@RequestMapping("/orderManagementSearch.ajax")
 	public List<SmsMsOrdVO> orderManagementSearch(SmsMsOrdVO smsMsOrdVO, String rowInput, String pageInput , HttpSession session, Model model, String filters) throws Exception {
-
-		System.out.println("rowInput : "+rowInput);
-		System.out.println("pageInput : "+pageInput);
-		
+	
 		int row=0;
 		int page=0;
 		if(rowInput==null || "".equals(rowInput)){
@@ -103,20 +100,8 @@ public class OrderManagementController  extends AbstractFileController{
 			page = (Integer.parseInt(pageInput));
 		}
 		
-		System.out.println("row" + row);
-		System.out.println("page" + page);
-		
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
-		
-		System.out.println("start : " + smsMsOrdVO.getStart());
-		System.out.println("row : " + row);
-		
-		//화면단에서, 바코드 or 상품명으로 주문 검색 키워드
-//		if(searchKeyword==null || "".equals(searchKeyword)){
-//			smsMsOrdVO.setSearchKeyword(searchKeyword);
-//		}
-
 
 		List<SmsMsOrdVO> smsMsOrdVOList = null;
 		smsMsOrdVOList = orderService.selectSmsMsOrdForOrderManamentView(smsMsOrdVO);
@@ -145,16 +130,6 @@ public class OrderManagementController  extends AbstractFileController{
 	@ResponseBody
 	@RequestMapping("/orderManagementSave.ajax")
 	public String orderManagementSave(SmsMsOrdVO smsMsOrdVO) throws Exception{
-//		System.out.println("controller로  들어온  vo : ");
-//		System.out.println("1"+smsMsOrdVO.toString());
-//		System.out.println("2"+smsMsOrdVO.getOrdNo()+smsMsOrdVO.getOrdSumAmt());;
-//		System.out.println("3"+smsMsOrdVO.getPaptDpstAmt()+smsMsOrdVO.getPaptDpstDt()+smsMsOrdVO.getPaptDpstRate());
-//		System.out.println("4"+smsMsOrdVO.getWrhsDlvDestCd()+smsMsOrdVO.getWrhsDlvDt());
-//		System.out.println("5"+smsMsOrdVO.getDptrDlvDestCd()+smsMsOrdVO.getDptrDlvDt());
-//		System.out.println("6"+smsMsOrdVO.getArvlDlvDestCd()+smsMsOrdVO.getArvlDlvDt());
-//		System.out.println("7"+smsMsOrdVO.getPoDlvDt()+smsMsOrdVO.getPoDlvDestCd());
-//		System.out.println("8"+smsMsOrdVO.getRaptDpstAmt()+smsMsOrdVO.getRaptDpstDt()+smsMsOrdVO.getRaptDpstRate());
-//		System.out.println("9"+smsMsOrdVO.getB5mBuyCont());
 		
 		if(smsMsOrdVO.getPaptDpstDt() != null) smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getPaptDpstDt().replace("-",""));
 		if(smsMsOrdVO.getWrhsDlvDt() != null) smsMsOrdVO.setWrhsDlvDt(smsMsOrdVO.getWrhsDlvDt().replace("-",""));
@@ -177,9 +152,7 @@ public class OrderManagementController  extends AbstractFileController{
 		if("".equals(smsMsOrdVO.getB5mBuyCont())) smsMsOrdVO.setB5mBuyCont(null);
 		if("".equals(smsMsOrdVO.getB5cGudsRegDt())) smsMsOrdVO.setB5cGudsRegDt(null);
 		if("".equals(smsMsOrdVO.getB5cGudsRegMemo())) smsMsOrdVO.setB5cGudsRegMemo(null);
-	
-
-		
+			
 		if(smsMsOrdVO.getPaptDpstRate()  !=null && new BigDecimal("100").equals(smsMsOrdVO.getPaptDpstRate())){
 //			선금 100%, 잔금 0%
 				smsMsOrdVO.setRaptDpstAmt(new BigDecimal('0'));

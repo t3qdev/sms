@@ -388,7 +388,7 @@ $(function(){
 					 									}
 				 
 				 },
-            {name:'ordStatCd',index:'ordStatCd',align:'center',width:150,resizable:false,formatter: 'select',
+            {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
 					 								value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP'
 					 								,defaultValue:'none'
@@ -448,7 +448,7 @@ $(function(){
             {name:'b5cGudsRegDt',index:'b5cGudsRegDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
             }},
-            {name:'b5cGudsRegMemo',index:'b5cGudsRegMemo',align:'center',width:160,resizable:false, stype:'input',editable:true},
+            {name:'b5cGudsRegMemo',index:'b5cGudsRegMemo',align:'center',width:160,resizable:false, stype:'input',editable:true, classes: 'ttest'},
             
             {name:'count',index:'count',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'page',index:'page',align:'center',width:160,resizable:false,hidden:"true"},
@@ -462,7 +462,7 @@ $(function(){
         ],
 //     	onSelectRow: function(id){
        onCellSelect: function(id, cid){
-
+    	   
     	   if(!checkIndex(RolesEditordSumAmt,roles)){
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
    		   }else{
@@ -532,7 +532,6 @@ $(function(){
 				if(checkIndex(RolesSaveBtn,roles)){
 					
 					jQuery('#jqgrid_a').jqGrid('editRow',id,false);
-
 				}
 				
 			}else{
@@ -553,6 +552,7 @@ $(function(){
 
 				jQuery('#jqgrid_a').jqGrid('editRow',id,false);
 			}
+
 		},
 		pagination:true,
         multiselect: true,
