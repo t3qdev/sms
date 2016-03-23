@@ -347,7 +347,7 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买'
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买','上传日期','上传内容'
                   			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
@@ -405,6 +405,12 @@ $(function(){
             {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}},
             {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
             {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
+           
+            {name:'b5cGudsRegDt',index:'b5cGudsRegDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
+            	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
+            }},
+            {name:'b5cGudsRegMemo',index:'b5cGudsRegMemo',align:'center',width:160,resizable:false, stype:'input',editable:true},
+            
             {name:'count',index:'count',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'page',index:'page',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'row',index:'row',align:'center',width:160,resizable:false,hidden:"true"},
@@ -827,7 +833,9 @@ $(function(){
 			{startColumnName: 'dptrDlvDt', numberOfColumns: 2, titleText: '出港'},
 			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '到岸'},
 			{startColumnName: 'poDlvDt', numberOfColumns: 2, titleText: 'P/O'},
-			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '余款'}
+			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '余款'},
+			{startColumnName: 'b5cGudsRegDt', numberOfColumns: 2, titleText: '帮5采上传商品'}
+			
 		]	
 	});
 	$("#jqgrid_a").jqGrid('filterToolbar',{

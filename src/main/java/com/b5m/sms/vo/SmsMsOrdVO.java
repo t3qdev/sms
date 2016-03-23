@@ -59,6 +59,11 @@ public class SmsMsOrdVO {
 	private String ordTypeCd;			//주문영입여부
 	private String b5mBuyCont;      // 방한핀여부
 
+	//SMS_MS_ORD 추가 컬럼    2016.03.23
+	private String b5cGudsRegDt;		// 방우차이 상품 등록 날짜
+	private String b5cGudsRegMemo;	// 방우차이 상품 등록 메모
+	
+	
 	//SMS_MS_USER 테이블의 변수
 	private String userEml;				// 사용자 ID
 	private String userAlasCnsNm;	// 사용자 중문화명   <- 클라이언트 요청견적서에는 중문화명이 담당자로 들어간다.
@@ -347,6 +352,18 @@ public class SmsMsOrdVO {
 	public void setB5mBuyCont(String b5mBuyCont) {
 		this.b5mBuyCont = b5mBuyCont;
 	}
+	public String getB5cGudsRegDt() {
+		return b5cGudsRegDt;
+	}
+	public void setB5cGudsRegDt(String b5cGudsRegDt) {
+		this.b5cGudsRegDt = b5cGudsRegDt;
+	}
+	public String getB5cGudsRegMemo() {
+		return b5cGudsRegMemo;
+	}
+	public void setB5cGudsRegMemo(String b5cGudsRegMemo) {
+		this.b5cGudsRegMemo = b5cGudsRegMemo;
+	}
 	public String getUserEml() {
 		return userEml;
 	}
@@ -481,9 +498,10 @@ public class SmsMsOrdVO {
 				+ ", arvlDlvDt=" + arvlDlvDt + ", arvlDlvDestCd="
 				+ arvlDlvDestCd + ", poDlvDt=" + poDlvDt + ", poDlvDestCd="
 				+ poDlvDestCd + ", ordMemoCont=" + ordMemoCont + ", ordTypeCd="
-				+ ordTypeCd + ", b5mBuyCont=" + b5mBuyCont + ", userEml="
-				+ userEml + ", userAlasCnsNm=" + userAlasCnsNm + ", clientNm="
-				+ clientNm + ", orderedGudsNm=" + orderedGudsNm
+				+ ordTypeCd + ", b5mBuyCont=" + b5mBuyCont + ", b5cGudsRegDt="
+				+ b5cGudsRegDt + ", b5cGudsRegMemo=" + b5cGudsRegMemo
+				+ ", userEml=" + userEml + ", userAlasCnsNm=" + userAlasCnsNm
+				+ ", clientNm=" + clientNm + ", orderedGudsNm=" + orderedGudsNm
 				+ ", showDetail=" + showDetail + ", korMng=" + korMng
 				+ ", cnsMng=" + cnsMng + ", histDetail=" + histDetail
 				+ ", start=" + start + ", end=" + end

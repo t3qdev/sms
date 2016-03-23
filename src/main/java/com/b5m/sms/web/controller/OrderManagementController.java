@@ -159,6 +159,7 @@ public class OrderManagementController  extends AbstractFileController{
 		if(smsMsOrdVO.getArvlDlvDt() != null) smsMsOrdVO.setArvlDlvDt(smsMsOrdVO.getArvlDlvDt().replace("-",""));
 		if(smsMsOrdVO.getPoDlvDt() != null) smsMsOrdVO.setPoDlvDt(smsMsOrdVO.getPoDlvDt().replace("-",""));
 		if(smsMsOrdVO.getRaptDpstDt() != null) smsMsOrdVO.setRaptDpstDt(smsMsOrdVO.getRaptDpstDt().replace("-",""));
+		if(smsMsOrdVO.getB5cGudsRegDt() != null) smsMsOrdVO.setB5cGudsRegDt(smsMsOrdVO.getB5cGudsRegDt().replace("-",""));
 		
 		if("".equals(smsMsOrdVO.getPaptDpstDt())) smsMsOrdVO.setPaptDpstDt(null);
 		if("".equals(smsMsOrdVO.getRaptDpstDt())) smsMsOrdVO.setRaptDpstDt(null);
@@ -171,6 +172,8 @@ public class OrderManagementController  extends AbstractFileController{
 		if("".equals(smsMsOrdVO.getPoDlvDt())) smsMsOrdVO.setPoDlvDt(null);
 		if("".equals(smsMsOrdVO.getPoDlvDestCd())) smsMsOrdVO.setPoDlvDestCd(null);
 		if("".equals(smsMsOrdVO.getB5mBuyCont())) smsMsOrdVO.setB5mBuyCont(null);
+		if("".equals(smsMsOrdVO.getB5cGudsRegDt())) smsMsOrdVO.setB5cGudsRegDt(null);
+		if("".equals(smsMsOrdVO.getB5cGudsRegMemo())) smsMsOrdVO.setB5cGudsRegMemo(null);
 	
 
 		
