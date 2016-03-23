@@ -353,15 +353,15 @@ $(function(){
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false},
-            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold'},
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold', formatter:stringLengthLimit},
             {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue'},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:100,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
             {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   },
 			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
-				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' },
+				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' , multiple: true},
 				 search : 'true',
-				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',dataInit:dataInitMultiselect}
+				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',dataInit:dataInitMultiselect, attr: {multiple: 'multiple', size: 4}}
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:150,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',defaultValue:'none'},
@@ -744,6 +744,19 @@ $(function(){
 			datatype : "json",
 		}).trigger('reloadGrid');
 	});
+	
+	function stringLengthLimit(cellvalue,options,rowObject){
+		var inputString = cellvalue;
+		if(inputString !=null){
+			if(inputString.length>20){
+				return inputString.substring(0,17)+"...";
+			}else{
+				return inputString;
+			}
+		}else{
+			return "";
+		}
+	}
 	
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowDetail(cellvalue,options,rowObject){
