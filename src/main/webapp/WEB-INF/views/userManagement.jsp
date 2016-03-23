@@ -94,7 +94,7 @@ $(function(){
             {name:'roleGrpDivCd2',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
             {name:'roleGrpDivCd3',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
             {name:'roleGrpDivCd4',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:":;N000580100:最高权限;N000580200:阅览, 修正;N000580300:P/O确定;N000580400:结算;N000580500:物流"}},		
-            {name:'userStatCd',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:"N000610100:在职;N000610200:休假;N000610300:离职"}}		
+            {name:'e',align:'center', formatter:'select',editable: true, edittype:"select",editoptions:{value:"N000610100:在职;N000610200:休假;N000610300:离职"}}		
         ],
     	onSelectRow: function(id){
     			jQuery('#jqgrid_a').jqGrid('editRow',id,false);

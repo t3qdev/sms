@@ -97,7 +97,8 @@
                 	 required: "required"
                  },
                  userPwd_again:{
-                	 required: "required"
+                	 required: "required",
+                	 equalTo:"Not equal to 新密码"
                  }
 			},
 			submitHandler: function(form){

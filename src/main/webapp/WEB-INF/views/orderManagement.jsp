@@ -163,9 +163,6 @@ $(function(){
     	var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel;
 //     	alert("2");
         var    filters = $.parseJSON(this.p.postData.filters);
-        
-        
-        
         alert("3");
         if (filters && filters.rules !== undefined && filters.rules.length > 0) {
             rules = filters.rules;
@@ -233,8 +230,8 @@ $(function(){
             if (inToolbar) {
                 options.minWidth = 'auto';
             }
-            //$elem.multiselect(options);
-            $elem.multiselect(options).multiselectfilter({ placeholder: '' });
+            $elem.multiselect(options);
+//             $elem.multiselect(options).multiselectfilter({ placeholder: '' });
             $elem.siblings('button.ui-multiselect').css({
                 width: inToolbar ? "98%" : "100%",
                 marginTop: "1px",
