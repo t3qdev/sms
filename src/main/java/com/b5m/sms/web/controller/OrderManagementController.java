@@ -106,6 +106,9 @@ public class OrderManagementController  extends AbstractFileController{
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);
 		
+		System.out.println("start : " + smsMsOrdVO.getStart());
+		System.out.println("row : " + row);
+		
 		//화면단에서, 바코드 or 상품명으로 주문 검색 키워드
 //		if(searchKeyword==null || "".equals(searchKeyword)){
 //			smsMsOrdVO.setSearchKeyword(searchKeyword);

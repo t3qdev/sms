@@ -514,6 +514,7 @@ $(function(){
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
+        rowNum:50,
         
         beforeRequest: function () {
 //             modifySearchingFilter.call(this, ',');
