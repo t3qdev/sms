@@ -193,7 +193,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		if("N000620100".equals(ordTypeCd)){
 			ordHistHistCont = "B5C 已生成";               // 일반상품
 		}else if("N000620200".equals(ordTypeCd)){
-			ordHistHistCont = "B5C Special 已在进行";   // 스페셜
+			ordHistHistCont = "B5C Special 已生成";   // 스페셜
 		}
 
 		for(int i=0; i<tbMsOrdVOList.size();i++){

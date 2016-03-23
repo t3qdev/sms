@@ -35,7 +35,8 @@
 	                	<button class="btn-excel" id="templateExcelDownload">模版下载</button>
 	                    <button class="btn-excel" id="jqGridExcelDownload">列表下载</button>
 	                    <select class="ui-selector mr10", id="rownum">
-	                    <option value="50">每页显示数量</option>
+	                    <option value="20">每页显示数量</option>
+	                    <option value="20">20个</option>
 	                    <option value="50">50个</option>
 	                    <option value="100">100个</option>
 	                    <option value="150">150个</option>
@@ -362,7 +363,7 @@ $(function(){
 				 search : 'true',
 				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',dataInit:dataInitMultiselect}
 				 },
-            {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
+            {name:'ordStatCd',index:'ordStatCd',align:'center',width:150,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',defaultValue:'none'},
 				 search : 'true',
 				 stype:'select', searchoptions: { sopt: ['eq'], value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' ,dataInit:dataInitMultiselect}
@@ -514,7 +515,7 @@ $(function(){
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
-        rowNum:50,
+        rowNum:20,
         
         beforeRequest: function () {
 //             modifySearchingFilter.call(this, ',');

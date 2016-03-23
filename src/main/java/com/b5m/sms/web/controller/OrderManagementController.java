@@ -89,7 +89,7 @@ public class OrderManagementController  extends AbstractFileController{
 		int row=0;
 		int page=0;
 		if(rowInput==null || "".equals(rowInput)){
-			row=50;
+			row=20;
 		}else{
 			row = (Integer.parseInt(rowInput));
 		}
