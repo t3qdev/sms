@@ -141,99 +141,107 @@ $(function(){
 			$('#dialog_upload').dialog('open');
 	});
 	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    $grid = $('#jqgrid_a'),
+    myDefaultSearch = "cn",
+    getColumnIndexByName = function (columnName) {
+        var cm = $(this).jqGrid('getGridParam', 'colModel'), i, l = cm.length;
+        for (i = 0; i < l; i += 1) {
+            if (cm[i].name === columnName) {
+                return i; // return the index
+            }
+        }
+        return -1;
+    },
+    modifySearchingFilter = function (separator) {
+        alert("1");
+    	var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel;
+    	alert("2");
+        var    filters = $.parseJSON(this.p.postData.filters);
+        
+        
+        
+        alert("3");
+        if (filters && filters.rules !== undefined && filters.rules.length > 0) {
+            rules = filters.rules;
+            for (i = 0; i < rules.length; i++) {
+                rule = rules[i];
+                iCol = getColumnIndexByName.call(this, rule.field);
+                cmi = cm[iCol];
+                if (iCol >= 0 &&
+                        ((cmi.searchoptions === undefined || cmi.searchoptions.sopt === undefined)
+                            && (rule.op === myDefaultSearch)) ||
+                        (typeof (cmi.searchoptions) === "object" &&
+                            $.isArray(cmi.searchoptions.sopt) &&
+                            cmi.searchoptions.sopt[0] === rule.op)) {
+                    // make modifications only for the 'contains' operation
+                    parts = rule.data.split(separator);
+                    if (parts.length > 1) {
+                        if (filters.groups === undefined) {
+                            filters.groups = [];
+                        }
+                        group = {
+                            groupOp: 'OR',
+                            groups: [],
+                            rules: []
+                        };
+                        filters.groups.push(group);
+                        for (j = 0, l = parts.length; j < l; j++) {
+                            str = parts[j];
+                            if (str) {
+                                // skip empty '', which exist in case of two separaters of once
+                                group.rules.push({
+                                    data: parts[j],
+                                    op: rule.op,
+                                    field: rule.field
+                                });
+                            }
+                        }
+                        rules.splice(i, 1);
+                        i--; // to skip i++
+                    }
+                }
+            }
+            this.p.postData.filters = JSON.stringify(filters);
+        }
+    },
+    dataInitMultiselect = function (elem) {
+        setTimeout(function () {
+            var $elem = $(elem), id = elem.id,
+                inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
+                options = {
+                    selectedList: 2,
+                    height: "auto",
+                    checkAllText: "all",
+                    uncheckAllText: "no",
+                    noneSelectedText: "Any",
+                    open: function () {
+                        var $menu = $(".ui-multiselect-menu:visible");
+                        $menu.width("auto");
+                        return;
+                    }
+                },
+                $options = $elem.find("option");
+            if ($options.length > 0 && $options[0].selected) {
+                $options[0].selected = false; // unselect the first selected option
+            }
+            if (inToolbar) {
+                options.minWidth = 'auto';
+            }
+            //$elem.multiselect(options);
+            $elem.multiselect(options).multiselectfilter({ placeholder: '' });
+            $elem.siblings('button.ui-multiselect').css({
+                width: inToolbar ? "98%" : "100%",
+                marginTop: "1px",
+                marginBottom: "1px",
+                paddingTop: "3px"
+            });
+        }, 50);
 
-              $grid = $('#jqgrid_a'),
-              myDefaultSearch = "cn",
-              getColumnIndexByName = function (columnName) {
-                  var cm = $(this).jqGrid('getGridParam', 'colModel'), i, l = cm.length;
-                  for (i = 0; i < l; i += 1) {
-                      if (cm[i].name === columnName) {
-                          return i; // return the index
-                      }
-                  }
-                  return -1;
-              },
-              modifySearchingFilter = function (separator) {
-                  var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel,
-                      filters = $.parseJSON(this.p.postData.filters);
-                  if (filters && filters.rules !== undefined && filters.rules.length > 0) {
-                      rules = filters.rules;
-                      for (i = 0; i < rules.length; i++) {
-                          rule = rules[i];
-                          iCol = getColumnIndexByName.call(this, rule.field);
-                          cmi = cm[iCol];
-                          if (iCol >= 0 &&
-                                  ((cmi.searchoptions === undefined || cmi.searchoptions.sopt === undefined)
-                                      && (rule.op === myDefaultSearch)) ||
-                                  (typeof (cmi.searchoptions) === "object" &&
-                                      $.isArray(cmi.searchoptions.sopt) &&
-                                      cmi.searchoptions.sopt[0] === rule.op)) {
-                              // make modifications only for the 'contains' operation
-                              parts = rule.data.split(separator);
-                              if (parts.length > 1) {
-                                  if (filters.groups === undefined) {
-                                      filters.groups = [];
-                                  }
-                                  group = {
-                                      groupOp: 'OR',
-                                      groups: [],
-                                      rules: []
-                                  };
-                                  filters.groups.push(group);
-                                  for (j = 0, l = parts.length; j < l; j++) {
-                                      str = parts[j];
-                                      if (str) {
-                                          // skip empty '', which exist in case of two separaters of once
-                                          group.rules.push({
-                                              data: parts[j],
-                                              op: rule.op,
-                                              field: rule.field
-                                          });
-                                      }
-                                  }
-                                  rules.splice(i, 1);
-                                  i--; // to skip i++
-                              }
-                          }
-                      }
-                      this.p.postData.filters = JSON.stringify(filters);
-                  }
-              },
-              dataInitMultiselect = function (elem) {
-                  setTimeout(function () {
-                      var $elem = $(elem), id = elem.id,
-                          inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
-                          options = {
-                              selectedList: 2,
-                              height: "auto",
-                              checkAllText: "all",
-                              uncheckAllText: "no",
-                              noneSelectedText: "Any",
-                              open: function () {
-                                  var $menu = $(".ui-multiselect-menu:visible");
-                                  $menu.width("auto");
-                                  return;
-                              }
-                          },
-                          $options = $elem.find("option");
-                      if ($options.length > 0 && $options[0].selected) {
-                          $options[0].selected = false; // unselect the first selected option
-                      }
-                      if (inToolbar) {
-                          options.minWidth = 'auto';
-                      }
-                      //$elem.multiselect(options);
-                      $elem.multiselect(options).multiselectfilter({ placeholder: '' });
-                      $elem.siblings('button.ui-multiselect').css({
-                          width: inToolbar ? "98%" : "100%",
-                          marginTop: "1px",
-                          marginBottom: "1px",
-                          paddingTop: "3px"
-                      });
-                  }, 50);
+    };
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-              };
-
+	
 	jQuery("#jqGridExcelDownload").click( function() {
 		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
 		// 또한 이들을 그대로 뽑아오기 위해서는 jqgrid.saverow 함수를 이용해야 하는데,
@@ -358,22 +366,46 @@ $(function(){
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
             {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   },
-			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
-				 edittype:'select', editoptions:{ value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单' , multiple: true},
-				 search : 'true',
-				 stype:'select', searchoptions: {sopt: ['eq'], value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单',dataInit:dataInitMultiselect, attr: {multiple: 'multiple', size: 4}}
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            {name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
+				 edittype:'select', editoptions:{ 
+					 										value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
+								 								,defaultValue:'none'
+									 								, multiple: true
+					 										},
+// 				 search : 'true',
+				 stype:'select', searchoptions: {
+					 										sopt: ['eq','ne']
+					 										, value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
+					 										, dataInit:dataInitMultiselect
+					 										, attr: {multiple: 'multiple', size: 3}
+					 									}
+				 
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:150,resizable:false,formatter: 'select',
-				 edittype:'select', editoptions:{ value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP',defaultValue:'none'},
-				 search : 'true',
-				 stype:'select', searchoptions: { sopt: ['eq'], value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' ,dataInit:dataInitMultiselect}
+				 edittype:'select', editoptions:{ 
+					 								value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP'
+					 								,defaultValue:'none'
+					 								, multiple: true
+					 								},
+// 				 search : 'true',
+				 stype:'select', searchoptions: { 
+					 								sopt: ['eq','ne']
+					 								, value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' 
+					 								, dataInit:dataInitMultiselect
+					 								, attr: {multiple: 'multiple', size: 5}
+					 								}
 			},	
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
-				 edittype:'select', editoptions:{ value:'N000550300:确定;N000550400:结算;N000560100:DROP', defaultValue:'none', multiple: true},
-				 stype:'input'
-            },		
-            {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
+				 edittype:'select', editoptions:{ 
+					 							value:'N000550300:确定;N000550400:结算;N000560100:DROP'
+					 							, defaultValue:'none'
+					 							, multiple: true
+					 							}
+			},
+             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
@@ -524,7 +556,7 @@ $(function(){
         rowNum:20,
         
         beforeRequest: function () {
-//             modifySearchingFilter.call(this, ',');
+            modifySearchingFilter.call(this, ',');
         },
 
         gridComplete : function(e){
@@ -842,7 +874,7 @@ $(function(){
 		stringResult:true
 		, searchOnEnter:true
 		, defaultSearch:"cn"
-		, groupOp:'OR'
+		, groupOp:'AND'
 // 		,searchOperators :true
               ,  beforeClear: function () {
                     $(this.grid.hDiv).find(".ui-search-toolbar .ui-search-input>select[multiple] option").each(function () {
