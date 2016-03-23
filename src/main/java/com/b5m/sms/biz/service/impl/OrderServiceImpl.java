@@ -695,6 +695,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			//1. 주문상세정보 업데이트
 			smsMsOrdDAO.updateSmsMsOrdDetail(orderDetailVo);		
 			
+			
+			
 			//2. 주문사용자 업데이트
 			SmsMsOrdUserVO opr= new SmsMsOrdUserVO();
 			opr.setOrdNo(orderDetailVo.getOrdNo());
@@ -744,6 +746,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			ordStatCdVo.setOrdNo(orderDetailVo.getOrdNo());
 			ordStatCdVo=smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNo(ordStatCdVo);
 			String ordStatCd = ordStatCdVo.getOrdStatCd();
+			//주문의 종류를 파악해서 메세지를 다르게 출력
+			String ordTypeCd =ordStatCdVo.getOrdTypeCd();
 			
 			//2.히스토리테이블에서 최신 seq를 받아온다.
 			SmsMsOrdHistVO histVo = new SmsMsOrdHistVO();
@@ -761,7 +765,17 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 histVo.setOrdHistWrtrEml(wrtrEml);
 			 //2-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
 			if("N000550100".equals(ordStatCd)){					//접수 
-				 histVo.setOrdHistHistCont("B5C or B5C Special or 线下订单' 已在进行");			//자동생성되는 진행코멘트 
+				
+				if("N000620100".equals(ordTypeCd)){
+					 histVo.setOrdHistHistCont("B5C 已在进行");			//자동생성되는 진행코멘트
+				}else if("N000620200".equals(ordTypeCd)){
+					 histVo.setOrdHistHistCont("B5C Special 已在进行");			//자동생성되는 진행코멘트
+				}else if("N000620300".equals(ordTypeCd)){
+					 histVo.setOrdHistHistCont("线下订单' 已在进行");			//자동생성되는 진행코멘트
+				}else{
+					 histVo.setOrdHistHistCont("已在进行");			//자동생성되는 진행코멘트
+				}
+				 
 				 smsMsOrdHistDAO.insertSmsMsOrdHist(histVo);
 				 
 				 //주문상태저장
