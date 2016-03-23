@@ -51,6 +51,9 @@
                 <table id="jqgrid_a"></table>
                 <div id="pager_a"></div>
                 <div id="paginate"></div>
+                <input type="text" id="totalDbCount" hidden>
+                <input type="text" id="page" hidden>
+                <input type="text" id="row" hidden>
             </div>
         </section>
     </div>
@@ -459,9 +462,7 @@ $(function(){
         ],
 //     	onSelectRow: function(id){
        onCellSelect: function(id, cid){
-   		   
-//     	   alert("id : "+id);
-//     	   alert("cid : " + cid);
+
     	   if(!checkIndex(RolesEditordSumAmt,roles)){
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
    		   }else{
@@ -595,7 +596,13 @@ $(function(){
         	var totalDbCount = $('#jqgrid_a').getRowData(1).count;
 			var page = $('#jqgrid_a').getRowData(1).page;
 			var row = $('#jqgrid_a').getRowData(1).row;
-			customPager(totalDbCount,page, row);
+			
+			$("#totalDbCount").val(totalDbCount);
+			$("#page").val(page);
+			$("#row").val(row);
+			
+// 			customPager(totalDbCount,page, row);
+			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
         },
         viewrecords: true,
         navGrid : true,
@@ -753,8 +760,14 @@ $(function(){
 			}
 			jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 		}
-		var page = $('#jqgrid_a').getRowData(1).page;
-		var row = $('#jqgrid_a').getRowData(1).row;
+// 		var page = $('#jqgrid_a').getRowData(1).page;
+// 		var row = $('#jqgrid_a').getRowData(1).row;
+		var page = $("#page").val();
+		var row = $("#row").val();
+
+// 		$("#totalDbCount").html(totalDbCount);
+// 		$("#page").html(page);
+// 		$("#row").html(row);
 		
 		jQuery("#jqgrid_a").setGridParam({
 			url : "${web_ctx}/orderManagementSearch.ajax",

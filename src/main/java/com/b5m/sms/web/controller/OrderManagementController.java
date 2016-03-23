@@ -86,6 +86,9 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping("/orderManagementSearch.ajax")
 	public List<SmsMsOrdVO> orderManagementSearch(SmsMsOrdVO smsMsOrdVO, String rowInput, String pageInput , HttpSession session, Model model, String filters) throws Exception {
 
+		System.out.println("rowInput : "+rowInput);
+		System.out.println("pageInput : "+pageInput);
+		
 		int row=0;
 		int page=0;
 		if(rowInput==null || "".equals(rowInput)){
@@ -246,7 +249,7 @@ public class OrderManagementController  extends AbstractFileController{
 		String filename = "[StatusReport]"+today.format(d)+".xls";
 		String sheetname = today.format(d);
 		
-		String [] colNames = {"Order Number","申请日期","客户名称","订购商品", "查看详情","交易规模","上海负责人","韩国负责人","订购路径","状态","状态详情","最终状态","商品供应商汇款","首付日期","首付金额","首付百分比","入库日期","入库地点","出港日期","出港地点","到岸日期","到岸地点","P/O日期","P/O地点","余付","余款结算日期","余款百分比","是否在帮韩品购买"};
+		String [] colNames = {"Order Number","申请日期","客户名称","订购商品", "查看详情","交易规模","上海负责人","韩国负责人","订购路径","状态","状态详情","最终状态","商品供应商汇款","首付日期","首付金额","首付百分比","入库日期","入库地点","出港日期","出港地点","到岸日期","到岸地点","P/O日期","P/O地点","余付","余款结算日期","余款百分比","是否在帮韩品购买","帮5采上传日期","帮5采上传内容"};
 		List<String> colName = new ArrayList<String>();
 		for(int i=0; i<colNames.length ; i++){
         	colName.add(colNames[i]);
@@ -319,6 +322,10 @@ public class OrderManagementController  extends AbstractFileController{
 			row.createCell(k++).setCellValue(raptDpstAmt);
 			row.createCell(k++).setCellValue(raptDpstRate);
 			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getB5mBuyCont());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getB5cGudsRegDt());
+			row.createCell(k++).setCellValue(smsMsOrdVOList.get(i).getB5cGudsRegMemo());
+			
+			
 		}
 
 		//생성된 엑셀을 HTTPServletResponse에 적어서 다운로드 할 수 있도록 한다. 

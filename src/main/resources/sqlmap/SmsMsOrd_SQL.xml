@@ -117,6 +117,8 @@
 		<result property="raptDpstRate" column="RAPT_DPST_RATE" />
 		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
 		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
+		<result property="b5cGudsRegDt" column="B5C_GUDS_REG_DT"/>
+		<result property="b5cGudsRegMemo" column="B5C_GUDS_REG_MEMO"/>
 <!-- 		<result property="count" column="COUNT"/> -->
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
@@ -684,7 +686,8 @@
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
-	    		
+	    		 ,A.B5C_GUDS_REG_DT AS B5C_GUDS_REG_DT
+             ,A.B5C_GUDS_REG_MEMO AS B5C_GUDS_REG_MEMO
 		FROM
 				 sms_ms_ord A
 		WHERE 1=1 
@@ -736,7 +739,8 @@
 	    		,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
 	    		,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
-	    		
+	    		,A.B5C_GUDS_REG_DT AS B5C_GUDS_REG_DT
+             	,A.B5C_GUDS_REG_MEMO AS B5C_GUDS_REG_MEMO
 		FROM
 				 sms_ms_ord A
 		WHERE 1=1 
