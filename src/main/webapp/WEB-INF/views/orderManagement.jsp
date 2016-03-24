@@ -6,14 +6,6 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!--     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-<!--     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script> -->
-<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery-ui-multiselect/1.12/jquery.multiselect.js"></script> -->
-<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js"></script> -->
-<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.3.1/js/jquery.jqGrid.src-multiple1.js"></script> -->
-
-
-
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
 <sec:authentication var="user" property="principal" />
 <STYLE>
@@ -140,7 +132,6 @@ $(function(){
       $('.btn-save').hide();
    }
    
-   
 	// 브라우저에 따라 caching 때문에 ajax 최신정보가 보이지 않게됨을 막음.
 	jQuery.ajaxSetup({cache:false});   
 	
@@ -157,12 +148,6 @@ $(function(){
 		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
 		// 또한 이들을 그대로 뽑아오기 위해서는 jqgrid.saverow 함수를 이용해야 하는데,
 		// saverow 함수는 1 개의 row 단위로 작동하기 때문에 이를 변형해서 사용할 수 있어야 한다.
-
-// 		$("#jqgrid_a").excelExport();
-// 		$("#jqgrid_a").jqGrid('excelExport',{tag:'excel',url:'${web_ctx}/orderManagementExcelDownload.do?'});
-
-// 		window.open('data:application/vnd.ms-excel,' + encodeURIComponent($("jqgrid_a").jqGrid('getRowData')));
-// 		e.preventDefault();
 		var ids =jQuery("#jqgrid_a").jqGrid('getDataIDs');
 		var dataList = [];
 		for(var i = 0; i <  ids.length; i++ ){
@@ -190,7 +175,6 @@ $(function(){
 
 		
 	// [+신규주문등록] Dialog Control
-	
 	$('#dialog_upload').dialog({
 		modal: true,
 		autoOpen: false,
@@ -228,7 +212,6 @@ $(function(){
           }
     }); 	
 
-	
 	// [Special + 접수] Dialog Control
 	$('#dialog_upload_special').dialog({
 		modal: true,
@@ -241,7 +224,6 @@ $(function(){
 	 				alert("请选择要上传的EXCEL文件。");
 	 			}else{
 	 				if (confirm("确认要上传所选中的文件?")) {
-// 		 				$('#dialog_upload_form_special').submit();
 						$("#dialog_upload_form_special").attr('target', 'popUp');
 						var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
 						$("#dialog_upload_form_special").submit();
@@ -413,9 +395,19 @@ $(function(){
             {name:'usdXchrAmt',index:'usdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'cnsXchrAmt',index:'cnsXchrAmt',align:'center',width:160,resizable:false,hidden:"true"}
         ],
+
 //     	onSelectRow: function(id){
        onCellSelect: function(id, cid){
-    	   
+
+    	   var selectedRows = $("#jqgrid_a").jqGrid('getGridParam', 'selarrrow');
+    	   for(i=0; i < selectedRows.length; i++){
+    		   if(selectedRows[i] == id){
+    			   $("#jqgrid_a").jqGrid('restoreRow',id, false);
+    			   return false;
+    		   }
+    	   }
+
+
     	   if(!checkIndex(RolesEditordSumAmt,roles)){
    			jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
    		   }else{
@@ -483,10 +475,9 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 				}
 				if(checkIndex(RolesSaveBtn,roles)){
-					
 					jQuery('#jqgrid_a').jqGrid('editRow',id,false);
+
 				}
-				
 			}else{
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
@@ -504,9 +495,20 @@ $(function(){
 				jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
 
 				jQuery('#jqgrid_a').jqGrid('editRow',id,false);
+
 			}
+			alert("!!");
+// 			jQuery('#jqgrid_a').setSelection(id,false);
+// // 			alert("selectCell");
+
+
+	     	   var columnName = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
+ 	 		 $("#"+id+"_"+columnName).focus();
+
 
 		},
+
+		
 		pagination:true,
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
@@ -549,9 +551,11 @@ $(function(){
 			$("#totalDbCount").val(totalDbCount);
 			$("#page").val(page);
 			$("#row").val(row);
-			
+
 // 			customPager(totalDbCount,page, row);
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
+			
+
         },
         viewrecords: true,
         navGrid : true,
@@ -844,38 +848,6 @@ $(function(){
 		, searchOnEnter:true
 		, defaultSearch:"cn"
 		, groupOp:'AND'
-// 			,onClearSearchValue : function (elem, coli, soptions, defval) {
-// 				if(coli > 0) {
-// 					var name = this.p.colModel[coli].name;
-// 					if(name === 'ordTypeCd') {
-// 						$(elem).val(defval);
-// 						$(elem).multiselect('refresh');
-// 						$(elem).siblings('button.ui-multiselect').css({
-// 							width: "100%",
-// 							marginTop: "1px",
-// 							marginBottom: "1px",
-// 							paddingTop: "3px"
-// 						});
-// 					}
-					
-// 				}
-// 			},
-// 			beforeClear : function() {
-// 				var elem = $("#gs_ordTypeCd");
-// 				elem.val("");
-// 				elem.multiselect('refresh');
-// 				elem.siblings('button.ui-multiselect').css({
-// 						width: "100%",
-// 						marginTop: "1px",
-// 						marginBottom: "1px",
-// 						paddingTop: "3px"
-// 				});					
-// 			}
-		
-		
-		
-		
-		
 		}
 	);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -898,7 +870,11 @@ $(function(){
 	$('select.ui-widget-content.ui-corner-all').multiselect();
 
 	
-
+	$("#jqgrid_a").bind("setSelection", function (e, rowid, orgClickEvent) {
+	    alert("after");
+	    // if we want to return true, we should test e.result additionally
+	    return e;
+	});
 	    
 	    
 	
@@ -969,6 +945,7 @@ function checkIndex(btnRole, userRole){
       });
    return flag;
 }
+
 
 
 </script>
