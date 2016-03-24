@@ -55,6 +55,7 @@
                 <input type="text" id="totalDbCount" hidden>
                 <input type="text" id="page" hidden>
                 <input type="text" id="row" hidden>
+<!--                 <input type="text" id="pagecontent" size="500"> -->
             </div>
         </section>
     </div>
@@ -568,18 +569,40 @@ $(function(){
 		$('.paginate_complex').html('');
 		var pagerHtml ='';
 		var prevPage = page-1;
+		
+// 		$("#pagecontent").val("totalDbCount : " +totalDbCount+" | page : "+page+" | row : "+row+" | pageCount : "+pageCount+" | prevPage"+prevPage);
 		if(prevPage>0){
 			 pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+1+','+row+')"><span></span><span></span> Prev End</a>';
 			pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+prevPage+','+row+')">Prev <span></span></a>';
 		}
 		if(pageCount >= 10){
-			for(var i=pageCount-4; i<=pageCount+4; i++){
-				if(i==page){
-					pagerHtml += '<strong>'+i+'</strong>'
-				}else{
-					pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
+			
+			if(page <= 5){
+				for(var i=1; i<=10; i++){
+					if(i==page){
+						pagerHtml += '<strong>'+i+'</strong>'
+					}else{
+						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
+					}
+				}
+			}else if( parseInt(pageCount) - parseInt(page) <=5){
+				for(var i=parseInt(pageCount)-10; i<=parseInt(pageCount); i++){
+					if(i==page){
+						pagerHtml += '<strong>'+i+'</strong>'
+					}else{
+						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
+					}
+				}
+			}else{
+				for(var i=parseInt(page)-4; i<=parseInt(page)+4; i++){
+					if(i==page){
+						pagerHtml += '<strong>'+i+'</strong>'
+					}else{
+						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
+					}
 				}
 			}
+
 		}else{
 			for(var i=1; i<=pageCount; i++){
 				if(i==page){
