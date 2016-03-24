@@ -497,7 +497,7 @@ $(function(){
 				jQuery('#jqgrid_a').jqGrid('editRow',id,false);
 
 			}
-			alert("!!");
+// 			alert("!!");
 // 			jQuery('#jqgrid_a').setSelection(id,false);
 // // 			alert("selectCell");
 
