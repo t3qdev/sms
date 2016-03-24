@@ -5,6 +5,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<!--     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
+<!--     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script> -->
+<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery-ui-multiselect/1.12/jquery.multiselect.js"></script> -->
+<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js"></script> -->
+<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.3.1/js/jquery.jqGrid.src-multiple1.js"></script> -->
+
+
+
 <c:set var="web_ctx" value="${pageContext.request.contextPath}" />
 <sec:authentication var="user" property="principal" />
 <STYLE>

@@ -16,12 +16,16 @@
 	<script type="text/javascript" src="${web_ctx}/libs/jquery-ui/external/jquery/jquery.js"></script>
 	<script type="text/javascript" src="${web_ctx}/libs/jquery-ui/jquery-ui.js"></script>
 	<script type="text/javascript" src="${web_ctx}/libs/jquery-ui/jquery-ui.autocomplete.js"></script>
-	<script type="text/javascript" src="${web_ctx}/libs/jqGrid/js/minified/jquery.jqGrid.min.js"></script>
+	
+<%-- 	<script type="text/javascript" src="${web_ctx}/libs/jqGrid/js/minified/jquery.jqGrid.min.js"></script> --%>
+	<script type="text/javascript" src="${web_ctx}/libs/jqGrid/js/jquery.jqGrid.js"></script>
+	
 	<script type="text/javascript" src="${web_ctx}/libs/jqGrid/js/minified/i18n/grid.locale-en.js"></script>
 	<script type="text/javascript" src="${web_ctx}/js/common.js"></script>
 	<script type="text/javascript" src="${web_ctx}/libs/validation/jquery.validate.js"></script>
 	<script type="text/javascript" src="${web_ctx}/libs/multiselect/jquery.multiselect.js"></script>
 	<script type="text/javascript" src="${web_ctx}/libs/multiselect/jquery.multiselect.css"></script>
+    <script type="text/javascript" src="${web_ctx}/js/common/lib/jquery.form.min.js" ></script>
     <script type="text/javascript" src="${web_ctx}/js/common/lib/jquery.form.min.js" ></script>
 </head>
 <body class="">
