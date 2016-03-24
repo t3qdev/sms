@@ -500,12 +500,8 @@ $(function(){
 // 			alert("!!");
 // 			jQuery('#jqgrid_a').setSelection(id,false);
 // // 			alert("selectCell");
-
-
-	     	   var columnName = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
+	     	 var columnName = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
  	 		 $("#"+id+"_"+columnName).focus();
-
-
 		},
 
 		
@@ -869,14 +865,6 @@ $(function(){
 	$('.ui-calendar').datepicker('option', 'dateFormat', 'yy-mm-dd' );
 	$('select.ui-widget-content.ui-corner-all').multiselect();
 
-	
-	$("#jqgrid_a").bind("setSelection", function (e, rowid, orgClickEvent) {
-	    alert("after");
-	    // if we want to return true, we should test e.result additionally
-	    return e;
-	});
-	    
-	    
 	
 });      // End : $(function(){}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
