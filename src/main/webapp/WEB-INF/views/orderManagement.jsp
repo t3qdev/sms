@@ -55,8 +55,6 @@
                 <input type="text" id="totalDbCount" hidden>
                 <input type="text" id="page" hidden>
                 <input type="text" id="row" hidden>
-                <input type="text" id="selectedCellForFocus" hidden>
-                <input type="text" id="selectedRowForFocus" hidden>
             </div>
         </section>
     </div>
@@ -501,22 +499,12 @@ $(function(){
 				jQuery('#jqgrid_a').jqGrid('editRow',id,false);
 
 			}
-// 			alert("!!");
-// 			jQuery('#jqgrid_a').setSelection(id,false);
-// // 			alert("selectCell");
 	     	 var selectedCellForFocus = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
-	     	 $("#selectedCellForFocus").val(selectedCellForFocus);
-	     	 $("#selectedRowForFocus").val(id);
-				var address = $("#selectedCellForFocus").val();
-				var selection = $("#selectedRowForFocus").val();
-	     	 
-				setTimeout(function() {
-					$("#"+selection+"_"+address).focus();
-					}, 1); // 3000ms(3초)가 경과하면 이 함수가 실행됩니다.
-			      
-// 	     	address = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
- 	 		 
-		},
+			setTimeout(function() {
+				$("#"+id+"_"+selectedCellForFocus).focus();
+			}, 1); // 3000ms(3초)가 경과하면 이 함수가 실행됩니다.
+
+       },
 
 		
 		pagination:true,
