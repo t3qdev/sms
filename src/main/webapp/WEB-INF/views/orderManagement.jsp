@@ -55,6 +55,8 @@
                 <input type="text" id="totalDbCount" hidden>
                 <input type="text" id="page" hidden>
                 <input type="text" id="row" hidden>
+                <input type="text" id="selectedCellForFocus" hidden>
+                <input type="text" id="selectedRowForFocus" hidden>
             </div>
         </section>
     </div>
@@ -237,6 +239,8 @@ $(function(){
 		}
 	});
 
+	var columnName;
+	
 
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
@@ -500,8 +504,18 @@ $(function(){
 // 			alert("!!");
 // 			jQuery('#jqgrid_a').setSelection(id,false);
 // // 			alert("selectCell");
-	     	 var columnName = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
- 	 		 $("#"+id+"_"+columnName).focus();
+	     	 var selectedCellForFocus = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
+	     	 $("#selectedCellForFocus").val(selectedCellForFocus);
+	     	 $("#selectedRowForFocus").val(id);
+				var address = $("#selectedCellForFocus").val();
+				var selection = $("#selectedRowForFocus").val();
+	     	 
+				setTimeout(function() {
+					$("#"+selection+"_"+address).focus();
+					}, 1); // 3000ms(3초)가 경과하면 이 함수가 실행됩니다.
+			      
+// 	     	address = $("#jqgrid_a").jqGrid("getGridParam", "colModel")[cid].name;
+ 	 		 
 		},
 
 		
