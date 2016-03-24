@@ -175,68 +175,7 @@ $(function(){
 	
 
 		
-	// [+신규주문등록] Dialog Control
-	$('#dialog_upload').dialog({
-		modal: true,
-		autoOpen: false,
-		width: 500,
-		height: 150,
-		buttons: {
-			'上传文件': function(evt){
-		 		if($('#inputExcelFile').val()==""){
-	 				alert("请选择要上传的EXCEL文件。");
-	 			}else{
-	 				if (confirm("确认要上传所选中的文件?")) {
-		 				$('#dialog_upload_form').submit();
-	 				} 
-	 			}
-			}
-		}
-	});
-    // ajaxform
-    $('#dialog_upload_form').ajaxForm({
-        success: function(data){
-            alert('订单保存成功');
-			$('#dialog_upload').dialog('close');
-			$('#inputExcelFile').val('');
-// 			location.reload();
-			jQuery("#jqgrid_a").setGridParam({
-				url : "${web_ctx}/orderManagementSearch.ajax",
-				ajaxGridOptions : {async:false},    // 동기로 변환
-				postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":""},
-				rowNum : $('#rownum option:selected').val(),
-				datatype : "json",
-			}).trigger('reloadGrid');
-          },
-          error : function(data){
-        	  alert('订单保存失败');
-          }
-    }); 	
 
-	// [Special + 접수] Dialog Control
-	$('#dialog_upload_special').dialog({
-		modal: true,
-		autoOpen: false,
-		width: 500,
-		height: 270,
-		buttons: {
-			'文件上传': function(evt){
-		 		if($('#inputExcelFileSpecial').val()==""){
-	 				alert("请选择要上传的EXCEL文件。");
-	 			}else{
-	 				if (confirm("确认要上传所选中的文件?")) {
-						$("#dialog_upload_form_special").attr('target', 'popUp');
-						var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
-						$("#dialog_upload_form_special").submit();
-						$('#dialog_upload_special').dialog('close');
-						$('#inputExcelFileSpecial').val('');
-	 				} else {
-
-	 				}
-	 			}
-			}
-		}
-	});
 
 	var columnName;
 	
@@ -547,13 +486,19 @@ $(function(){
 			var page = $('#jqgrid_a').getRowData(1).page;
 			var row = $('#jqgrid_a').getRowData(1).row;
 			
-			$("#totalDbCount").val(totalDbCount);
-			$("#page").val(page);
-			$("#row").val(row);
+			if(totalDbCount == null){
 
-// 			customPager(totalDbCount,page, row);
+			}else if(page == null){
+				
+			}else if(row == null){
+				
+			}else{
+				$("#totalDbCount").val(totalDbCount);
+				$("#page").val(page);
+				$("#row").val(row);
+			}
+
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
-			
 
         },
         viewrecords: true,
@@ -562,24 +507,23 @@ $(function(){
         
   	  });
 
+	
 	// jqgrid가 로딩완료 되면, 이 pager로 jqgrid 아래에 pager를 지우고 새로 그린다.
 	// 이 페이저에는 goToSelectedPage() 함수가 링크 걸려 있다.
 	function customPager(totalDbCount, page, row){
 		var pageCount = Math.ceil(totalDbCount / row);
 		$('.paginate_complex').html('');
 		var pagerHtml ='';
-		var prevPage = page-1;
+		var prevPage = parseInt(page)-1;
 		
-// 		$("#pagecontent").val("totalDbCount : " +totalDbCount+" | page : "+page+" | row : "+row+" | pageCount : "+pageCount+" | prevPage"+prevPage);
 		if(prevPage>0){
 			 pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+1+','+row+')"><span></span><span></span> Prev End</a>';
 			pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+prevPage+','+row+')">Prev <span></span></a>';
 		}
-		if(pageCount >= 10){
-			
-			if(page <= 5){
+		if(parseInt(pageCount) >= 10){
+			if(parseInt(page) <= 5){
 				for(var i=1; i<=10; i++){
-					if(i==page){
+					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
 					}else{
 						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
@@ -587,7 +531,7 @@ $(function(){
 				}
 			}else if( parseInt(pageCount) - parseInt(page) <=5){
 				for(var i=parseInt(pageCount)-10; i<=parseInt(pageCount); i++){
-					if(i==page){
+					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
 					}else{
 						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
@@ -595,17 +539,16 @@ $(function(){
 				}
 			}else{
 				for(var i=parseInt(page)-4; i<=parseInt(page)+4; i++){
-					if(i==page){
+					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
 					}else{
 						pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
 					}
 				}
 			}
-
 		}else{
 			for(var i=1; i<=pageCount; i++){
-				if(i==page){
+				if(i==parseInt(page)){
 					pagerHtml += '<strong>'+i+'</strong>'
 				}else{
 					pagerHtml += '<a href="#" onclick="goToSelectedPage('+totalDbCount+','+i+','+row+')">'+i+'</a>';
@@ -613,12 +556,11 @@ $(function(){
 			}
 		}
 		var nextPage = 1 + parseInt(page);
-		if(page!=pageCount) {
+		if(parseInt(page)!=parseInt(pageCount)) {
 			pagerHtml += '<a href="#" class="direction next" onclick="goToSelectedPage('+totalDbCount+','+nextPage+','+row+')">Next <span></span></a>';
 			pagerHtml += '<a href="#" class="direction next" onclick="goToSelectedPage('+totalDbCount+','+pageCount+','+row+')">Next End <span></span><span></span></a>';
 		}
 		$('.paginate_complex').html(pagerHtml);
-
 	};
 	
 	
@@ -869,6 +811,33 @@ $(function(){
 		, searchOnEnter:true
 		, defaultSearch:"cn"
 		, groupOp:'AND'
+			,onClearSearchValue : function (elem, coli, soptions, defval) {
+				if(coli > 0) {
+					var name = this.p.colModel[coli].name;
+					if(name === 'ordTypeCd') {
+						$(elem).val(defval);
+						$(elem).multiselect('refresh');
+						$(elem).siblings('button.ui-multiselect').css({
+							width: "100%",
+							marginTop: "1px",
+							marginBottom: "1px",
+							paddingTop: "3px"
+						});
+					}
+					
+				}
+			},
+			beforeClear : function() {
+				var elem = $("#gs_ordTypeCd");
+				elem.val("");
+				elem.multiselect('refresh');
+				elem.siblings('button.ui-multiselect').css({
+						width: "100%",
+						marginTop: "1px",
+						marginBottom: "1px",
+						paddingTop: "3px"
+				});					
+			}
 		}
 	);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -890,6 +859,70 @@ $(function(){
 	$('.ui-calendar').datepicker('option', 'dateFormat', 'yy-mm-dd' );
 	$('select.ui-widget-content.ui-corner-all').multiselect();
 
+	
+	
+	// [+신규주문등록] Dialog Control
+	$('#dialog_upload').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 500,
+		height: 150,
+		buttons: {
+			'上传文件': function(evt){
+		 		if($('#inputExcelFile').val()==""){
+	 				alert("请选择要上传的EXCEL文件。");
+	 			}else{
+	 				if (confirm("确认要上传所选中的文件?")) {
+		 				$('#dialog_upload_form').submit();
+	 				} 
+	 			}
+			}
+		}
+	});
+    // ajaxform
+    $('#dialog_upload_form').ajaxForm({
+        success: function(data){
+            alert('订单保存成功');
+			$('#dialog_upload').dialog('close');
+			$('#inputExcelFile').val('');
+// 			location.reload();
+			jQuery("#jqgrid_a").setGridParam({
+				url : "${web_ctx}/orderManagementSearch.ajax",
+				ajaxGridOptions : {async:false},    // 동기로 변환
+				postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":""},
+				rowNum : $('#rownum option:selected').val(),
+				datatype : "json",
+			}).trigger('reloadGrid');
+          },
+          error : function(data){
+        	  alert('订单保存失败');
+          }
+    }); 	
+
+	// [Special + 접수] Dialog Control
+	$('#dialog_upload_special').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 500,
+		height: 270,
+		buttons: {
+			'文件上传': function(evt){
+		 		if($('#inputExcelFileSpecial').val()==""){
+	 				alert("请选择要上传的EXCEL文件。");
+	 			}else{
+	 				if (confirm("确认要上传所选中的文件?")) {
+						$("#dialog_upload_form_special").attr('target', 'popUp');
+						var newWindow=window.open("",'popUp','height=800,width=1500,top=0,left=0');
+						$("#dialog_upload_form_special").submit();
+						$('#dialog_upload_special').dialog('close');
+						$('#inputExcelFileSpecial').val('');
+	 				} else {
+
+	 				}
+	 			}
+			}
+		}
+	});
 	
 });      // End : $(function(){}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -943,8 +976,6 @@ function goToSelectedPage(totalDbCount, page, row){
 		postData:{"rowInput":row, "pageInput":page},
 		datatype : "json",
 	}).trigger('reloadGrid');
-	
-	
 };
 
 //array와 array를 비교해여 해당값이 존재하는지 체크 
