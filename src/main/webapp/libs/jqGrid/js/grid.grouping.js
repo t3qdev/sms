@@ -20,7 +20,7 @@ $.jgrid.extend({
 	groupingSetup : function () {
 		return this.each(function (){
 			var $t = this, i, j, cml, cm = $t.p.colModel, grp = $t.p.groupingView,
-			classes = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')]['grouping'];
+			classes = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')].grouping;
 			if(grp !== null && ( (typeof grp === 'object') || $.isFunction(grp) ) ) {
 				if(!grp.plusicon) { grp.plusicon = classes.icon_plus;}
 				if(!grp.minusicon) { grp.minusicon = classes.icon_minus;}
@@ -62,7 +62,9 @@ $.jgrid.extend({
 					}
 					grp.summary =[];
 					if(grp.hideFirstGroupCol) {
-						grp.formatDisplayField[0] = function (v) { return v;};
+						if($.isArray(grp.formatDisplayField) && !$.isFunction(grp.formatDisplayField[0] ) ) {
+							grp.formatDisplayField[0] = function (v) { return v;};
+						}
 					}
 					for(j=0, cml = cm.length; j < cml; j++) {
 						if(grp.hideFirstGroupCol) {
@@ -262,7 +264,7 @@ $.jgrid.extend({
 			grp = $t.p.groupingView,
 			str = "", icon = "", hid, clid, pmrtl = grp.groupCollapse ? grp.plusicon : grp.minusicon, gv, cp=[], len =grp.groupField.length,
 			//classes = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')]['grouping'],
-			common = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')]['common'];
+			common = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')].common;
 
 			pmrtl = pmrtl+" tree-wrap-"+$t.p.direction; 
 			$.each($t.p.colModel, function (i,n){
@@ -521,7 +523,6 @@ $.jgrid.extend({
 			groupHeaders: []
 		},o  || {});
 		return this.each(function(){
-			this.p.groupHeader = o;
 			var ts = this,
 			i, cmi, skip = 0, $tr, $colHeader, th, $th, thStyle,
 			iCol,
@@ -540,7 +541,11 @@ $.jgrid.extend({
 			$theadInTable,
 			$firstHeaderRow = $htable.find(".jqg-first-row-header"),
 			//classes = $.jgrid.styleUI[($t.p.styleUI || 'jQueryUI')]['grouping'],
-			base = $.jgrid.styleUI[(ts.p.styleUI || 'jQueryUI')]['base'];
+			base = $.jgrid.styleUI[(ts.p.styleUI || 'jQueryUI')].base;
+			if(!ts.p.groupHeader) {
+				ts.p.groupHeader = [];
+			}
+			ts.p.groupHeader.push(o);
 			if($firstHeaderRow[0] === undefined) {
 				$firstHeaderRow = $('<tr>', {role: "row", "aria-hidden": "true"}).addClass("jqg-first-row-header").css("height", "auto");
 			} else {
@@ -652,7 +657,7 @@ $.jgrid.extend({
 
 			$firstRow = $theadInTable.find("tr.jqg-first-row-header");
 			$(ts).bind('jqGridResizeStop.setGroupHeaders', function (e, nw, idx) {
-				$firstRow.find('th').eq(idx).width(nw);
+				$firstRow.find('th').eq(idx)[0].style.width = nw + "px";
 			});
 		});				
 	},

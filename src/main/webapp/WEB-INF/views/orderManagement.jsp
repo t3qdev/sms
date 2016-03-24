@@ -153,106 +153,6 @@ $(function(){
 			$('#dialog_upload').dialog('open');
 	});
 	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////// 필터
-	
-	$grid = $('#jqgrid_a'),
-    myDefaultSearch = "cn",
-    getColumnIndexByName = function (columnName) {
-        var cm = $(this).jqGrid('getGridParam', 'colModel'), i, l = cm.length;
-        for (i = 0; i < l; i += 1) {
-            if (cm[i].name === columnName) {
-                return i; // return the index
-            }
-        }
-        return -1;
-    },
-    modifySearchingFilter = function (separator) {
-//         alert("1");
-    	var i, l, rules, rule, parts, j, group, str, iCol, cmi, cm = this.p.colModel;
-//     	alert("2");
-        var    filters = $.parseJSON(this.p.postData.filters);
-        alert("3");
-        if (filters && filters.rules !== undefined && filters.rules.length > 0) {
-            rules = filters.rules;
-            for (i = 0; i < rules.length; i++) {
-                rule = rules[i];
-                iCol = getColumnIndexByName.call(this, rule.field);
-                cmi = cm[iCol];
-                if (iCol >= 0 &&
-                        ((cmi.searchoptions === undefined || cmi.searchoptions.sopt === undefined)
-                            && (rule.op === myDefaultSearch)) ||
-                        (typeof (cmi.searchoptions) === "object" &&
-                            $.isArray(cmi.searchoptions.sopt) &&
-                            cmi.searchoptions.sopt[0] === rule.op)) {
-                    // make modifications only for the 'contains' operation
-                    parts = rule.data.split(separator);
-                    if (parts.length > 1) {
-                        if (filters.groups === undefined) {
-                            filters.groups = [];
-                        }
-                        group = {
-                            groupOp: 'OR',
-                            groups: [],
-                            rules: []
-                        };
-                        filters.groups.push(group);
-                        for (j = 0, l = parts.length; j < l; j++) {
-                            str = parts[j];
-                            if (str) {
-                                // skip empty '', which exist in case of two separaters of once
-                                group.rules.push({
-                                    data: parts[j],
-                                    op: rule.op,
-                                    field: rule.field
-                                });
-                            }
-                        }
-                        rules.splice(i, 1);
-                        i--; // to skip i++
-                    }
-                }
-            }
-            this.p.postData.filters = JSON.stringify(filters);
-        }
-    },
-    dataInitMultiselect = function (elem) {
-        setTimeout(function () {
-            var $elem = $(elem), id = elem.id,
-                inToolbar = typeof id === "string" && id.substr(0, 3) === "gs_",
-                options = {
-                    selectedList: 2,
-                    height: "auto",
-                    checkAllText: "all",
-                    uncheckAllText: "no",
-                    noneSelectedText: "Any",
-                    open: function () {
-                        var $menu = $(".ui-multiselect-menu:visible");
-                        $menu.width("auto");
-                        return;
-                    }
-                },
-                $options = $elem.find("option");
-            if ($options.length > 0 && $options[0].selected) {
-                $options[0].selected = false; // unselect the first selected option
-            }
-            if (inToolbar) {
-                options.minWidth = 'auto';
-            }
-            $elem.multiselect(options);
-//             $elem.multiselect(options).multiselectfilter({ placeholder: '' });
-            $elem.siblings('button.ui-multiselect').css({
-                width: inToolbar ? "98%" : "100%",
-                marginTop: "1px",
-                marginBottom: "1px",
-                paddingTop: "3px"
-            });
-        }, 50);
-
-    };
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	
 	jQuery("#jqGridExcelDownload").click( function() {
 		// 우선, 모든 rows 들을 Editable 로 만들어야 화면에 보이는 그대로의 값을 얻을 수 있다.
 		// 또한 이들을 그대로 뽑아오기 위해서는 jqgrid.saverow 함수를 이용해야 하는데,
@@ -369,92 +269,139 @@ $(function(){
         colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买','上传日期','上传内容'
                   			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
-            {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, stype:'text', editable:true, editoptions:{readonly:'true'}},
-            {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate},
-            {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false},
-            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, stype:'input', classes: 'bold', formatter:stringLengthLimit},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue'},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' },		
-            {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false },		
-            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   },
+            {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, editable:true, editoptions:{readonly:'true'},stype:'text', search:true},
+            {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate,stype:'text', search:true},
+            {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
+            {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
+            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' , search:false},		
+            {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false ,stype:'text', search:true},		
+            {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   ,stype:'text', search:true},
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     		////// 필터
-			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select',search: true, 
-				 edittype:'select', editoptions:{ 
-					 										value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
-								 								,defaultValue:'none'
-									 								, multiple: true
-					 										},
+			{name:'ordTypeCd',index:'ordTypeCd',align:'center',width:100, formatter: 'select', 
+				 edittype:'select', 
+				 editoptions:{ 
+								value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
+ 								,defaultValue:'none'
+	 								, multiple: true
+								},
 // 				 search : 'true',
-				 stype:'select', searchoptions: {
-					 										sopt: ['eq','ne']
-					 										, value:':ALL;N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
-					 										, dataInit:dataInitMultiselect
-					 										, attr: {multiple: 'multiple', size: 3}
-					 									}
-				 
+				 stype:'select', 
+				 searchoptions: {
+					 multiple: true,
+					 dataInit : function (elem) {
+							var options = {
+                             height: "200",
+								minWidth : 'auto',
+								position: {
+									my: 'left bottom',
+									at: 'left top'
+								},
+                             open: function () {
+                                 var $menu = $(".ui-multiselect-menu:visible");
+                                 $menu.css("font-size","11px").width("auto");
+                                 $menu.css("z-index","100");
+                                 return;
+                             }
+							},
+								$elem = $(elem);
+								$elem.multiselect(options);
+								$elem.siblings('button.ui-multiselect').css({
+									width: "100%",
+									marginTop: "1px",
+									marginBottom: "1px",
+									paddingTop: "3px"
+								});
+							},
+					 value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
+							}
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
-					 								value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP'
-					 								,defaultValue:'none'
-					 								, multiple: true
-					 								},
+	 								value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP'
+	 								,defaultValue:'none'
+	 								, multiple: true
+	 								},
 // 				 search : 'true',
-				 stype:'select', searchoptions: { 
-					 								sopt: ['eq','ne']
-					 								, value:':ALL;N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' 
-					 								, dataInit:dataInitMultiselect
-					 								, attr: {multiple: 'multiple', size: 5}
-					 								}
+				 stype:'select', 
+				 searchoptions: { 
+					 multiple: true,
+					 dataInit : function (elem) {
+							var options = {
+                         	 height: "200",
+								minWidth : 'auto',
+								position: {
+									my: 'left bottom',
+									at: 'left top'
+								},
+                          open: function () {
+                              var $menu = $(".ui-multiselect-menu:visible");
+                              $menu.css("font-size","11px").width("auto");
+                              $menu.css("z-index","100");
+                              return;
+                          }
+							},
+								$elem = $(elem);
+								$elem.multiselect(options);
+								$elem.siblings('button.ui-multiselect').css({
+									width: "100%",
+									marginTop: "1px",
+									marginBottom: "1px",
+									paddingTop: "3px"
+								});
+							},								
+						value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' 
+				}
 			},	
 		    //////end: 필터2
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, stype:'input'},		
+            {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, search:false},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
 					 							value:'N000550300:确定;N000550400:结算;N000560100:DROP'
 					 							, defaultValue:'none'
 					 							, multiple: true
 					 							}
+          	  , search:false
 			},
-             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false, stype:'input'},		
-            {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
+             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false,  search:false},		
+            {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, search:false,editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}   },		
-            {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
-            {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}   },		
+            {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
+            {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                  }	},		
-            {name:'wrhsDlvDestCd',index:'wrhsDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd },
-            {name:'dptrDlvDt',index:'dptrDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'wrhsDlvDestCd',index:'wrhsDlvDestCd',align:'center',width:100,resizable:false, search:false,editable:true,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd },
+            {name:'dptrDlvDt',index:'dptrDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'dptrDlvDestCd',index:'dptrDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'arvlDlvDt',index:'arvlDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'dptrDlvDestCd',index:'dptrDlvDestCd',align:'center',width:100,resizable:false, search:false,editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'arvlDlvDt',index:'arvlDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'arvlDlvDestCd',index:'arvlDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'poDlvDt',index:'poDlvDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'arvlDlvDestCd',index:'arvlDlvDestCd',align:'center',width:100,resizable:false, search:false,editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'poDlvDt',index:'poDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
                   }	},
-            {name:'poDlvDestCd',index:'poDlvDestCd',align:'center',width:100,resizable:false, stype:'input',editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
-            {name:'raptDpstDt',index:'raptDpstDt',align:'center',width:90,resizable:false, stype:'input',editable:true,formatter:formatterDate,
+            {name:'poDlvDestCd',index:'poDlvDestCd',align:'center',width:100,resizable:false, search:false,editable:true ,edittype:"select",editoptions:{value:DlvDestCd}, formatter : formatterDlvDestCd},
+            {name:'raptDpstDt',index:'raptDpstDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}},
-            {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, stype:'input',editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
-            {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, stype:'input',editable:true},
+            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}},
+            {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
+            {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, search:false,editable:true},
            
-            {name:'b5cGudsRegDt',index:'b5cGudsRegDt',align:'center',width:90,resizable:false, stype:'input',editable:true, formatter:formatterDate,
+            {name:'b5cGudsRegDt',index:'b5cGudsRegDt',align:'center',width:90,resizable:false, search:false,editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
             }},
-            {name:'b5cGudsRegMemo',index:'b5cGudsRegMemo',align:'center',width:160,resizable:false, stype:'input',editable:true, classes: 'ttest'},
+            {name:'b5cGudsRegMemo',index:'b5cGudsRegMemo',align:'center',width:160,resizable:false, search:false,editable:true, classes: 'ttest'},
             
             {name:'count',index:'count',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'page',index:'page',align:'center',width:160,resizable:false,hidden:"true"},
@@ -565,10 +512,6 @@ $(function(){
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
         rowNum:20,
-        
-        beforeRequest: function () {
-//             modifySearchingFilter.call(this, ',');
-        },
 
         gridComplete : function(e){
   
@@ -832,7 +775,7 @@ $(function(){
 
 	//[현재상태 상세내용] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowHistory(cellvalue,options,rowObject){
-		return '<a href="#" onclick="popUpHistory('+rowObject.ordNo+')">'+cellvalue+'</a>';
+		return '<span class="ui-icon ui-icon-calendar"></span><a href="#" onclick="popUpHistory('+rowObject.ordNo+')">'+cellvalue+'</a>';
 	}
  
 	//Date 형식 formatter  (db 에는 varchar(8) 로 되어 있어서, formatter로 형식변환)
@@ -901,22 +844,38 @@ $(function(){
 		, searchOnEnter:true
 		, defaultSearch:"cn"
 		, groupOp:'AND'
-// 		,searchOperators :true
-              ,  beforeClear: function () {
-                    $(this.grid.hDiv).find(".ui-search-toolbar .ui-search-input>select[multiple] option").each(function () {
-                        this.selected = false; // unselect all options
-                    });
-
-                    $(this.grid.hDiv).find(".ui-search-toolbar button.ui-multiselect").each(function () {
-                        $(this).prev("select[multiple]").multiselect("refresh");
-                    }).css({
-                        width: "98%",
-                        marginTop: "1px",
-                        marginBottom: "1px",
-                        paddingTop: "3px"
-                    });
-                }
-
+// 			,onClearSearchValue : function (elem, coli, soptions, defval) {
+// 				if(coli > 0) {
+// 					var name = this.p.colModel[coli].name;
+// 					if(name === 'ordTypeCd') {
+// 						$(elem).val(defval);
+// 						$(elem).multiselect('refresh');
+// 						$(elem).siblings('button.ui-multiselect').css({
+// 							width: "100%",
+// 							marginTop: "1px",
+// 							marginBottom: "1px",
+// 							paddingTop: "3px"
+// 						});
+// 					}
+					
+// 				}
+// 			},
+// 			beforeClear : function() {
+// 				var elem = $("#gs_ordTypeCd");
+// 				elem.val("");
+// 				elem.multiselect('refresh');
+// 				elem.siblings('button.ui-multiselect').css({
+// 						width: "100%",
+// 						marginTop: "1px",
+// 						marginBottom: "1px",
+// 						paddingTop: "3px"
+// 				});					
+// 			}
+		
+		
+		
+		
+		
 		}
 	);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

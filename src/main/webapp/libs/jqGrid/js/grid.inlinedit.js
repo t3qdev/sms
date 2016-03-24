@@ -40,6 +40,7 @@ $.jgrid.extend({
 		}
 		o = $.extend(true, {
 			keys : false,
+			keyevent : "keydown",
 			oneditfunc: null,
 			successfunc: null,
 			url: null,
@@ -55,7 +56,7 @@ $.jgrid.extend({
 		// End compatible
 		return this.each(function(){
 			var $t = this, nm, tmp, editable, cnt=0, focus=null, svr={}, ind,cm, bfer,
-			inpclass = $(this).jqGrid('getStyleUI',$t.p.styleUI+".inlinedit",'inputClass', true);;
+			inpclass = $(this).jqGrid('getStyleUI',$t.p.styleUI+".inlinedit",'inputClass', true);
 			if (!$t.grid ) { return; }
 			ind = $($t).jqGrid("getInd",rowid,true);
 			if( ind === false ) {return;}
@@ -119,7 +120,7 @@ $.jgrid.extend({
 						},0);
 					}
 					if(o.keys===true) {
-						$(ind).bind("keydown",function(e) {
+						$(ind).bind( o.keyevent ,function(e) {
 							if (e.keyCode === 27) {
 								$($t).jqGrid("restoreRow",rowid, o.afterrestorefunc);
 								if($t.p.inlineNav) {
@@ -564,6 +565,7 @@ $.jgrid.extend({
 					title : o.addtitle,
 					buttonicon : o.addicon,
 					id : $t.p.id+"_iladd",
+					internal : true,
 					onClickButton : function () {
 						$($t).jqGrid('addRow', o.addParams);
 						if(!o.addParams.useFormatter) {
@@ -581,6 +583,7 @@ $.jgrid.extend({
 					title : o.edittitle,
 					buttonicon : o.editicon,
 					id : $t.p.id+"_iledit",
+					internal : true,
 					onClickButton : function () {
 						var sr = $($t).jqGrid('getGridParam','selrow');
 						if(sr) {
@@ -601,6 +604,7 @@ $.jgrid.extend({
 					title : o.savetitle || 'Save row',
 					buttonicon : o.saveicon,
 					id : $t.p.id+"_ilsave",
+					internal : true,
 					onClickButton : function () {
 						var sr = $t.p.savedRow[0].id;
 						if(sr) {
@@ -631,6 +635,7 @@ $.jgrid.extend({
 					title : o.canceltitle || 'Cancel row editing',
 					buttonicon : o.cancelicon,
 					id : $t.p.id+"_ilcancel",
+					internal : true,
 					onClickButton : function () {
 						var sr = $t.p.savedRow[0].id, cancelPrm = o.editParams;
 						if(sr) {

@@ -86,6 +86,9 @@ $.jgrid.extend({
 			templ = typeof rp_ge[$t.p.id].template === "string" && rp_ge[$t.p.id].template.length > 0,
 			errors =$.jgrid.getRegional(this, 'errors');
 			rp_ge[$t.p.id].styleUI = $t.p.styleUI || 'jQueryUI';
+			if($.jgrid.isMobile()) {
+				rp_ge[$t.p.id].resize = false;
+			}
 			if (rowid === "new") {
 				rowid = "_empty";
 				frmoper = "add";
@@ -104,6 +107,7 @@ $.jgrid.extend({
 				closeovrl = false;
 			}
 			function getFormData(){
+				var a2 ={}, i;
 				$(frmtb).find(".FormElement").each(function() {
 					var celm = $(".customelement", this);
 					if (celm.length) {
@@ -125,7 +129,7 @@ $.jgrid.extend({
 						case "checkbox":
 							if($(this).is(":checked")) {
 								postdata[this.name]= $(this).val();
-							}else {
+							} else {
 								var ofv = $(this).attr("offval");
 								postdata[this.name]= ofv;
 							}
@@ -149,12 +153,29 @@ $.jgrid.extend({
 						case "textarea":
 						case "button":
 							postdata[this.name] = $(this).val();
-
 						break;
+							case "radio" :
+								if(a2.hasOwnProperty(this.name)) {
+									return true;
+								} else {
+									a2[this.name] = ($(this).attr("offval") === undefined) ? "off" : $(this).attr("offval");
 					}
-					if($t.p.autoencode) {postdata[this.name] = $.jgrid.htmlEncode(postdata[this.name]);}
+								break;
+					}
+						if($t.p.autoencode) {
+							postdata[this.name] = $.jgrid.htmlEncode(postdata[this.name]);
+						}
 					}
 				});
+				for(i in a2 ) {
+					if( a2.hasOwnProperty(i)) {
+						var val = $('input[name="'+i+'"]:checked',frmtb).val();
+						postdata[i] = (val !== undefined) ? val : a2[i];
+						if($t.p.autoencode) {
+							postdata[i] = $.jgrid.htmlEncode(postdata[i]);
+						}
+					}
+				}
 				return true;
 			}
 			function createData(rowid,obj,tb,maxcols){
@@ -204,7 +225,7 @@ $.jgrid.extend({
 						//if(tmp === "" && this.edittype == "select") {tmp = $("option:eq(0)",elc).text();}
 						if(this.edittype === "select") {
 							tmp = $(elc).val();
-							if($(elc).get(0).type === 'select-multiple') {
+							if($(elc).get(0).type === 'select-multiple' && tmp) {
 								tmp = tmp.join(",");
 							}
 						}
@@ -261,8 +282,10 @@ $.jgrid.extend({
 						$(tb).append(idrow);
 					} 
 					//$(tb).append(idrow);
-					if(rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {rp_ge[$t.p.id]._savedData[obj.p.id+"_id"] = rowid;}
-				}
+					if(rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
+						rp_ge[$t.p.id]._savedData[obj.p.id+"_id"] = rowid;
+					}
+				}			
 				return retpos;
 			}
 			function fillData(rowid,obj,fmid){
@@ -384,6 +407,7 @@ $.jgrid.extend({
 									} else {
 										tmp = $("#"+nm, fmid).attr("offval");
 									}
+                                                                        rp_ge[$t.p.id]._savedData[nm] = tmp;
 								}
 								break;
 							case 'custom' :
@@ -400,7 +424,12 @@ $.jgrid.extend({
 						cnt++;
 					}
 				});
-				if(cnt>0) {$("#id_g",frmtb).val(rowid);}
+				if(cnt>0) {
+					$("#id_g",frmtb).val(rowid);
+					if( rp_ge[$t.p.id].checkOnSubmit===true || rp_ge[$t.p.id].checkOnUpdate ) {
+						rp_ge[$t.p.id]._savedData[obj.p.id+"_id"] = rowid;
+					}
+				}
 			}
 			function setNulls() {
 				$.each($t.p.colModel, function(i,n){
@@ -688,6 +717,40 @@ $.jgrid.extend({
 				}
 				return tmpl;
 			}
+			function syncSavedData () {
+				if(rp_ge[$t.p.id].checkOnSubmit || rp_ge[$t.p.id].checkOnUpdate) {
+
+					var a1=[], a2={};
+					a1 = $.map(rp_ge[$t.p.id]._savedData, function(v, i){
+						return i;
+					});
+					$(".FormElement", frm ).each(function(){
+						if( a1.indexOf(this.name) === -1 ) {
+							var tv = $(this).val(), tt = $(this).get(0).type;
+							if( tt === 'checkbox') {
+								if(!$(this).is(":checked")) {
+									tv = $(this).attr("offval");
+								}
+							} else if(tt === 'select-multiple') {
+								tv = tv.join(",");
+							} else if(tt === 'radio') {
+								if(a2.hasOwnProperty(this.name)) {
+									return true;
+								} else {
+									a2[this.name] = ($(this).attr("offval") === undefined) ? "off" : $(this).attr("offval");
+								}
+							}
+							rp_ge[$t.p.id]._savedData[this.name] = tv;
+						}
+					});
+					for(var i in a2 ) {
+						if( a2.hasOwnProperty(i)) {
+							var val = $('input[name="'+i+'"]:checked',frm).val();
+							rp_ge[$t.p.id]._savedData[i] = (val !== undefined) ? val : a2[i];
+						}
+					}
+				}
+			}
 			var dh = isNaN(rp_ge[$(this)[0].p.id].dataheight) ? rp_ge[$(this)[0].p.id].dataheight : rp_ge[$(this)[0].p.id].dataheight+"px",
 			dw = isNaN(rp_ge[$(this)[0].p.id].datawidth) ? rp_ge[$(this)[0].p.id].datawidth : rp_ge[$(this)[0].p.id].datawidth+"px",
 			frm = $("<form name='FormPost' id='"+frmgr+"' class='FormGrid' onSubmit='return false;' style='width:"+dw+";height:"+dh+";'></form>").data("disabled",false),
@@ -858,6 +921,7 @@ $.jgrid.extend({
 			if(rowid==="_empty" || !rp_ge[$t.p.id].viewPagerButtons) {$("#pData,#nData",frmtb2).hide();} else {$("#pData,#nData",frmtb2).show();}
 			$($t).triggerHandler("jqGridAddEditBeforeShowForm", [$(frmgr), frmoper]);
 			if($.isFunction(rp_ge[$t.p.id].beforeShowForm)) { rp_ge[$t.p.id].beforeShowForm.call($t, $(frmgr), frmoper);}
+			syncSavedData();
 			$("#"+$.jgrid.jqID(IDs.themodal)).data("onClose",rp_ge[$t.p.id].onClose);
 			$.jgrid.viewModal("#"+$.jgrid.jqID(IDs.themodal),{
 				gbox:"#gbox_"+$.jgrid.jqID(gID),
@@ -944,6 +1008,7 @@ $.jgrid.extend({
 					if($.isFunction(p.afterclickPgButtons)) {
 						p.afterclickPgButtons.call($t, 'next',$(frmgr),npos[1][npos[0]+1]);
 					}
+					syncSavedData();
 					updateNav(npos[0]+1,npos);
 				}
 				return false;
@@ -966,6 +1031,7 @@ $.jgrid.extend({
 					if($.isFunction(p.afterclickPgButtons)) {
 						p.afterclickPgButtons.call($t, 'prev',$(frmgr),ppos[1][ppos[0]-1]);
 					}
+					syncSavedData();
 					updateNav(ppos[0]-1,ppos);
 				}
 				return false;
@@ -1548,7 +1614,9 @@ $.jgrid.extend({
 			alertheight : 'auto',
 			alerttop: null,
 			alertleft: null,
-			alertzIndex : null
+			alertzIndex : null,
+			dropmenu : false,
+			navButtonText : ''
 		}, regional, p ||{});
 		return this.each(function() {
 			if(this.p.navGrid) {return;}
@@ -1611,7 +1679,7 @@ $.jgrid.extend({
 			if(o.cloneToTop && $t.p.toppager) {clone = 2;}
 			for(i = 0; i<clone; i++) {
 				var tbd,
-				navtbl = $("<table class='ui-pg-table navtable ui-common-table' style='float:left;table-layout:auto;height:100%;'><tbody><tr></tr></tbody></table>"),
+				navtbl = $("<table class='ui-pg-table navtable ui-common-table'><tbody><tr></tr></tbody></table>"),
 				sep = "<td class='ui-pg-button " +commonstyle.disabled + "' style='width:4px;'><span class='ui-separator'></span></td>",
 				pgid, elemids;
 				if(i===0) {
@@ -1625,7 +1693,9 @@ $.jgrid.extend({
 					pgid = $t.p.toppager;
 					elemids = $t.p.id+"_top";
 				}
-				if($t.p.direction === "rtl") {$(navtbl).attr("dir","rtl").css("float","right");}
+				if($t.p.direction === "rtl") {
+					$(navtbl).attr("dir","rtl").css("float","right");
+				}
 				pAdd = pAdd || {};
 				if (o.add) {
 					tbd = $("<td class='ui-pg-button "+commonstyle.cornerall+"'></td>");
@@ -1788,15 +1858,24 @@ $.jgrid.extend({
 				$('body').append("<div id='testpg2' class='ui-jqgrid "+$.jgrid.styleUI[currstyle].base.entrieBox+"' style='font-size:"+tdw+";visibility:hidden;' ></div>");
 				twd = $(navtbl).clone().appendTo("#testpg2").width();
 				$("#testpg2").remove();
-				$(pgid+"_"+o.position,pgid).append(navtbl);
+				
 				if($t.p._nvtd) {
-					if(twd > $t.p._nvtd[0] ) {
-						$(pgid+"_"+o.position,pgid).width(twd);
+					if(o.dropmenu) {
+						navtbl = null;
+						$($t).jqGrid('_buildNavMenu', pgid, elemids, p, pEdit, pAdd, pDel, pSearch, pView );						
+					} else if(twd > $t.p._nvtd[0] ) {
+						if($t.p.responsive) {
+							navtbl = null;
+							$($t).jqGrid('_buildNavMenu', pgid, elemids, p, pEdit, pAdd, pDel, pSearch, pView );
+						} else {
+							$(pgid+"_"+o.position,pgid).append(navtbl).width(twd);
+						}
 						$t.p._nvtd[0] = twd;
+					} else {
+						$(pgid+"_"+o.position,pgid).append(navtbl);
 					}
 					$t.p._nvtd[1] = twd;
 				}
-				tdw =null;twd=null;navtbl =null;
 				$t.p.navGrid = true;
 			}
 			if($t.p.storeNavOptions) {
@@ -1806,6 +1885,7 @@ $.jgrid.extend({
 				$t.p.delOptions = pDel;
 				$t.p.searchOptions = pSearch;
 				$t.p.viewOptions = pView;
+				$t.p.navButtons =[];
 			}
 
 		});
@@ -1819,7 +1899,8 @@ $.jgrid.extend({
 			buttonicon : styles.icon_newbutton_nav,
 			onClickButton: null,
 			position : "last",
-			cursor : 'pointer'
+			cursor : 'pointer',
+			internal : false
 		}, p ||{});
 		return this.each(function() {
 			if( !this.grid)  {return;}
@@ -1830,6 +1911,10 @@ $.jgrid.extend({
 			hover = $.jgrid.styleUI[currstyle].common.hover,
 			cornerall = $.jgrid.styleUI[currstyle].common.cornerall,
 			iconbase = $.jgrid.styleUI[currstyle].common.icon_base;
+
+			if ($t.p.storeNavOptions && !p.internal) {
+				$t.p.navButtons.push([elem,p]);
+			}
 
 			if (findnav) {
 				if( p.id && $("#"+$.jgrid.jqID(p.id), findnav)[0] !== undefined )  {return;}
@@ -1865,6 +1950,37 @@ $.jgrid.extend({
 					},
 					function () {$(this).removeClass(hover);}
 				);
+			} else {
+				findnav = $(".dropdownmenu",elem)[0];
+				if (findnav) {
+					var id = $(findnav).val(),
+					eid = p.id || $.jgrid.randId(),
+					item = $('<li class="ui-menu-item" role="presentation"><a class="'+ cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.caption || p.title)+'</a></li>');
+					if(id) {
+						if(p.position === 'first') {
+							$("#"+id).prepend( item );
+						} else {
+							$("#"+id).append( item );
+						}
+						$(item).on("click", function(e){
+							if (!$(this).hasClass(disabled)) {
+								$("#"+id).hide();
+								if ($.isFunction(p.onClickButton) ) {
+									p.onClickButton.call($t,e);
+								}
+							}
+							return false;
+						}).find("a")
+						.hover(
+							function () {
+								if (!$(this).hasClass(disabled)) {
+									$(this).addClass(hover);
+								}
+							},
+							function () {$(this).removeClass(hover);}
+						);
+					}
+				}
 			}
 		});
 	},
@@ -1879,9 +1995,13 @@ $.jgrid.extend({
 		return this.each(function() {
 			if( !this.grid)  {return;}
 			if( typeof elem === "string" && elem.indexOf("#") !== 0) {elem = "#"+$.jgrid.jqID(elem);}
-			var findnav = $(".navtable",elem)[0];
+			var findnav = $(".navtable",elem)[0], sep, id;
+			if ( this.p.storeNavOptions ) {
+				this.p.navButtons.push([elem,p]);
+			}
+			
 			if(findnav) {
-				var sep = "<td class='ui-pg-button "+ commonstyle.disabled +"' style='width:4px;'><span class='"+p.sepclass+"'></span>"+p.sepcontent+"</td>";
+				sep = "<td class='ui-pg-button "+ commonstyle.disabled +"' style='width:4px;'><span class='"+p.sepclass+"'></span>"+p.sepcontent+"</td>";
 				if (p.position === 'first') {
 					if (findnav.rows[0].cells.length === 0) {
 						$("tr", findnav).append(sep);
@@ -1891,7 +2011,207 @@ $.jgrid.extend({
 				} else {
 					$("tr", findnav).append(sep);
 				}
+			} else {
+				findnav = $(".dropdownmenu",elem)[0];
+				sep = "<li class='ui-menu-item " +commonstyle.disabled + "' style='width:100%' role='presentation'><hr class='ui-separator-li'></li>";
+				if(findnav) {
+					id = $(findnav).val();
+					if(id) {
+						if(p.position === "first") {
+							$("#"+id).prepend( sep );
+						} else {
+							$("#"+id).append( sep );
+						}
+					}
+				}
 			}
+		});
+	},
+	_buildNavMenu : function ( elem, elemids, p, pEdit, pAdd, pDel, pSearch, pView ) {
+		return this.each(function() {
+			var $t = this,
+			//actions = ['add','edit', 'del', 'view', 'search','refresh'],
+			regional =  $.jgrid.getRegional($t, 'nav'),
+			currstyle = $t.p.styleUI,
+			styles = $.jgrid.styleUI[currstyle].navigator,
+			classes = $.jgrid.styleUI[currstyle].filter,
+			commonstyle = $.jgrid.styleUI[currstyle].common,
+			mid = "form_menu_"+$.jgrid.randId(),
+			bt = p.navButtonText ? p.navButtonText : regional.selectcaption || 'Actions',
+			act = "<button class='dropdownmenu "+commonstyle.button+"' value='"+mid+"'>" + bt +"</button>";
+			$(elem+"_"+p.position, elem).append( act );
+			var alertIDs = {themodal: 'alertmod_' + this.p.id, modalhead: 'alerthd_' + this.p.id,modalcontent: 'alertcnt_' + this.p.id},
+			_buildMenu = function() {
+				var fs =  $('.ui-jqgrid-view').css('font-size') || '11px',
+				eid, itm,
+				str = $('<ul id="'+mid+'" class="ui-nav-menu modal-content" role="menu" tabindex="0" style="display:none;font-size:'+fs+'"></ul>');
+				if( p.add ) {
+					pAdd = pAdd || {};
+					eid = pAdd.id || "add_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.addtext || p.addtitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							if ($.isFunction( p.addfunc )) {
+								p.addfunc.call($t);
+							} else {
+								$($t).jqGrid("editGridRow","new",pAdd);
+							}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+				}
+				if( p.edit ) {
+					pEdit = pEdit || {};
+					eid = pEdit.id || "edit_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.edittext || p.edittitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							var sr = $t.p.selrow;
+							if (sr) {
+								if($.isFunction( p.editfunc ) ) {
+									p.editfunc.call($t, sr);
+								} else {
+									$($t).jqGrid("editGridRow",sr,pEdit);
+								}
+							} else {
+								$.jgrid.viewModal("#"+alertIDs.themodal,{gbox:"#gbox_"+$.jgrid.jqID($t.p.id),jqm:true});
+								$("#jqg_alrt").focus();
+							}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+				}
+				if( p.view ) {
+					pView = pView || {};
+					eid = pView.id || "view_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.viewtext || p.viewtitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							var sr = $t.p.selrow;
+							if (sr) {
+								if($.isFunction( p.editfunc ) ) {
+									p.viewfunc.call($t, sr);
+								} else {
+									$($t).jqGrid("viewGridRow",sr,pView);
+								}
+							} else {
+								$.jgrid.viewModal("#"+alertIDs.themodal,{gbox:"#gbox_"+$.jgrid.jqID($t.p.id),jqm:true});
+								$("#jqg_alrt").focus();
+							}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+				}
+				if( p.del ) {
+					pDel = pDel || {};
+					eid = pDel.id || "del_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.deltext || p.deltitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							var dr;
+							if($t.p.multiselect) {
+								dr = $t.p.selarrrow;
+								if(dr.length===0) {dr = null;}
+							} else {
+								dr = $t.p.selrow;
+							}
+							if(dr){
+								if($.isFunction( p.delfunc )){
+									p.delfunc.call($t, dr);
+								}else{
+									$($t).jqGrid("delGridRow",dr,pDel);
+								}
+							} else  {
+								$.jgrid.viewModal("#"+alertIDs.themodal,{gbox:"#gbox_"+$.jgrid.jqID($t.p.id),jqm:true});$("#jqg_alrt").focus();
+							}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+				}
+				if(p.add || p.edit || p.del || p.view) {
+					$(str).append("<li class='ui-menu-item " +commonstyle.disabled + "' style='width:100%' role='presentation'><hr class='ui-separator-li'></li>");
+				}
+				if( p.search ) {
+					pSearch = pSearch || {};
+					eid = pSearch.id || "search_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.searchtext || p.searchtitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							if($.isFunction( p.searchfunc )) {
+								p.searchfunc.call($t, pSearch);
+							} else {
+								$($t).jqGrid("searchGrid",pSearch);
+							}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+					if (pSearch.showOnLoad && pSearch.showOnLoad === true) {
+						$( itm ).click();
+					}
+				}
+				if( p.refresh ) {
+					eid = pSearch.id || "search_"+elemids;
+					itm = $('<li class="ui-menu-item" role="presentation"><a class="'+ commonstyle.cornerall+' g-menu-item" tabindex="0" role="menuitem" id="'+eid+'">'+(p.refreshtext || p.refreshtitle)+'</a></li>').click(function(){
+						if (!$(this).hasClass( commonstyle.disabled )) {
+							if($.isFunction(p.beforeRefresh)) {p.beforeRefresh.call($t);}
+							$t.p.search = false;
+							$t.p.resetsearch =  true;
+							try {
+								if( p.refreshstate !== 'currentfilter') {
+									var gID = $t.p.id;
+									$t.p.postData.filters ="";
+									try {
+										$("#fbox_"+$.jgrid.jqID(gID)).jqFilter('resetFilter');
+									} catch(ef) {}
+									if($.isFunction($t.clearToolbar)) {$t.clearToolbar.call($t,false);}
+								}
+							} catch (e) {}
+							switch (p.refreshstate) {
+								case 'firstpage':
+									$($t).trigger("reloadGrid", [{page:1}]);
+									break;
+								case 'current':
+								case 'currentfilter':
+									$($t).trigger("reloadGrid", [{current:true}]);
+									break;
+							}
+							if($.isFunction(p.afterRefresh)) {p.afterRefresh.call($t);}
+							$(str).hide();
+						}
+						return false;
+					});
+					$(str).append(itm);
+				}
+				$(str).hide();
+				$('body').append(str);
+				$("#"+mid).addClass("ui-menu " + classes.menu_widget);
+				$("#"+mid+" > li > a").hover(
+					function(){ $(this).addClass(commonstyle.hover); },
+					function(){ $(this).removeClass(commonstyle.hover); }
+				);
+			};
+			_buildMenu();
+			$(".dropdownmenu", elem+"_"+p.position).on("click", function( e ){
+				var offset = $(this).offset(),
+				left = ( offset.left ),
+				top = parseInt( offset.top),
+				bid =$(this).val();
+				//if( $("#"+mid)[0] === undefined)  {
+					//_buildMenu();
+				//}
+				$("#"+bid).show().css({"top":top - ($("#"+bid).height() +10)+"px", "left":left+"px"});
+				e.stopPropagation();
+			});
+			$("body").on('click', function(e){
+				if(!$(e.target).hasClass("dropdownmenu")) {
+					$("#"+mid).hide();
+				}
+			});
 		});
 	},
 	GridToForm : function( rowid, formid ) {
