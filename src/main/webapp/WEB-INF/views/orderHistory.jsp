@@ -91,7 +91,7 @@ $(function(){
             {name:'ordNo',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistSeq',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistRegDttm',align:'center',width:100,resizable:false,editable:true,editoptions:{readonly:'true'}},
-            {name:'ordStatCd',align:'center',width:70,resizable:false, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550200:'进行',N000560100:'DROP'}} },
+            {name:'ordStatCd',align:'center',width:70,resizable:true, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550100:'接收',N000550200:'进行',N000550300:'确定',N000550400:'结算',N000560100:'DROP'}} },
             {name:'ordHistWrtrEml',align:'center',width:70,resizable:false, editable:true,editoptions:{readonly:'true'}},
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
@@ -101,6 +101,7 @@ $(function(){
     			//본인이 쓴 history 가 아니면 수정할 수 없다.
     			var ordHistWrtrEml =  $('#jqgrid_a').getCell(id, 'ordHistWrtrEml');
     			if(ordHistWrtrEml == "${user.username}"){
+//     				jQuery("#jqgrid_a").jqGrid('setColProp','ordStatCd',{editable:false});
     				jQuery('#jqgrid_a').jqGrid('editRow',id,true);
     			}
     		}
@@ -115,6 +116,8 @@ $(function(){
 
     
     jQuery(".btn-save").click( function() {
+// 		jQuery("#jqgrid_a").jqGrid('setColProp','ordStatCd',{editable:true});
+
 		// 상태가 Drop 일 때는 기능 하지 않는다.
 		if(ordStatCd != "N000560100"){
 			id = jQuery("#jqgrid_a").jqGrid('getGridParam','selarrrow');
@@ -134,13 +137,27 @@ $(function(){
 				    "restoreAfterError" : true,
 				    "mtype" : "POST"
 				}
+			
 			for(var i=0; i<id.length; i++){
+// 				alert($('#jqgrid_a').jqGrid("getCell", id[i], 'ordStatCd'));
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i]);
 				var dataOrdStatCd = $('#jqgrid_a').getCell(id[i], 'ordStatCd');
 				if(ordStatCd > dataOrdStatCd){
-					alert("이전 단계로 돌아갈 수 없습니다.");
+// 					alert("이전 단계로 돌아갈 수 없습니다.");
+					alert("状态更改不能回到前阶段");
 					jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
 					return;
+				}else if(dataOrdStatCd != ordStatCd){
+					if(dataOrdStatCd != 'N000560100' ){
+// 						alert("상태변경은 Drop 만 가능합니다.");
+						alert("状态无法更改，或者只能选择DROP");
+						jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
+						return;
+					}else{
+						jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+					}
+				}else{
+					jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 				}
 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 				
@@ -183,11 +200,14 @@ $(function(){
 			    leadingZeros(d.getMonth() + 1, 2) + '-' +
 			    leadingZeros(d.getDate(), 2);
 			rowdata = {
-					ordNo:"${ordNo}",
+				ordNo:"${ordNo}",
 				ordHistRegDttm:s,
+				ordStatCd:ordStatCd,
 				ordHistWrtrEml:"${user.username}"
 			};
 			$("#jqgrid_a").jqGrid('addRowData','new_'+cli_num,rowdata,'first');
+
+
 			$("#jqg_jqgrid_a_new_"+cli_num).attr("checked","checked").click().parent().parent().addClass("ui-state-highlight");
 			cli_num++;
 		}

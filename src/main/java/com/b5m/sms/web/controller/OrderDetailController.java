@@ -1090,8 +1090,8 @@ public class OrderDetailController extends AbstractFileController{
 					                	nowCell.setCellValue(Integer.parseInt(gudsVo.getOrdGudsQty()));
 					                    break;
 					                case 7:		//2-4.매입단가
-					                	//nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
-					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsSalePrc()));
+					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
+					                	//nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsSalePrc()));
 					                    break;
 					                case 8:		//2-5.매입합계
 					                	rowNo +=1;

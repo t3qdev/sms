@@ -185,7 +185,7 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余付','余款结算日期','余款百分比','是否在帮韩品购买','上传日期','上传内容'
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余款结算日期','余付','余款百分比','是否在帮韩品购买','上传日期','上传内容'
                   			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, editable:true, editoptions:{readonly:'true'},stype:'text', search:true},
@@ -498,6 +498,7 @@ $(function(){
 				$("#page").val(page);
 				$("#row").val(row);
 			}
+// 			$('.ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all').css("z-index","200 !important")
 
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
 			$('article').css("opacity","1")

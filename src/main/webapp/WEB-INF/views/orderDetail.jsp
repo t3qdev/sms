@@ -249,8 +249,8 @@
                 <colgroup>
                 <col style="width:15%">
                 <col style="width:15%">
-                <col style="width:35%">
-                <col style="width:35%">
+                <col style="width:60%">
+                <col style="width:10%">
                 </colgroup>
                 <tbody>
                 	<tr>

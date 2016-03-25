@@ -18,7 +18,7 @@ body{min-width:560px; background:#fff;}
 	<h1>
 		<span>结算</span>
 	</h1>
-<%--     <form method="POST" action="${web_ctx}/orderCalculateSave.do" id="orderCalculateForm" name="orderCalculateForm"> --%>
+    <form method="POST" action="${web_ctx}/orderCalculateSave.do" id="orderCalculateForm" name="orderCalculateForm">
 		<div class="ui-layout-single">
 	        <section class="ui-layout-form-b">
 	            <ul>
@@ -53,7 +53,7 @@ body{min-width:560px; background:#fff;}
 	            </div>
 	        </section>
 	    </div>
-<%--     </form> --%>
+    </form>
     
 </article>
 
@@ -81,6 +81,7 @@ $(function(){
 					if(result){
 						alert("结算确认");	
 						opener.parent.location.reload();
+						opener.opener.parent.location.reload();
 						window.open("about:blank","_self").close();
 					}else{
 						alert("结算确认失败");

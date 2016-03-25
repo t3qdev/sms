@@ -72,7 +72,7 @@ public class OrderHistoryController {
 	@RequestMapping("/orderHistorySave.ajax")
 	public List<SmsMsOrdHistVO> orderHistorySave(HttpSession session, Model model, SmsMsOrdHistVO smsMsOrdHistVO) throws Exception {
 		// UserManagementController에서의 userManagementSave.ajax 와 전체적인 맥락이 같다.
-//		System.out.println("컨틀롤러에 들어온 vo : "+smsMsOrdHistVO.toString());
+		System.out.println("컨틀롤러에 들어온 vo : "+smsMsOrdHistVO.toString());
 		//1. 받아온 vo에 ordHistSeq 가 null 이거나 "" 이면, 새로 insert 해야 할 대상
 		if(smsMsOrdHistVO.getOrdHistSeq()==null || "".equals(smsMsOrdHistVO.getOrdHistSeq())){
 			String ordHistSeq = null;

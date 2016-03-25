@@ -495,7 +495,7 @@ i.file input[type="file"]{opacity:0;width:300px;height:30px; line-height:30px; p
 
 li .ui-button{height:30px}
 .ui-login li .ui-button{height:24px;}
-#ui-datepicker-div{ z-index:11 !important}
+#ui-datepicker-div{ z-index:200 !important}
 .ui-jqgrid .ui-jqgrid-bdiv td .tb_price input.ui-calendar{width:75px}
 .ui-jqgrid .ui-jqgrid-bdiv td .tb_price input.ui-calendar+input{width:100px; margin-left:2px;text-align:right}
 .ui-jqgrid .ui-jqgrid-bdiv td .tb_price input.ui-calendar+input+input{width:50px; margin-left:2px; text-align:center}
