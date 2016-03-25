@@ -866,7 +866,12 @@ $(function(){
     // ajaxform
     $('#dialog_upload_form').ajaxForm({
         success: function(data){
-            alert('订单保存成功');
+           
+      	  if(data=="success"){
+      		 alert('订单保存成功');
+    	  }else{
+    		  alert('订单保存失败');
+    	  }
 			$('#dialog_upload').dialog('close');
 			$('#inputExcelFile').val('');
 // 			location.reload();

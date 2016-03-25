@@ -569,11 +569,15 @@
 
 	<profiles>
 		<profile>
-<!-- 		개발프로퍼티 -->
-			<id>dev</id>
+			<id>dev</id>		<!--개발프로퍼티 -->
 			<properties>
 				<environment>dev</environment>
 			</properties>
+<!-- 			///////////////////// -->
+<!-- 			<activation> -->
+<!-- 				<activeByDefault>true</activeByDefault> -->
+<!-- 			</activation> -->
+<!-- 			///////////////////// -->				
 		</profile>
 		<profile>
 			<id>stage</id>
@@ -588,8 +592,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>online</id>
-<!-- 			온라인 프로퍼티 -->
+			<id>online</id>      <!--온라인 프로퍼티 -->
 			<properties>
 				<environment>online</environment>
 			</properties>
@@ -597,7 +600,7 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-<!-- 			///////////////////// -->	
+<!-- 			///////////////////// -->				
 		</profile>
 	</profiles>
 

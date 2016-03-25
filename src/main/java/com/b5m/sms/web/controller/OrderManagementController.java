@@ -209,9 +209,9 @@ public class OrderManagementController  extends AbstractFileController{
 	    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		// 서비스 진행.
-		orderService.insertExcelSmsMsOrdNSmsMsOrdGuds(sheet, user);
+		result = orderService.insertExcelSmsMsOrdNSmsMsOrdGuds(sheet, user);
 		LOGGER.debug("2.1.=============================완료" );
-		return "redirect:/orderManagementView.do";
+		return result;
 	}
 	
 	// ordManagement.jsp  에서 엑셀다운로드 클릭하면, JQgrid 를 그대로 가져와서 엑셀 다운로드 되게 만들어준다.

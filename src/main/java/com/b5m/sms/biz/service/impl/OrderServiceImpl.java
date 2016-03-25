@@ -472,8 +472,9 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 
 		// orderManagment 에서 사용, 클라이언트 요청 견적서를(EXCEL) 이용해서 주문이 새로 들어왔을 때, SMS_MS_ORD, SMS_MS_ORD_GUDS 에 INSERT
 		@Override
-		public void insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception {
+		public String insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception {
 			// TODO Auto-generated method stub
+			String result = "false";
 //			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
 			// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO
 			String userAlasCnsNm = null;							 //담당자   (중문 화명)
@@ -674,10 +675,12 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				}
 			}
 			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
+				
 				throw new Exception("Goods list is empty!!"); 
+				
 			}
-			
-
+			result = "success";
+			return result;
 //			LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS 에 INSERT==========완료" );
 		}
 
