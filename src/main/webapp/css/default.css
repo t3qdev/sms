@@ -1,6 +1,6 @@
 /* RESET */
 *{box-sizing:border-box;outline:none}
-html{font-family:'돋움',dotum,Verdana,Arial,sans-serif;font-size:12px}
+html{font-family:'microsoft yahei',dotum,Verdana,Arial,sans-serif;font-size:12px}
 body{width:100%;min-width:1200px;height:100%;margin:0;padding:0;background:#fff;-webkit-text-size-adjust:none}
 body.pop{width:100%;min-width:auto}
 header,footer,section,nav,article,aside,div{margin:0;padding:0}

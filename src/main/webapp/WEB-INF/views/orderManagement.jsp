@@ -16,6 +16,7 @@
        		color:#3498d8 !important;
             font-weight: bold !important; 
 	    }
+	    article{opacity:0}
 </STYLE>
 <article>
 	<h1>
@@ -172,13 +173,6 @@ $(function(){
 		form += "</form>"; 
 		jQuery(form).appendTo("body").submit().remove(); 
 	});
-	
-
-		
-
-
-	var columnName;
-	
 
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
@@ -506,7 +500,7 @@ $(function(){
 			}
 
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
-
+			$('article').css("opacity","1")
         },
         viewrecords: true,
         navGrid : true,
@@ -868,24 +862,7 @@ $(function(){
 
 	
 	
-	// [+신규주문등록] Dialog Control
-	$('#dialog_upload').dialog({
-		modal: true,
-		autoOpen: false,
-		width: 500,
-		height: 150,
-		buttons: {
-			'上传文件': function(evt){
-		 		if($('#inputExcelFile').val()==""){
-	 				alert("请选择要上传的EXCEL文件。");
-	 			}else{
-	 				if (confirm("确认要上传所选中的文件?")) {
-		 				$('#dialog_upload_form').submit();
-	 				} 
-	 			}
-			}
-		}
-	});
+
     // ajaxform
     $('#dialog_upload_form').ajaxForm({
         success: function(data){
@@ -905,6 +882,24 @@ $(function(){
         	  alert('订单保存失败');
           }
     }); 	
+	// [+신규주문등록] Dialog Control
+	$('#dialog_upload').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 500,
+		height: 150,
+		buttons: {
+			'上传文件': function(evt){
+		 		if($('#inputExcelFile').val()==""){
+	 				alert("请选择要上传的EXCEL文件。");
+	 			}else{
+	 				if (confirm("确认要上传所选中的文件?")) {
+		 				$('#dialog_upload_form').submit();
+	 				} 
+	 			}
+			}
+		}
+	});
 	// [Special + 접수] Dialog Control
 	$('#dialog_upload_special').dialog({
 		modal: true,
