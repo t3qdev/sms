@@ -569,6 +569,7 @@
 
 	<profiles>
 		<profile>
+<!-- 		개발프로퍼티 -->
 			<id>dev</id>
 			<properties>
 				<environment>dev</environment>
@@ -588,12 +589,15 @@
 		</profile>
 		<profile>
 			<id>online</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+<!-- 			온라인 프로퍼티 -->
 			<properties>
 				<environment>online</environment>
 			</properties>
+<!-- 			///////////////////// -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+<!-- 			///////////////////// -->	
 		</profile>
 	</profiles>
 

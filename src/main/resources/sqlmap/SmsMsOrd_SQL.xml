@@ -534,15 +534,13 @@
                              THEN C.PO_SUM_AMT * C.STD_XCHR_AMT
                         END
               END,2) AS KRW_XCHR_AMT          
-             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
+            ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
                    THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL
                              THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
                              WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL
                              THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT / B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590200' AND A.STD_XCHR_AMT IS NULL
+                             WHEN A.STD_XCHR_KIND_CD = 'N000590200'
                              THEN A.ORD_SUM_AMT / B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590200' AND A.STD_XCHR_AMT IS NOT NULL
-                             THEN A.ORD_SUM_AMT / A.STD_XCHR_AMT
                              WHEN A.STD_XCHR_KIND_CD = 'N000590300'
                              THEN A.ORD_SUM_AMT
                         END
