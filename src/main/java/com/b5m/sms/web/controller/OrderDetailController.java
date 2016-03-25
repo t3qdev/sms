@@ -680,7 +680,7 @@ public class OrderDetailController extends AbstractFileController{
 				
 				//1.기본정보입력 
 				OrderDetailVO orderDetailVO = orderService.selectSmsMsOrdDetail(ordNo);
-				
+
 				//담당자 찾기 
 				List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
 				for(SmsMsUserVO vo : oprList){
@@ -813,7 +813,9 @@ public class OrderDetailController extends AbstractFileController{
 				Cell newCell9 = sourceRow.getCell(9);		//URL
 				newCell9.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUrlAddr());
 				Cell newCell10= sourceRow.getCell(10);		//담당자
-				newCell10.setCellValue(orderDetailVO.getOprKr());
+				if(orderDetailVO.getOprKr()!=null){
+					newCell10.setCellValue(orderDetailVO.getOprKr());
+				}
 				
 				//요약정보 표시
 
