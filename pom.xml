@@ -570,9 +570,6 @@
 	<profiles>
 		<profile>
 			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
 				<environment>dev</environment>
 			</properties>
@@ -591,6 +588,9 @@
 		</profile>
 		<profile>
 			<id>online</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<environment>online</environment>
 			</properties>
