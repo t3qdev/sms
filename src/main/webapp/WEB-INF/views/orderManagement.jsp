@@ -471,7 +471,7 @@ $(function(){
             	cnsXchrAmt = '\n¥ ' + formatMoney(cnsXchrAmt,2,',','.'); // "$3,543.76"
             	
             	if(stdXchrAmt == ""){
-        			content = "none";
+        			content = "None";
         		}else{
 	              		content = krwXchrAmt+usdXchrAmt+cnsXchrAmt;
         		}
