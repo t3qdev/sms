@@ -52,7 +52,6 @@ public class SmsMsOrdDAO extends EgovAbstractDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<SmsMsOrdVO> selectSmsMsOrdForOrderManamentView(SmsMsOrdVO smsMsOrdVO){
-		System.out.println(smsMsOrdVO.getSearchKeyword());
 		return (List<SmsMsOrdVO>) list("smsMsOrdDAO.selectSmsMsOrdForOrderManamentView",smsMsOrdVO);
 	}
 	

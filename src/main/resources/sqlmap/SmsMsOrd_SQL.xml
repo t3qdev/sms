@@ -156,9 +156,9 @@
 		<result property="ordMemoCont" column="ORD_MEMO_CONT" />
 		<result property="b5mBuyCont" column="B5M_BUY_CONT" />
 <!-- 		<result property="count" column="COUNT"/> -->
-		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="b5cGudsRegDt" column="B5C_GUDS_REG_DT"/>
 		<result property="b5cGudsRegMemo" column="B5C_GUDS_REG_MEMO"/>
+		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
 		<result property="krwXchrAmt" column="KRW_XCHR_AMT"/>
@@ -454,15 +454,14 @@
             ,A.ORD_REQ_DT AS ORD_REQ_DT
              ,A.CUST_ID AS CLIENT_NM
             ,(SELECT Z.ORD_GUDS_CNS_NM FROM sms_ms_ord_guds Z WHERE A.ORD_NO=Z.ORD_NO AND Z.ORD_GUDS_SEQ = (SELECT MIN(ORD_GUDS_SEQ) FROM sms_ms_ord_guds Z WHERE Z.ORD_NO=A.ORD_NO)  ) AS ORDERED_GUDS_NM
-                ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
+            ,CASE WHEN A.ORD_TYPE_CD = 'N000620300'
                       THEN CONCAT(IFNULL (A.CUST_ID, "未知"),"_", A.ORD_NO)
                       ELSE CONCAT(IFNULL ("B5C", "未知"),"_", A.B5C_ORD_NO)
              END AS SHOW_DETAIL
              ,A.ORD_SUM_AMT   AS ORD_SUM_AMT
-            ,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
             ,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML AND Q.OGNZ_DIV_CD="N000530200" AND A.ORD_NO=W.ORD_NO) AS KOR_MNG
+            ,(SELECT CONCAT(USER_ALAS_CNS_NM,"(",USER_ALAS_ENG_NM,")") FROM sms_ms_user Q, sms_ms_ord_user W WHERE Q.USER_EML=W.USER_EML  AND Q.OGNZ_DIV_CD="N000530100" AND A.ORD_NO=W.ORD_NO) AS CNS_MNG
             ,A.ORD_TYPE_CD AS ORD_TYPE_CD
-             ,A.ORD_STAT_CD AS ORD_STAT_CD
              ,(SELECT CONCAT(C.ORD_HIST_REG_DTTM," ",C.ORD_HIST_HIST_CONT) FROM sms_ms_ord_hist C WHERE C.ORD_NO = A.ORD_NO AND C.ORD_HIST_SEQ = (SELECT MAX(J.ORD_HIST_SEQ) FROM sms_ms_ord_hist J WHERE J.ORD_NO=A.ORD_NO )  ) AS HIST_DETAIL
              ,A.ORD_STAT_CD AS ORD_STAT_CD
             ,A.BACT_PRVD_DT AS BACT_PRVD_DT
@@ -488,15 +487,8 @@
              ,A.BACT_PRVD_MEMO_CONT AS BACT_PRVD_MEMO_CONT
              ,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
              ,A.STD_XCHR_AMT AS STD_XCHR_AMT
-             ,A.ORD_SUM_AMT
-             ,C.PO_SUM_AMT
-             ,A.STD_XCHR_KIND_CD
-             ,C.STD_XCHR_KIND_CD
-             ,A.STD_XCHR_AMT
-             ,C.STD_XCHR_AMT
-             ,B.RMB_XCHR_AMT
-             ,B.USD_XCHR_AMT
-             ,CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
+ 
+             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
                    THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100'
                              THEN A.ORD_SUM_AMT
                              WHEN A.STD_XCHR_KIND_CD = 'N000590200'
@@ -516,8 +508,8 @@
                              WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL
                              THEN C.PO_SUM_AMT * C.STD_XCHR_AMT  / B.USD_XCHR_AMT
                         END
-              END AS USD_XCHR_AMT
-             ,CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
+              END,2) AS USD_XCHR_AMT
+             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
                    THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL
                              THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT
                              WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL
@@ -541,8 +533,8 @@
                              WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL
                              THEN C.PO_SUM_AMT * C.STD_XCHR_AMT
                         END
-              END AS KRW_XCHR_AMT          
-             ,CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
+              END,2) AS KRW_XCHR_AMT          
+             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
                    THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL
                              THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
                              WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL
@@ -566,7 +558,7 @@
                              WHEN C.STD_XCHR_KIND_CD = 'N000590300'
                              THEN C.PO_SUM_AMT
                         END
-              END CNS_XCHR_AMT  
+              END,2) CNS_XCHR_AMT  
      FROM
              sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
                                ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)

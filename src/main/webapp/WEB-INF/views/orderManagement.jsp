@@ -182,6 +182,7 @@ $(function(){
 
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
+
 	$('#jqgrid_a').jqGrid({
         url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
@@ -465,14 +466,20 @@ $(function(){
             	var stdXchrKindCd = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrKindCd;
             	
             	var  stdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).stdXchrAmt;
-            	
             	var krwXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).krwXchrAmt;
             	var usdXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).usdXchrAmt;
             	var cnsXchrAmt = jQuery("#jqgrid_a").getRowData(ids[i]).cnsXchrAmt;
-        		if(stdXchrAmt == ""){
+        		
+
+            	var myMoney=3543.75873;
+            	krwXchrAmt = '₩ ' + formatMoney(krwXchrAmt,2,',','.'); // "$3,543.76"
+            	usdXchrAmt = '\n$ ' + formatMoney(usdXchrAmt,2,',','.'); // "$3,543.76"
+            	cnsXchrAmt = '\n¥ ' + formatMoney(cnsXchrAmt,2,',','.'); // "$3,543.76"
+            	
+            	if(stdXchrAmt == ""){
         			content = "none";
         		}else{
-	              		content = "\n₩ "+krwXchrAmt+ "\n$ "+usdXchrAmt+"\n¥ "+cnsXchrAmt;
+	              		content = krwXchrAmt+usdXchrAmt+cnsXchrAmt;
         		}
 
 //             	content += stdXchrAmt;
@@ -898,7 +905,6 @@ $(function(){
         	  alert('订单保存失败');
           }
     }); 	
-
 	// [Special + 접수] Dialog Control
 	$('#dialog_upload_special').dialog({
 		modal: true,
@@ -990,7 +996,17 @@ function checkIndex(btnRole, userRole){
    return flag;
 }
 
-
+// 자바스크립트,  String -> currency format
+function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
+    var n = number,
+        decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces,
+        decSeparator = decSeparator == undefined ? "." : decSeparator,
+        thouSeparator = thouSeparator == undefined ? "," : thouSeparator,
+        sign = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+    return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+};
 
 </script>
 <style>

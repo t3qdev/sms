@@ -122,6 +122,8 @@ public class OrderManagementController  extends AbstractFileController{
 			smsMsOrdVOList.get(i).setCount(count);
 			smsMsOrdVOList.get(i).setPage(page);
 			smsMsOrdVOList.get(i).setRow(row);
+			System.out.println(smsMsOrdVOList.get(i).toString());
+//			System.out.println("kor : "+smsMsOrdVOList.get(i).getKrwXchrAmt()+"   / cns : "+smsMsOrdVOList.get(i).getCnsXchrAmt()+" / usd : "+smsMsOrdVOList.get(i).getUsdXchrAmt());
 		}
 
 		return smsMsOrdVOList;
