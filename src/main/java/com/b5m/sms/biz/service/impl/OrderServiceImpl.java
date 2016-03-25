@@ -675,9 +675,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				}
 			}
 			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
-				
 				throw new Exception("Goods list is empty!!"); 
-				
 			}
 			result = "success";
 			return result;
