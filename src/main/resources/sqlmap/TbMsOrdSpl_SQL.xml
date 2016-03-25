@@ -130,7 +130,7 @@
 		    , A.CUST_ID AS CUST_ID
 		    , D.GUDS_DLVC_DESN_VAL_5 AS GUDS_DLVC_DESN_VAL_5
 		FROM 
-			tb_ms_ord 					A
+			tb_ms_ord_spl 					A
 			, tb_ms_ord_guds_opt  B
 			, tb_ms_guds_opt			C
 			, tb_ms_guds				D
