@@ -289,6 +289,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		String gudsVatRfndYn = null;
 		String gudsOptId = null;       // b5m 에서 이걸 가져와서, SMS_MS_GUDS.B5C_SKU_ID 에 집어 넣는다.
 		String gudsIdOfB5m = null;    // b5m 에서의 gudsId 를 가져오기 위함. - 원래는 opt id가 필요한데, IMG 는 gudsID + sllrID 가 필요.
+		boolean imageBoolean= true;
 		
 		String gudsInbxQty= null;		//상품인박스수량
 		for(int i=0; i<tbMsOrdBatchVOList.size();i++){
@@ -347,7 +348,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			List<SmsMsGudsVO> tempSmsMsGudsVO = null;
 			tempSmsMsGudsVO = (List<SmsMsGudsVO>) smsMsGudsDAO.selectSmsMsGudsByB5cSkuIdforBatch(smsMsGudsVO);
 			
-			boolean imageBoolean = true;
+			imageBoolean = true;
 			
 			if(tempSmsMsGudsVO==null){
 					smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
@@ -388,7 +389,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				System.out.println("=================================> gudsIdOfB5m ID : " + gudsIdOfB5m);
 				
 				smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);
-				
+				System.out.println(tbMsOrdBatchVO);
 				final File file = new File(OPT_B5C_IMG);
 				if (!file.exists()) {
 					file.mkdirs();
@@ -397,6 +398,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		//     이미지 파일 복사.		
 				List<SmsMsGudsImgVO> smsMsGudsImgVO = null;
 				smsMsGudsImgVO = tbMsGudsImgDAO.selectTbMsGudsImgForFileCopy(tbMsOrdBatchVO);
+				System.out.println(smsMsGudsImgVO);
 				for(SmsMsGudsImgVO vo : smsMsGudsImgVO){
 					if(vo.getGudsImgCdnAddr()!=null){
 						URL url = new URL(vo.getGudsImgCdnAddr());
