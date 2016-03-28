@@ -7,7 +7,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,23 +91,28 @@ public class OrderPOController extends AbstractFileController{
 		List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
 		//계산을 위해 필요한 변수들
 		
+		BigDecimal zeroB =new BigDecimal("0");
+		DecimalFormat dF = new DecimalFormat("#,##0.00");
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(3);
+		nf.setMaximumFractionDigits(4) ;
 		//PO상품정보 표시용
-		Double pcPrcNoVat=0.0;
-		Double pcPrcVat=0.0;
-		Double poPrcSum=0.0;
-		Double poXchrPrc=0.0;
-		Double poXchrPrcSum=0.0;
+		BigDecimal pcPrcNoVat=new BigDecimal("0");
+		BigDecimal pcPrcVat=new BigDecimal("0");
+		BigDecimal poPrcSum=new BigDecimal("0");
+		BigDecimal poXchrPrc=new BigDecimal("0");
+		BigDecimal poXchrPrcSum=new BigDecimal("0");
 		//PO정보 표시용
-		Double poXchrAmt=0.0;
-		Double pcSum=0.0;
-		Double pcSumNoVat=0.0;
-		Double dlvPcSum=0.0;
-		Double dlvPcSumNoVat=0.0;
+		BigDecimal poXchrAmt=new BigDecimal("0");
+		BigDecimal pcSum=new BigDecimal("0");
+		BigDecimal pcSumNoVat=new BigDecimal("0");
+		BigDecimal dlvPcSum=new BigDecimal("0");
+		BigDecimal dlvPcSumNoVat=new BigDecimal("0");
 		
-		Double pf=0.0;
-		Double pfNoVat=0.0;
-		Double pfDlvAmt=0.0;
-		Double pfDlvAmtNoVat=0.0;
+		BigDecimal pf=new BigDecimal("0");
+		BigDecimal pfNoVat=new BigDecimal("0");
+		BigDecimal pfDlvAmt=new BigDecimal("0");
+		BigDecimal pfDlvAmtNoVat=new BigDecimal("0");
 		
 	
 		//1-1. SmsMsEstmVO와 SmsMsOrdVO(custId)를 DB에서 읽어온다.
@@ -127,9 +136,9 @@ public class OrderPOController extends AbstractFileController{
 	
 		
 		//계산에 사용될 변수  : null가능성
-		Double poAll= Double.parseDouble(estmVo.getPoSumAmt());
-		Double xchr = Double.parseDouble(estmVo.getStdXchrAmt());
-		Double dlv = Double.parseDouble(estmVo.getDlvAmt());
+		BigDecimal poAll=new BigDecimal(estmVo.getPoSumAmt());
+		BigDecimal xchr = new BigDecimal(estmVo.getStdXchrAmt());
+		BigDecimal dlv = new BigDecimal(estmVo.getDlvAmt());
 		
 		//1-4.주문테이블에서 얻어와야 할값
 		OrderDetailVO ordVo = orderService.selectSmsMsOrdDetail(ordNo);
@@ -152,9 +161,9 @@ public class OrderPOController extends AbstractFileController{
 			poGudsVo.setCrn(vo.getOrdGudsPrvdCrn());			//사업자등록번호
 			
 			//계산에 사용될 변수 : null가능성 
-			Double qty = Double.parseDouble(vo.getOrdGudsQty());
-			Double pcPrc = Double.parseDouble(vo.getOrdGudsOrgPrc());	
-			Double poPrc = Double.parseDouble(vo.getOrdGudsSalePrc());
+			BigDecimal qty = new BigDecimal(vo.getOrdGudsQty());
+			BigDecimal pcPrc = new BigDecimal(vo.getOrdGudsOrgPrc());	
+			BigDecimal poPrc = new BigDecimal(vo.getOrdGudsSalePrc());
 			//System.out.println("계산 사용변수2 :" +qty+"               "+orgPrc+"               "+salePrc);
 
 			
@@ -183,56 +192,69 @@ public class OrderPOController extends AbstractFileController{
 		
 
 			//2-2-4. 계산을 통해 얻는 값
-			pcPrcVat=pcPrcNoVat *1.1;					//매입합계(부가세포함)
-			pcPrcNoVat=pcPrc*qty;							//매입합계(부가세 제외)
-			poPrcSum=poPrc*qty;							//po합계
-			poXchrPrc=poPrc*xchr;							//po단가
-			poXchrPrcSum=poPrcSum*xchr;				//po합계
+			pcPrcVat=pcPrc.multiply(qty);							//매입합계(부가세포함)
+			pcPrcNoVat=pcPrcVat.divide(new BigDecimal("1.1"),8,RoundingMode.HALF_UP);						//매입합계(부가세 제외)
+			poPrcSum=poPrc.multiply(qty);							//po합계
+			poXchrPrc=poPrc.multiply(xchr);							//po단가
+			poXchrPrcSum=poPrcSum.multiply(xchr);				//po합계
 			
-			pcSum+=pcPrcVat;		
-			pcSumNoVat+=pcPrcNoVat;
+			pcSum=pcSum.add(pcPrcVat);		
+			pcSumNoVat=pcSumNoVat.add(pcPrcNoVat);
 			
 			
-			poGudsVo.setPcPrcNoVat(Double.toString(pcPrcNoVat));		//setPcPrc * OrdGudsQty
-			poGudsVo.setPcPrcVat(Double.toString(pcPrcVat));				//pcPrcNoVat *1.1
-			poGudsVo.setPoPrcSum(Double.toString(poPrcSum));			//setPoPrc * OrdGudsQty
-			poGudsVo.setPoXchrPrc(Double.toString(poXchrPrc));		//setPoPrc * estmVo.getStdXchrAmt()
-			poGudsVo.setPoXchrPrcSum(Double.toString(poXchrPrcSum));		//poPrcSum* estmVo.getStdXchrAmt()
+			poGudsVo.setPcPrcNoVat(dF.format(pcPrcNoVat));		//setPcPrc * OrdGudsQty
+			poGudsVo.setPcPrcVat(dF.format(pcPrcVat));				//pcPrcNoVat *1.1
+			poGudsVo.setPoPrcSum(dF.format(poPrcSum));			//setPoPrc * OrdGudsQty
+			poGudsVo.setPoXchrPrc(dF.format(poXchrPrc));		//setPoPrc * estmVo.getStdXchrAmt()
+			poGudsVo.setPoXchrPrcSum(dF.format(poXchrPrcSum));		//poPrcSum* estmVo.getStdXchrAmt()
 					
-			
+			System.out.println("ㅔㅐㅔㅐㅔㅐ:"+poGudsVo);
 			//OrderPOGudsList에 VO삽입
 			poGudsList.add(poGudsVo);
 					
 			
 		}
-		
+		System.out.println("pcSum"+pcSum);
+
 	
 		
-		poXchrAmt=poAll*xchr;
+		poXchrAmt=poAll.multiply(xchr);
 		
 		
-		dlvPcSum=pcSum+dlv;
-		dlvPcSumNoVat=pcSumNoVat+dlv;
+		dlvPcSum=pcSum.add(dlv);
+		dlvPcSumNoVat=pcSumNoVat.add(dlv);
 		
-		pf=(poXchrAmt-pcSum)/pcSum;
-		pfNoVat=(poXchrAmt-pcPrcNoVat)/pcPrcNoVat;
-		pfDlvAmt=(poXchrAmt-dlvPcSum)/dlvPcSum;
-		pfDlvAmtNoVat=(poXchrAmt-dlvPcSumNoVat)/dlvPcSumNoVat;
+		pf=poXchrAmt.subtract(pcSum);
+		if(pcSum.compareTo(zeroB)!=0){
+			pf=pf.divide(poXchrAmt,8,RoundingMode.HALF_UP);
+		}
+		System.out.println("poXchrAmt"+poXchrAmt);
+		System.out.println("pcPrcNoVat"+pcPrcNoVat);
+		System.out.println("pcSum"+pcSum);
+		pfNoVat=poXchrAmt.subtract(pcSumNoVat);
+		if(pcPrcNoVat.compareTo(zeroB)!=0){
+			pfNoVat=pfNoVat.divide(poXchrAmt,8,RoundingMode.HALF_UP);	
+		}
+		pfDlvAmt=poXchrAmt.subtract(dlvPcSum);
+		if(dlvPcSum.compareTo(zeroB)!=0){
+			pfDlvAmt=pfDlvAmt.divide(poXchrAmt,8,RoundingMode.HALF_UP);
+		}
+		pfDlvAmtNoVat=poXchrAmt.subtract(dlvPcSumNoVat);
+		pfDlvAmtNoVat=pfDlvAmtNoVat.divide(poXchrAmt,8,RoundingMode.HALF_UP);
 		
 		//1-3. 계산을 통해서 얻어야 하는 값 (9)
-		poVo.setPoXchrAmt(Double.toString(poXchrAmt));		//po총금액 krw	=estmVo.getPoSumAmt()*estmVo.getStdXchrAmt()
-		poVo.setPcSum(Double.toString(pcSum));		//매입합계 부가세포함			+=pcprcvat
-		poVo.setPcSumNoVat(Double.toString(pcSumNoVat));		//매입합계 부가세 제외		+=pcprcNoVat
-		poVo.setDlvPcSum(Double.toString(dlvPcSum));			//물류비_매입합계				=pcSum+estmVo.getDlvAmt()
-		poVo.setDlvPcSumNoVat(Double.toString(dlvPcSumNoVat));	//물류비_매입합계 부가세제외 =pcSumNoVat +estmVo.getDlvAmt()
+		poVo.setPoXchrAmt(dF.format(poXchrAmt));		//po총금액 krw	=estmVo.getPoSumAmt()*estmVo.getStdXchrAmt()
+		poVo.setPcSum(dF.format(pcSum));		//매입합계 부가세포함			+=pcprcvat
+		poVo.setPcSumNoVat(dF.format(pcSumNoVat));		//매입합계 부가세 제외		+=pcprcNoVat
+		poVo.setDlvPcSum(dF.format(dlvPcSum));			//물류비_매입합계				=pcSum+estmVo.getDlvAmt()
+		poVo.setDlvPcSumNoVat(dF.format(dlvPcSumNoVat));	//물류비_매입합계 부가세제외 =pcSumNoVat +estmVo.getDlvAmt()
 		
-		poVo.setPf(Double.toString(pf));			//수익 vat포함						=(poXchrAmt-(+=pcprcvat))/poXchrAmt
-		poVo.setPfNoVat(Double.toString(pfNoVat));		//수익 vat제외			=((poXchrAmt-(+=pcprcNoVat))/poXchrAmt
-		poVo.setPfDlvAmt(Double.toString(pfDlvAmt));		//수익 vat포함 +물류비	=((poXchrAmt-(dlvPcSum))/poXchrAmt
-		poVo.setPfDlvAmtNoVat(Double.toString(pfDlvAmtNoVat));	//수익 vat제외+물류비	=((poXchrAmt-(dlvPcSumNoVat))/poXchrAmt
+		poVo.setPf(nf.format(pf));			//수익 vat포함						=(poXchrAmt-(+=pcprcvat))/poXchrAmt
+		poVo.setPfNoVat(nf.format(pfNoVat));		//수익 vat제외			=((poXchrAmt-(+=pcprcNoVat))/poXchrAmt
+		poVo.setPfDlvAmt(nf.format(pfDlvAmt));		//수익 vat포함 +물류비	=((poXchrAmt-(dlvPcSum))/poXchrAmt
+		poVo.setPfDlvAmtNoVat(nf.format(pfDlvAmtNoVat));	//수익 vat제외+물류비	=((poXchrAmt-(dlvPcSumNoVat))/poXchrAmt
 	
 
-		
 		
 		//3.화면에 해당값등 표시 
 		//페이지에서 들어온 경로가 view일경우에는 확인 버튼을 사용하지 못하도록

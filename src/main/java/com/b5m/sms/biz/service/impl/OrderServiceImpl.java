@@ -297,7 +297,11 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			//SMS_MS_ORD_GUDS 에 넣을 변수들.
 			ordNo = smsMsOrdDAO.selectSmsMsOrdByB5cOrdNo(b5cOrdNo);
 			ordGudsSeq = smsMsOrdGudsDAO.selectSmsMsOrdGudsSeqCount(ordNo);
-			gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
+			
+			//gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();			//아래구문으로 수정
+			gudsId = smsMsGudsDAO.selectSmsMsGudsGudsId();
+			gudsId = Integer.toString((Integer.parseInt(gudsId)+1));
+			
 			ordGudsMpngYn = "Y";
 			ordGudsKorNm = tbMsOrdBatchVOList.get(i).getGudsNm();
 			ordGudsCnsNm = tbMsOrdBatchVOList.get(i).getGudsCnsNm();
@@ -342,8 +346,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			
 			List<SmsMsGudsVO> tempSmsMsGudsVO = null;
 			tempSmsMsGudsVO = (List<SmsMsGudsVO>) smsMsGudsDAO.selectSmsMsGudsByB5cSkuIdforBatch(smsMsGudsVO);
+			
+			boolean imageBoolean = true;
+			
 			if(tempSmsMsGudsVO==null){
-				
 					smsMsGudsDAO.insertSmsMsGuds_S(smsMsGudsVO);
 				
 			}else if(tempSmsMsGudsVO.size()==0){
@@ -351,7 +357,13 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			}
 			
 			else{
-//				System.out.println("상품 upc 가 존재합니다.");
+				
+				imageBoolean = false;
+				
+				gudsId=tempSmsMsGudsVO.get(0).getGudsId();
+				smsMsOrdGudsVO.setGudsId(tempSmsMsGudsVO.get(0).getGudsId());				//기존의 상품 정보가 존재할경우 ord상품번호를 해당 상품으로 업데이트 이후 매핑 처리
+				smsMsOrdGudsDAO.updateSmsMsOrdGudsMpng(smsMsOrdGudsVO);
+				//update gudsId
 			}
 			
 
@@ -360,45 +372,53 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 	//		생략
 	///////////////////////////////////////////////////////////////////////////////////////////		
 
-	//		insert SMS_MS_GUDS_IMG
-			TbMsOrdBatchVO tbMsOrdBatchVO = new TbMsOrdBatchVO();
-			gudsId = gudsId;
-			brndId = brndId;
-			gudsIdOfB5m = tbMsOrdBatchVOList.get(i).getGudsIdOfB5m();
-			tbMsOrdBatchVO.setGudsId(gudsId);
-			tbMsOrdBatchVO.setBrndId(brndId);
-			tbMsOrdBatchVO.setGudsIdOfB5m(gudsIdOfB5m);
-			smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);
 			
-			final File file = new File(OPT_B5C_IMG);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
-			
-	//     이미지 파일 복사.		
-			List<SmsMsGudsImgVO> smsMsGudsImgVO = null;
-			smsMsGudsImgVO = tbMsGudsImgDAO.selectTbMsGudsImgForFileCopy(tbMsOrdBatchVO);
-			for(SmsMsGudsImgVO vo : smsMsGudsImgVO){
-				if(vo.getGudsImgCdnAddr()!=null){
-					URL url = new URL(vo.getGudsImgCdnAddr());
-					String destName = OPT_B5C_IMG +vo.getGudsImgSysFileNm();
-
-					 
-					   InputStream is = url.openStream();
-					   OutputStream os = new FileOutputStream(destName);
-					 
-					   byte[] b = new byte[2048];
-					   int length;
-					 
-					   while ((length = is.read(b)) != -1) {
-					      os.write(b, 0, length);
-					   }
-					 
-					   is.close();
-					   os.close();
+			if(imageBoolean){
+		//		insert SMS_MS_GUDS_IMG
+				TbMsOrdBatchVO tbMsOrdBatchVO = new TbMsOrdBatchVO();
+				
+				gudsId = gudsId;
+				brndId = brndId;
+				gudsIdOfB5m = tbMsOrdBatchVOList.get(i).getGudsIdOfB5m();
+				tbMsOrdBatchVO.setGudsId(gudsId);
+				tbMsOrdBatchVO.setBrndId(brndId);
+				tbMsOrdBatchVO.setGudsIdOfB5m(gudsIdOfB5m);
+				
+				System.out.println("=================================> GUDS ID : " + gudsId);
+				System.out.println("=================================> gudsIdOfB5m ID : " + gudsIdOfB5m);
+				
+				smsMsGudsImgDAO.insertTbMsGudsImgToSmsMsGudsImg(tbMsOrdBatchVO);
+				
+				final File file = new File(OPT_B5C_IMG);
+				if (!file.exists()) {
+					file.mkdirs();
 				}
+				
+		//     이미지 파일 복사.		
+				List<SmsMsGudsImgVO> smsMsGudsImgVO = null;
+				smsMsGudsImgVO = tbMsGudsImgDAO.selectTbMsGudsImgForFileCopy(tbMsOrdBatchVO);
+				for(SmsMsGudsImgVO vo : smsMsGudsImgVO){
+					if(vo.getGudsImgCdnAddr()!=null){
+						URL url = new URL(vo.getGudsImgCdnAddr());
+						String destName = OPT_B5C_IMG +vo.getGudsImgSysFileNm();
+	
+						 
+						   InputStream is = url.openStream();
+						   OutputStream os = new FileOutputStream(destName);
+						 
+						   byte[] b = new byte[2048];
+						   int length;
+						 
+						   while ((length = is.read(b)) != -1) {
+						      os.write(b, 0, length);
+						   }
+						 
+						   is.close();
+						   os.close();
+					}
+				}
+				
 			}
-			
 		}
 	}
 	
