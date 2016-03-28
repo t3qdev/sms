@@ -574,9 +574,9 @@
 				<environment>dev</environment>
 			</properties>
 <!-- 			///////////////////// -->
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+<!-- 			<activation> -->
+<!-- 				<activeByDefault>true</activeByDefault> -->
+<!-- 			</activation> -->
 <!-- 			///////////////////// -->				
 		</profile>
 		<profile>
@@ -597,9 +597,9 @@
 				<environment>online</environment>
 			</properties>
 <!-- 			///////////////////// -->
-<!-- 			<activation> -->
-<!-- 				<activeByDefault>true</activeByDefault> -->
-<!-- 			</activation> -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 <!-- 			/////////////////////				 -->
 		</profile>
 	</profiles>
