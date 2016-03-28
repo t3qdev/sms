@@ -634,7 +634,7 @@ public class OrderDetailController extends AbstractFileController{
 
 		// Header 값 정의
 		String headerKey = "Content-Disposition";
-	  String docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+	//  String docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
 		String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
 		if(fileName!=null){
 			headerValue = String.format("attachment; filename=\"%s\"", fileName);
