@@ -208,7 +208,7 @@ public class OrderPOController extends AbstractFileController{
 			poGudsVo.setPoXchrPrc(dF.format(poXchrPrc));		//setPoPrc * estmVo.getStdXchrAmt()
 			poGudsVo.setPoXchrPrcSum(dF.format(poXchrPrcSum));		//poPrcSum* estmVo.getStdXchrAmt()
 					
-			System.out.println("ㅔㅐㅔㅐㅔㅐ:"+poGudsVo);
+
 			//OrderPOGudsList에 VO삽입
 			poGudsList.add(poGudsVo);
 					

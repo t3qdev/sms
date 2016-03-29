@@ -184,6 +184,12 @@
 			WHERE GUDS_ID=#gudsId#
 			]]>
 	</delete>
+	<select id="smsMsGudsDAO.selectSmsMsGudsBrndId" parameterClass="String" resultClass="String">
+		SELECT BRND_ID
+			FROM sms_ms_guds
+			WHERE GUDS_ID=#gudsId#
+	
+	</select>
 		
 
 </sqlMap>

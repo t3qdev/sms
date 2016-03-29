@@ -68,7 +68,7 @@ $(function(){
 		window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
 	});//end click
 	
-	$('#check').click(function(){
+	$('#check').click(function(a){
 		if(!isNaN($("#bactPrvdAmt").val())){
 			var formData = $("#orderCalculateForm").serialize();
 			$.ajax({
@@ -81,7 +81,7 @@ $(function(){
 					if(result){
 						alert("结算确认");	
 						opener.parent.location.reload();
-						opener.opener.parent.location.reload();
+						//opener.opener.parent.location.reload();
 						window.open("about:blank","_self").close();
 					}else{
 						alert("结算确认失败");
@@ -90,6 +90,7 @@ $(function(){
 				}
 			});//end $.ajax	
 		}else{//endif
+			a.preventDefault();
 			alert("check 金额");
 		}
 

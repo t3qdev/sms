@@ -382,7 +382,7 @@ $(function(){
 		//$(".fileDown").unbind("click");
 		$(".fileDown").click(function(a) {
 			a.preventDefault();
-			alert("권한없음");
+			alert("没有权限");
 			});
 		 //$(".fileDown").hide();		//내용 숨김
 	}
