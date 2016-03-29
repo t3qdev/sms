@@ -50,7 +50,7 @@
     </div>
 	<div class="ui-layout-single">
         <section>
-        <h3><span id="countDB">검색결과 : 총 1건</span></h3>
+        <h3><span id="countDB">搜索结果: 共1件</span></h3>
             <div class="ui-layout-jqgrid">
                 <table id="jqgrid_a"></table>
                 <div id="pager_a"></div>
@@ -504,7 +504,7 @@ $(function(){
 
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
 			$('article').css("opacity","1");
-			$('#countDB').html("검색결과 : 총 "+totalDbCount+"건");
+			$('#countDB').html("搜索结果: 共 "+totalDbCount+"件");  
         },
         viewrecords: true,
         navGrid : true,
@@ -739,19 +739,21 @@ $(function(){
 	}
 	
 	function formatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
-		if(cellvalue == null){
-			return "";
-		}
-		if(rowObject.stdXchrKindCd == "N000590100"){    // 달러
+
+		if(cellvalue == null)
+			return "未知";
+		else 	if(rowObject.stdXchrKindCd == "N000590100")    // 달러
 			return '$ ' + formatMoney(cellvalue,2,',','.');
-		}
-		if(rowObject.stdXchrKindCd == "N000590200"){   // 원화
+		else if(rowObject.stdXchrKindCd == "N000590200")   // 원화
 			return '₩ ' + formatMoney(cellvalue,2,',','.');
-		}
-		 if(rowObject.stdXchrKindCd == "N000590300"){   // 위안화
+		else if(rowObject.stdXchrKindCd == "N000590300")   // 위안화
 			return '¥ ' + formatMoney(cellvalue,2,',','.');
-		}
-			return rowObject.stdXchrKindCd;
+// 		else
+// 			return '未知 ' + formatMoney(cellvalue,2,',','.')
+		
+// 		if(rowObject.stdXchrKindCd == null){
+// 			return '未知 ';
+// 		}
 	
 	}
 	function unformatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
@@ -1040,7 +1042,7 @@ function reLoadJqgrid(){
 	jQuery("#jqgrid_a").setGridParam({
 		url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
-		postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":$('#searchKeyWord').val()},
+		postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":$("#page").val(page), "searchKeyword":$('#searchKeyWord').val()},
 		rowNum : $('#rownum option:selected').val(),
 		datatype : "json",
 	}).trigger('reloadGrid');
