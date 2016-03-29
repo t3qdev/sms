@@ -1097,5 +1097,34 @@ public class StringUtil {
 		}
 		return false;
 	}
+	public static String getCellUpcId(Cell cell)
+	{
+		String sReturn = null;
+		
+		// 셀의 타입 따라 받아서 구분지어 받되 한 행을 하나의 스트링으로 저장
+		if(cell!=null) {
+			switch( cell.getCellType()) {
+			case Cell.CELL_TYPE_STRING :
+				sReturn = cell.getRichStringCellValue().getString().trim();            // trim 추가.   - 20160226 주엽
+				
+				if("".equals(sReturn)) sReturn=null;
+				break;
+				
+			case Cell.CELL_TYPE_NUMERIC :
+				if( DateUtil.isCellDateFormatted(cell)) {    // Date 형식일 때, 날짜 형식으로 변환 추가   20160226 주엽
+					Date date = cell.getDateCellValue();
+					sReturn = new SimpleDateFormat("yyyy-MM-dd").format(date).trim();
+					
+					if("".equals(sReturn)) sReturn=null;     // 공백("") 일 떄에는 Null 로 리턴 수정    - 20160226 주엽
+					break;
+				}
+				
+				sReturn = Long.toString((long)cell.getNumericCellValue());
+				break;
+			}
+		}
+		return sReturn;
+		
+	}
 }
 
