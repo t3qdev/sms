@@ -41,6 +41,8 @@ body{min-width:550px; background:#fff;}
             <h2><span>Order Number: ${ordNo} </span></h2>
             <div class="ui-layout-double">
                 <section class="ui-layout-action">
+                   <button class="btn-del mr10" id="history_del">DROP</button>
+                
                 </section>
                 <section class="ui-layout-action">
                     <button class="btn-add mr10" id="history_add">添加历史记录</button>
@@ -91,7 +93,7 @@ $(function(){
             {name:'ordNo',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistSeq',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistRegDttm',align:'center',width:100,resizable:false,editable:true,editoptions:{readonly:'true'}},
-            {name:'ordStatCd',align:'center',width:70,resizable:true, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550100:'接收',N000550200:'进行',N000550300:'确定',N000550400:'结算',N000560100:'DROP'}} },
+            {name:'ordStatCd',align:'center',width:70,resizable:true, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550100:'接收',N000550200:'进行',N000550300:'确定',N000550400:'结算',N000560100:'DROP'},disabled:'disabled'} },
             {name:'ordHistWrtrEml',align:'center',width:70,resizable:false, editable:true,editoptions:{readonly:'true'}},
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
@@ -137,21 +139,34 @@ $(function(){
 				    "restoreAfterError" : true,
 				    "mtype" : "POST"
 				}
-			
+			var 	Canclesaveparameters = {
+				    "successfunc" : null,
+				    "url" : '',
+				    "extraparam" : {},
+				    "aftersavefunc" : function( response ) {
+				                          alert('保存成功');   // 저장성공
+				                      },
+				    "errorfunc": function( response ) {
+				                    	alert('保存失败');      // 저장실패
+				                    },
+				    "afterrestorefunc" : null,
+				    "restoreAfterError" : true,
+				    "mtype" : "POST"
+				}
 			for(var i=0; i<id.length; i++){
 // 				alert($('#jqgrid_a').jqGrid("getCell", id[i], 'ordStatCd'));
-				jQuery("#jqgrid_a").jqGrid('saveRow',id[i]);
+				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],Canclesaveparameters);
 				var dataOrdStatCd = $('#jqgrid_a').getCell(id[i], 'ordStatCd');
 				if(ordStatCd > dataOrdStatCd){
 // 					alert("이전 단계로 돌아갈 수 없습니다.");
 					alert("状态更改不能回到前阶段");
-					jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
+					jQuery('#jqgrid_a').jqGrid('editRow',id[i],true);
 					return;
 				}else if(dataOrdStatCd != ordStatCd){
 					if(dataOrdStatCd != 'N000560100' ){
 // 						alert("상태변경은 Drop 만 가능합니다.");
 						alert("状态无法更改，或者只能选择DROP");
-						jQuery('#jqgrid_a').jqGrid('editRow',id[i],false);
+						jQuery('#jqgrid_a').jqGrid('editRow',id[i],true);
 						return;
 					}else{
 						jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
@@ -159,7 +174,7 @@ $(function(){
 				}else{
 					jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 				}
-				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
+// 				jQuery("#jqgrid_a").jqGrid('saveRow',id[i],saveparameters);
 				
 			}
 			
@@ -167,7 +182,32 @@ $(function(){
 			location.reload();
 			opener.parent.location.reload();
 		}
-  });
+  });				
+    jQuery("#history_del").click( function() {
+    	if(confirm("你确定要废弃订单?")){
+    		var d = new Date();
+    		var s = 
+    			    leadingZeros(d.getFullYear(), 4) + '-' +
+    			    leadingZeros(d.getMonth() + 1, 2) + '-' +
+    			    leadingZeros(d.getDate(), 2);
+			var ordStatCd = "N000560100";
+			var ordHistHistCont = "DROP";
+        	$.ajax({
+    			type : "POST",
+    			url : '${web_ctx}/orderHistorySave.ajax',
+    			data:	{"ordNo" : "${ordNo}", ordHistRegDttm:s, ordStatCd:ordStatCd,ordHistWrtrEml:"${user.username}",ordHistHistCont:ordHistHistCont},
+    			async: false,
+    			cache : false,
+    			success:function(result){
+    		 		alert(result);
+    				location.reload();
+    				opener.parent.location.reload();
+    			}
+    		});//end $.ajax	
+    	}
+   	
+    });
+//     
     
     // jqgrid의 ognzDivCd 컬럼에 대한 formatter
     function formatterordStatCd(cellvalue,options,rowObject){

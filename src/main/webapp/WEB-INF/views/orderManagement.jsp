@@ -195,7 +195,14 @@ $(function(){
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
             {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:formatterCurrencyForOrdSumAmt,unformat:unformatterCurrencyForOrdSumAmt, classes: 'bold' , search:false},		
+            // {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: "₩ "} , classes: 'bold' , search:false},		
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,
+            		prefix: function() {
+            			return "-";
+            		
+            		}
+            	} , classes: 'bold' , search:false},
+//             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:formatterCurrencyForOrdSumAmt, unformat:unformatterCurrencyForOrdSumAmt , classes: 'bold' , search:false},		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false ,stype:'text', search:true},		
             {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   ,stype:'text', search:true},
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,7 +511,7 @@ $(function(){
 
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
 			$('article').css("opacity","1");
-			$('#countDB').html("搜索结果: 共 "+totalDbCount+"件");  
+			$('#countDB').html("搜索结果: 共 "+$("#totalDbCount").val()+"件");  
         },
         viewrecords: true,
         navGrid : true,
@@ -741,15 +748,15 @@ $(function(){
 	function formatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
 
 		if(cellvalue == null)
-			return "未知";
+			return "";
 		else 	if(rowObject.stdXchrKindCd == "N000590100")    // 달러
 			return '$ ' + formatMoney(cellvalue,2,',','.');
 		else if(rowObject.stdXchrKindCd == "N000590200")   // 원화
 			return '₩ ' + formatMoney(cellvalue,2,',','.');
 		else if(rowObject.stdXchrKindCd == "N000590300")   // 위안화
 			return '¥ ' + formatMoney(cellvalue,2,',','.');
-// 		else
-// 			return '未知 ' + formatMoney(cellvalue,2,',','.')
+		else
+			return formatMoney(cellvalue,2,',','.')
 		
 // 		if(rowObject.stdXchrKindCd == null){
 // 			return '未知 ';
@@ -757,7 +764,7 @@ $(function(){
 	
 	}
 	function unformatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
-		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
+// 		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
 	}
 	
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
@@ -978,15 +985,11 @@ function dialogSpecialExcel(ordNo){
 		cache : false,
 		success:function(result){
 	 		$('#special_req_cont').val(result);
-	 		
 		}
 	});//end $.ajax	
 	
-	
-	
 	//dialog 활성화.
 	$('#dialog_upload_special').dialog('open');
-	
 
 	
 };

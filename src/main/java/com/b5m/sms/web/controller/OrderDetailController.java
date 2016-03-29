@@ -356,6 +356,7 @@ public class OrderDetailController extends AbstractFileController{
 		String ordGudsSalePrc=null;		//주문상품판매가(PO단가USD)
 		String ordGudsUrlAddr=null;	    // //주문상품url주소, 링크
 
+		boolean gudsExist = false;
 		List<SmsMsOrdGudsVO> smsMsOrdGudsVOList = new ArrayList<SmsMsOrdGudsVO>();
 		for(int i=6; i<rows-1; i++){
 			ordGudsUpcId = StringUtil.excelGetCell(sheet.getRow(i).getCell(1));
@@ -365,8 +366,9 @@ public class OrderDetailController extends AbstractFileController{
 			ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
 			ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
 			
-			// 상품 정보 중에서, (gudsUpcId) 가 빠지면 의미가 없다.
-			if(ordGudsUpcId!=null && "".equals(ordGudsUpcId)!=true){
+			// 상품 정보 중에서, (ordGudsCnsNm) 가 빠지면 의미가 없다.
+			if(ordGudsCnsNm!=null && "".equals(ordGudsCnsNm)!=true){
+				gudsExist = true;
 				ord_guds_seq =  String.valueOf(tempNum++);
 				SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
 				smsMsOrdGudsVO.setOrdNo(ordNo);
@@ -381,6 +383,9 @@ public class OrderDetailController extends AbstractFileController{
 				smsMsOrdGudsVOList.add(smsMsOrdGudsVO);
 				LOGGER.debug(smsMsOrdGudsVO.toString());
 			}
+		}
+		if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
+			return "error_notException"; 
 		}
 		LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS  List Load==========완료" );
 		//END////////////////////////////////////// 스페셜 오더, 견적서 엑셀 로드 - KJY ///////////////////////////////////////////END
