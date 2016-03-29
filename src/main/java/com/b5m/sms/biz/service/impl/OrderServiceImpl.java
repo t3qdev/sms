@@ -675,8 +675,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 //				유효기간 =   ?????= StringUtil.excelGetCell(sheet.getRow(i).getCell(6));      //skip 무시
 				ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
 				
-				// 상품 정보 중에서, (gudsUpcId) 가 빠지면 의미가 없다.
-				if(ordGudsUpcId!=null && "".equals(ordGudsUpcId)!=true){
+				// 상품 정보 중에서, (ordGudsCnsNm) 가 빠지면 의미가 없다.
+				if(ordGudsCnsNm!=null && "".equals(ordGudsCnsNm)!=true){
 					gudsExist = true;
 					ord_guds_seq =  String.valueOf(tempNum++);
 					SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
