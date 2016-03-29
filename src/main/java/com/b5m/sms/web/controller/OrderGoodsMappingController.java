@@ -41,7 +41,8 @@ public class OrderGoodsMappingController extends AbstractFileController{
 		//1.입력된 상품명,바코드로 상품을 검색한다.
 		SmsMsGudsVO smsMsGudsVo = new SmsMsGudsVO();
 		smsMsGudsVo.setGudsUpcId(UpcId);
-		 
+		smsMsGudsVo.setGudsCnsNm(gudsNm);
+		smsMsGudsVo.setGudsKorNm(gudsNm);
 		smsMsGudsList=goodsService.selectSmsMsGudsByVO(smsMsGudsVo);	
 		
 		//2.해당상품이 존재하면 img경로를 검색한다. 

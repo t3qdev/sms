@@ -448,7 +448,7 @@ $(function(){
 	
 	
 	if("YES"=="${reload}"){
-		//opener.parent.location.reload();
+		opener.parent.location.reload();
 		opener.parent.reLoadJqgrid();
 	}
 	
