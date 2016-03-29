@@ -638,11 +638,14 @@ public class OrderDetailController extends AbstractFileController{
 		response.setContentType(mimeType);
 		response.setContentLength((int) downloadFile.length());
 
+		System.out.println(downloadFile.getName());
+		System.out.println(fileName);
 		// Header 값 정의
 		String headerKey = "Content-Disposition";
 		String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
 		if(fileName!=null){
-			headerValue = String.format("attachment; filename=\"%s\"", fileName);
+			String docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			headerValue = String.format("attachment; filename=\"%s\"", docName);
 		}
 		response.setHeader(headerKey, headerValue);
 

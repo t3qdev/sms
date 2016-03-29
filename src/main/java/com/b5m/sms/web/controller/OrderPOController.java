@@ -58,6 +58,7 @@ import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.util.StringUtil;
+import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.OrderPOGudsVO;
 import com.b5m.sms.vo.OrderPOVO;
@@ -89,8 +90,9 @@ public class OrderPOController extends AbstractFileController{
 		//0.화면에 표시될 내용 (정보+상품) 해당 VO를 모두 채워넣으면 화면에 값 표시 완료 
 		OrderPOVO poVo = new OrderPOVO();
 		List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
-		//계산을 위해 필요한 변수들
 		
+		
+		//계산을 위해 필요한 변수들
 		BigDecimal zeroB =new BigDecimal("0");
 		DecimalFormat dF = new DecimalFormat("#,##0.00");
 		NumberFormat nf = NumberFormat.getPercentInstance();
@@ -121,17 +123,39 @@ public class OrderPOController extends AbstractFileController{
 		//1-2. 바로 가져올수 있는 값
 		poVo.setOrdNo(ordNo);
 		poVo.setPoNo(estmVo.getPoNo());
-		poVo.setDlvModeCd(estmVo.getDlvModeCd());		//배송방식코드
 		poVo.setDlvDestCd(estmVo.getDlvDestCd());		//견적서에 존재하지 않는값 DB에만 존재중
-		poVo.setDlvAmt(estmVo.getDlvAmt());				//물류비
+		poVo.setDlvAmt(dF.format(new BigDecimal(estmVo.getDlvAmt())));				//물류비
 		
-		poVo.setPoDt(estmVo.getPoDt());						//요청일자
+		poVo.setPoDt(StringUtil.dtToDate(estmVo.getPoDt()));						//요청일자
 		poVo.setPoRegrEml(estmVo.getPoRegrEml());		//PO등록자이메일
-		poVo.setPoAmt(estmVo.getPoSumAmt());		//PO총금액 usd
+		poVo.setPoAmt(dF.format(new BigDecimal(estmVo.getPoSumAmt())));		//PO총금액 usd
+		List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 배송방식코드
+		//값으로 들어온 견적조건을 코드값으로 변경
+		if(estmVo.getDlvModeCd()!=null){
+			for(CodeVO vo : dlvModeCdList){
+				System.out.println(vo.getCd());
+				if(estmVo.getDlvModeCd().equals(vo.getCd())){
+					estmVo.setDlvModeCd(vo.getCdVal());
+				}
+			}
+		}
+		poVo.setDlvModeCd(estmVo.getDlvModeCd());		//배송방식코드
+		//기준화폐(stdXchrKindCd)
+		List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 기준환율코드
+		if(estmVo.getStdXchrKindCd()!=null){
+			for(CodeVO vo : stdXchrKindCdList){
+				if(estmVo.getStdXchrKindCd().equals(vo.getCd())){
+					estmVo.setStdXchrKindCd(vo.getCdVal());
+				}
+			}
+		}
+		
+		
 		poVo.setStdXchrKindCd(estmVo.getStdXchrKindCd());		//환율종류코드 :환율종류코드는 환율테이블을 참조해서 값으로 변경해야함 
-		poVo.setStdXchrAmt(estmVo.getStdXchrAmt());				//환율금액
+		
+		poVo.setStdXchrAmt(dF.format(new BigDecimal(estmVo.getStdXchrAmt())));				//환율금액
 
-		poVo.setOrdArvlDt(estmVo.getOrdArvlDt());			//주문도착일자
+		poVo.setOrdArvlDt(StringUtil.dtToDate(estmVo.getOrdArvlDt()));			//주문도착일자
 		poVo.setPoMemoCont(estmVo.getPoMemoCont());	//PO메모
 	
 		
@@ -155,8 +179,8 @@ public class OrderPOController extends AbstractFileController{
 			poGudsVo.setGudsKorNm(vo.getOrdGudsKorNm());
 			poGudsVo.setGudsCnsNm(vo.getOrdGudsCnsNm());
 			poGudsVo.setOrdGudsQty(vo.getOrdGudsQty());
-			poGudsVo.setPcPrc(vo.getOrdGudsOrgPrc());			//매입단가 orgPrc
-			poGudsVo.setPoPrc(vo.getOrdGudsSalePrc());			//po단가  saleprc
+			poGudsVo.setPcPrc(dF.format(new BigDecimal(vo.getOrdGudsOrgPrc())));			//매입단가 orgPrc
+			poGudsVo.setPoPrc(dF.format(new BigDecimal(vo.getOrdGudsSalePrc())));			//po단가  saleprc
 			poGudsVo.setPvdrnNm(vo.getOrdGudsPrvdNm());		//사업자 이름
 			poGudsVo.setCrn(vo.getOrdGudsPrvdCrn());			//사업자등록번호
 			
@@ -319,8 +343,11 @@ public class OrderPOController extends AbstractFileController{
 				fileResultList.add(imgfileResultVO);
 			}
 			
-
-			
+			//계산을 위한 포맷터
+			DecimalFormat dF = new DecimalFormat("#,##0.00");
+			NumberFormat nf = NumberFormat.getPercentInstance();
+			nf.setMinimumFractionDigits(2);
+			nf.setMaximumFractionDigits(2) ;
 			
 			
 			

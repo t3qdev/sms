@@ -1013,7 +1013,7 @@ public class StringUtil {
 				
 				try{
 
-					sReturn=String.format("%.2f", cell.getNumericCellValue());										//2자리까지표시_	long으로 설정시 소수점이하가 버림됨
+					sReturn=String.format("%.4f", cell.getNumericCellValue());										//2자리까지표시_	long으로 설정시 소수점이하가 버림됨
 
 					//sReturn = Long.toString((long)cell.getNumericCellValue());		//수식일 경우 해당 값으로 출력하기 위함
 					
