@@ -93,12 +93,13 @@ public class OrderManagementController  extends AbstractFileController{
 		}else{
 			row = (Integer.parseInt(rowInput));
 		}
-		
 		if(pageInput==null || "".equals(pageInput)){
 			page = 1;
 		}else{
 			page = (Integer.parseInt(pageInput));
 		}
+		System.out.println("rowInput " + rowInput);
+		System.out.println("pageInput " + pageInput);
 		
 		smsMsOrdVO.setStart((page-1)*row);
 		smsMsOrdVO.setRow(row);

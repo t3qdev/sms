@@ -308,7 +308,7 @@ $(function(){
 				if(result=="success"){
 					alert("PO确定");
 					opener.parent.location.reload();
-					opener.opener.parent.location.reload();
+// 					opener.opener.parent.location.reload();
 					opener.opener.parent.reLoadJqgrid();
 					window.open("about:blank","_self").close();
 				}else{

@@ -165,7 +165,7 @@
                         <th>预计需求数量</th>
                         <th>规格</th>
                         <th>价格(单价)</th>
-                        <th>装箱数量</th>
+                        <th>每箱数量</th>
                         <th>商品链接</th>
                         <th>搜索</th>
                     </tr>
@@ -448,7 +448,7 @@ $(function(){
 	
 	
 	if("YES"=="${reload}"){
-		opener.parent.location.reload();
+		//opener.parent.location.reload();
 		opener.parent.reLoadJqgrid();
 	}
 	
@@ -492,7 +492,7 @@ $(function(){
 		});
 		var wrtr = $('#wrtrEml').val();
 		var ordNo=$('#ordNo').val();
-		formData.append("wrtrEml",wrtr);
+		formData.append("wrtrEml",wrtr); 
 		formData.append("ordNo",ordNo);
 				
 		$.ajax({
@@ -531,8 +531,27 @@ $(function(){
 		$('#poExcelDownload').attr("href","${web_ctx}/downloadExcel_PO.do?ordNo="+$('#ordNo').val());
 	});
 	
-	
-	
+	$('#orderDetailSaveForm').validate({
+		rules : {
+// 			stdXchrAmt :{
+// 				digits:true
+// 			}
+			
+
+		},
+		submitHandler: function(form){
+			var stdXchrAmt = $("#stdXchrAmt").val().replace(",","");
+			if(isNaN(stdXchrAmt)){
+// 					alert("숫자아님");
+					$("#stdXchrAmt").focus();
+			}else{
+// 				alert("숫자");
+				form.submit();
+			}
+			
+		}
+
+	});
 	
 })//end function
 
