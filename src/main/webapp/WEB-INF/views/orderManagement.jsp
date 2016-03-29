@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -11,6 +12,7 @@
 <STYLE>
         .bold {
             font-weight: bold !important;
+            text-align: left !important;
 		}
         .boldAndBlue a {
        		color:#3498d8 !important;
@@ -187,15 +189,16 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','交易规模','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余款结算日期','余付','余款百分比','是否在帮韩品购买','上传日期','上传内容'
-                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','stdXchrKindCd','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','报价货币','订单/交易金额','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余款结算日期','余付','余款百分比','是否在帮韩品购买','上传日期','上传内容'
+                  			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, editable:true, editoptions:{readonly:'true'},stype:'text', search:true},
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate,stype:'text', search:true},
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: "₩ "} , classes: 'bold' , search:false},		
+            {name:'showDetail',index:'showDetail',align:'left',width:200,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
+            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:50,resizable:false,formatter:formatterCurrentIcon , search:false},
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: ""} , classes: 'bold' , search:false},		
 //             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,
 //             		prefix: "
 //             	} , classes: 'bold' , search:false},
@@ -333,7 +336,7 @@ $(function(){
             {name:'row',index:'row',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'bactPrvdMemoCont',index:'bactPrvdMemoCont',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'stdXchrAmt',index:'stdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
-            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:160,resizable:false,hidden:"true"},
+
             {name:'krwXchrAmt',index:'krwXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'usdXchrAmt',index:'usdXchrAmt',align:'center',width:160,resizable:false,hidden:"true"},
             {name:'cnsXchrAmt',index:'cnsXchrAmt',align:'center',width:160,resizable:false,hidden:"true"}
@@ -744,25 +747,43 @@ $(function(){
 	
 	function formatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
 
-		if(cellvalue == null)
-			return "";
-		else 	if(rowObject.stdXchrKindCd == "N000590100")    // 달러
-			return '$ ' + formatMoney(cellvalue,2,',','.');
-		else if(rowObject.stdXchrKindCd == "N000590200")   // 원화
-			return '₩ ' + formatMoney(cellvalue,2,',','.');
-		else if(rowObject.stdXchrKindCd == "N000590300")   // 위안화
-			return '¥ ' + formatMoney(cellvalue,2,',','.');
-		else
-			return formatMoney(cellvalue,2,',','.')
-		
-// 		if(rowObject.stdXchrKindCd == null){
-// 			return '未知 ';
-// 		}
+		// 		alert(rowObject.stdXchrKindCd);
+		return rowObject.stdXchrKindCd;
+		// 		alert(cellvalue);
+		// 		if(cellvalue == null)
+		// 			return "";
+		// 		else 	if(rowObject.stdXchrKindCd == "N000590100")    // 달러
+		// 			return '$ ' + formatMoney(cellvalue,2,',','.');
+		// 		else if(rowObject.stdXchrKindCd == "N000590200")   // 원화
+		// 			return '₩ ' + formatMoney(cellvalue,2,',','.');
+		// 		else if(rowObject.stdXchrKindCd == "N000590300")   // 위안화
+		// 			return '¥ ' + formatMoney(cellvalue,2,',','.');
+		// 		else
+		// 			return formatMoney(cellvalue,2,',','.')
+				
+		// 			alert("2");
+		// 		if(rowObject.stdXchrKindCd == null){
+		// 			return '未知 ';
+		// 		}
 	
 	}
-	function unformatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
-// 		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
+	function unformatterCurrencyForOrdSumAmt(cellvalue,options){
+// 		alert("3");
+		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
 	}
+	
+	function formatterCurrentIcon(cellvalue,options,rowObject){
+				if(cellvalue == "N000590100")    // 달러
+					return '$ ';
+				else if(cellvalue == "N000590200")   // 원화
+					return '₩ ';
+				else if(cellvalue == "N000590300")   // 위안화
+					return '¥ ';
+				else{
+					return '未知';
+				}
+	}
+	
 	
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowDetail(cellvalue,options,rowObject){
@@ -834,7 +855,9 @@ $(function(){
 			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '到岸'},
 			{startColumnName: 'poDlvDt', numberOfColumns: 2, titleText: 'P/O'},
 			{startColumnName: 'raptDpstDt', numberOfColumns: 3, titleText: '余款'},
-			{startColumnName: 'b5cGudsRegDt', numberOfColumns: 2, titleText: '帮5采上传商品'}
+			{startColumnName: 'b5cGudsRegDt', numberOfColumns: 2, titleText: '帮5采上传商品'},
+			{startColumnName: 'stdXchrKindCd', numberOfColumns: 2, titleText: '交易规模'},
+			
 			
 		]	
 	});
@@ -1043,7 +1066,7 @@ function reLoadJqgrid(){
 	   jQuery("#jqgrid_a").setGridParam({
 	      url : "${web_ctx}/orderManagementSearch.ajax",
 	      ajaxGridOptions : {async:false},    // 동기로 변환
-	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
+	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":$("#page").val() , "searchKeyword":$('#searchKeyWord').val()},
 	      rowNum : $('#rownum option:selected').val(),
 	      datatype : "json",
 	   }).trigger('reloadGrid');
@@ -1053,3 +1076,4 @@ function reLoadJqgrid(){
 <style>
 #jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}
 </style>
+
