@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.b5m.sms.biz.dao.SmsMsBrndDAO;
 import com.b5m.sms.biz.dao.SmsMsEstmDAO;
 import com.b5m.sms.biz.dao.SmsMsEstmGudsDAO;
 import com.b5m.sms.biz.dao.SmsMsGudsDAO;
@@ -45,6 +46,7 @@ import com.b5m.sms.vo.OrderCalculateVO;
 import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.OrderPOGudsVO;
 import com.b5m.sms.vo.OrderPOVO;
+import com.b5m.sms.vo.SmsMsBrndVO;
 import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
@@ -108,6 +110,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 	@Resource(name="tbMsCmnCdDAO")
 	private TbMsCmnCdDAO tbMsCmnCdDAO;
 	
+	@Resource(name="smsMsBrndDAO")
+	private SmsMsBrndDAO smsMsBrndDAO;
 	
 	@Override
 	public List<SmsMsOrdHistVO> selectSmsMsOrdHist(SmsMsOrdHistVO smsMsOrdHistVO)
@@ -372,6 +376,22 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 	//		insert SMS_MS_BRND
 	//		생략
 	///////////////////////////////////////////////////////////////////////////////////////////		
+
+			brndId = brndId;
+			String brndEngNm="";
+			String brndCnsNm="";
+			brndEngNm = tbMsOrdBatchVOList.get(i).getBrndStrEngNm();
+			brndCnsNm = tbMsOrdBatchVOList.get(i).getBrndStrNm();
+			SmsMsBrndVO smsMsBrndVO = new SmsMsBrndVO();
+			smsMsBrndVO.setBrndId(brndId);
+			smsMsBrndVO.setBrndEngNm(brndEngNm);
+			smsMsBrndVO.setBrndCnsNm(brndCnsNm);
+
+			List<SmsMsBrndVO> smsMsBrndVOList = null;
+			smsMsBrndVOList = smsMsBrndDAO.selectSmsMsBrnd(smsMsBrndVO);
+			if(smsMsBrndVOList.size()==0){
+				smsMsBrndDAO.insertSmsMsBrnd_S(smsMsBrndVO);
+			}
 
 			
 			if(imageBoolean){

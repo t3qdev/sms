@@ -20,5 +20,6 @@
 	<sqlMap resource="sqlmap/SmsMsOrdUser_SQL.xml" />
 	<sqlMap resource="sqlmap/TbMsGudsImg_SQL.xml" />
 	<sqlMap resource="sqlmap/TbMsCmnCd_SQL.xml" />
+	<sqlMap resource="sqlmap/SmsMsBrnd_SQL.xml" />
 
 </sqlMapConfig>

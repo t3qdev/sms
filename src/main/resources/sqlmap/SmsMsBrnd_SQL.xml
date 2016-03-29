@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMsEstm">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="smsMsBrndVO" type="com.b5m.sms.vo.SmsMsBrndVO" />
+	
+	<resultMap id="smsMsBrnd" class="com.b5m.sms.vo.SmsMsBrndVO">		
+		<result property="brndId" column="BRND_ID" />
+		<result property="brndEngNm" column="BRND_ENG_NM" />
+		<result property="brndCnsNm" column="BRND_CNS_NM" />
+
+	</resultMap>
+	
+	<insert id="smsMsBrndDAO.insertSmsMsBrnd_S">
+		<![CDATA[
+			INSERT INTO sms_ms_brnd 
+				( 
+					BRND_ID
+					,BRND_ENG_NM
+					,BRND_CNS_NM
+				
+				 )
+			VALUES ( 
+					#brndId#
+					,#brndEngNm#
+					,#brndCnsNm#
+					 )
+		]]>
+	</insert>
+	
+	<select id="smsMsBrndDAO.selectSmsMsBrnd" parameterClass="smsMsBrndVO" resultMap="smsMsBrnd">
+			SELECT 
+						BRND_ID
+						,BRND_ENG_NM
+						,BRND_CNS_NM
+			
+			FROM
+					 sms_ms_brnd 
+			WHERE 1=1 
+				<isNotEmpty property="brndId">			 
+					 AND BRND_ID = #brndId#
+				</isNotEmpty>
+				<isNotEmpty property="brndEngNm">			 
+				 	 AND BRND_ENG_NM = #brndEngNm#
+				</isNotEmpty>
+				<isNotEmpty property="brndCnsNm">			 
+					 AND BRND_CNS_NM = #brndCnsNm#
+				</isNotEmpty>
+
+	</select>
+	
+	
+	
+
+</sqlMap>
