@@ -110,5 +110,7 @@ public interface OrderService {
 	public String selectSmsMsOrdCount(SmsMsOrdVO smsMsOrdVO) throws Exception;
 	
 	public TbMsOrdVO selectTbMsOrdSplReqCont(String ordNo)throws Exception;
+	
+	public String selectSmsMsGudsBrndId(String gudsId) throws Exception;
 }
 

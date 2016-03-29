@@ -68,7 +68,7 @@ $(function(){
 		window.close();			//IE에서 안될경우 window.open("about:blank","_self").close();
 	});//end click
 	
-	$('#check').click(function(){
+	$('#check').click(function(a){
 		if(!isNaN($("#bactPrvdAmt").val())){
 			var formData = $("#orderCalculateForm").serialize();
 			$.ajax({
@@ -90,6 +90,7 @@ $(function(){
 				}
 			});//end $.ajax	
 		}else{//endif
+			a.preventDefault();
 			alert("check 金额");
 		}
 

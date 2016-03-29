@@ -1165,5 +1165,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		public TbMsOrdVO selectTbMsOrdSplReqCont(String ordNo) throws Exception {
 				return tbMsOrdSplDAO.selectTbMsOrdSplReqCont(ordNo);
 		}
+
+		@Override
+		public String selectSmsMsGudsBrndId(String gudsId) throws Exception {
+			return smsMsGudsDAO.selectSmsMsGudsBrndId(gudsId);
+		}
 		
 }//end class

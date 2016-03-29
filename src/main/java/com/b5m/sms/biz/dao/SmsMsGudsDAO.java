@@ -60,4 +60,7 @@ public class SmsMsGudsDAO extends EgovAbstractDAO {
 	public void deleteSmsMsGuds_S() throws Exception{
 		delete("smsMsGudsDAO.deleteSmsMsGuds_S");
 	}
+	public String selectSmsMsGudsBrndId(String gudsId) throws Exception{
+		return (String)select("smsMsGudsDAO.selectSmsMsGudsBrndId",gudsId);
+	}
 }

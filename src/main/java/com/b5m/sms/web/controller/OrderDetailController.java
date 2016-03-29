@@ -56,6 +56,7 @@ import com.b5m.sms.common.util.DateUtil;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.OrderDetailVO;
+import com.b5m.sms.vo.SmsMsBrndVO;
 import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
@@ -789,6 +790,10 @@ public class OrderDetailController extends AbstractFileController{
 				
 				
 				Cell newCell0 = sourceRow.getCell(0);		//브랜드
+				String brndId =orderService.selectSmsMsGudsBrndId(smsMsOrdGudsList.get(0).getGudsId());
+				if(brndId!=null){
+					newCell0.setCellValue(brndId);
+				}
 				//이미지
 				if(smsMsOrdGudsList.get(0).getImgSrcPath()!=null){
 					addPricture(smsMsOrdGudsList.get(0).getImgSrcPath(),1,(11),wb,sheet);
@@ -850,7 +855,11 @@ public class OrderDetailController extends AbstractFileController{
 			           
 			            switch (j) {
 			                case 0:		//브랜드ID
-			                    //newCell.setCellValue();
+			                	brndId=null;
+			                	brndId=orderService.selectSmsMsGudsBrndId(smsMsOrdGudsList.get(i+1).getGudsId());
+			                	if(brndId!=null){
+			                		newCell.setCellValue(brndId);
+			                	}
 			                    break;
 			                case 1:		//이미지
 			                	if(smsMsOrdGudsList.get(i+1).getImgSrcPath()!=null){
