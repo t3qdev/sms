@@ -1009,6 +1009,16 @@ function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
     return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
 };
 
+function reLoadJqgrid(){
+	  var page = $('#jqgrid_a').getRowData(1).page;
+	   jQuery("#jqgrid_a").setGridParam({
+	      url : "${web_ctx}/orderManagementSearch.ajax",
+	      ajaxGridOptions : {async:false},    // 동기로 변환
+	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
+	      rowNum : $('#rownum option:selected').val(),
+	      datatype : "json",
+	   }).trigger('reloadGrid');
+}
 </script>
 <style>
 #jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}

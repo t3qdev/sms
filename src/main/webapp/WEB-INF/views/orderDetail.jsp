@@ -445,6 +445,10 @@ $(function(){
 	} */
 	
 	
+	if("YES"=="${reload}"){
+		//opener.parent.location.reload();
+		opener.parent.reLoadJqgrid();
+	}
 	
 	//초기정보에따라 변경
 	if("YES" =="${saved}"){
@@ -454,9 +458,7 @@ $(function(){
 		alert("订单保存失败");
 	}
 	
-	if("YES"=="${reload}"){
-		opener.parent.location.reload();
-	}
+	
 	
 	$('#dialog_upload').dialog({
 				modal: true,
