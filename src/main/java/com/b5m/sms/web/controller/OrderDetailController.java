@@ -634,7 +634,6 @@ public class OrderDetailController extends AbstractFileController{
 
 		// Header 값 정의
 		String headerKey = "Content-Disposition";
-	//  String docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
 		String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
 		if(fileName!=null){
 			headerValue = String.format("attachment; filename=\"%s\"", fileName);
@@ -840,10 +839,13 @@ public class OrderDetailController extends AbstractFileController{
 						Cell oldCell = sourceRow.getCell(j);			
 						Cell newCell = newRow.createCell(j);
 						
+						
 			            // Copy style from old cell and apply to new cell
 			            CellStyle newCellStyle = wb.createCellStyle();
-			            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//스타일을 선언하고 기존 스타일을 넣는다
-			            newCell.setCellStyle(newCellStyle);	
+			           // if(newCellStyle!=null && oldCell!=null){
+			            	newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//스타일을 선언하고 기존 스타일을 넣는다
+			            	newCell.setCellStyle(newCellStyle);	
+			         //   }
 			            
 			           
 			            switch (j) {
