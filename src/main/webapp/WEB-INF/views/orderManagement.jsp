@@ -1052,5 +1052,4 @@ function reLoadJqgrid(){
 </script>
 <style>
 #jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}
->>>>>>> branch 'SMS_online' of http://gitlab.izene.com/izene-korea/b5c-sms.git
 </style>

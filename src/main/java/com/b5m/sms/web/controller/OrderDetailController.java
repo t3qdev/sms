@@ -558,6 +558,7 @@ public class OrderDetailController extends AbstractFileController{
 
 			orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml );
 		}catch(Exception e){
+
 			return "redirect:orderDetailView.do?ordNo="+ordNo+"&reload=YES&saved=NO";
 		}
 

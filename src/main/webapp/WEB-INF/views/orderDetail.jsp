@@ -328,18 +328,7 @@
 
 
 $(function(){
-	
-	//페이지 로드시 
-	opener.parent.location.reload();
-	opener.parent.reLoadJqgrid();
 
-	
-	/* 	
-	if("YES"=="${reload}"){
-		opener.parent.location.reload();
-		opener.parent.reLoadJqgrid();
-	}
-	 */
 	//팝업페이지 연결
 	$(".btn_pop").each(function(){
        $(this).click(function(){
@@ -457,7 +446,12 @@ $(function(){
 		$(".btn-search").hide();
 	} */
 	
-
+	
+	if("YES"=="${reload}"){
+		opener.parent.location.reload();
+		opener.parent.reLoadJqgrid();
+	}
+	
 	//초기정보에따라 변경
 	if("YES" =="${saved}"){
 		alert("订单保存成功");

@@ -81,7 +81,8 @@ $(function(){
 					if(result){
 						alert("结算确认");	
 						opener.parent.location.reload();
-						//opener.opener.parent.location.reload();
+						opener.opener.parent.location.reload();
+						opener.opener.parent.reLoadJqgrid();
 						window.open("about:blank","_self").close();
 					}else{
 						alert("结算确认失败");
