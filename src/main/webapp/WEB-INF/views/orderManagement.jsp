@@ -1037,13 +1037,14 @@ function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
 };
 
 function reLoadJqgrid(){
-	jQuery("#jqgrid_a").setGridParam({
-		url : "${web_ctx}/orderManagementSearch.ajax",
-		ajaxGridOptions : {async:false},    // 동기로 변환
-		postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":$('#searchKeyWord').val()},
-		rowNum : $('#rownum option:selected').val(),
-		datatype : "json",
-	}).trigger('reloadGrid');
+	  var page = $('#jqgrid_a').getRowData(1).page;
+	   jQuery("#jqgrid_a").setGridParam({
+	      url : "${web_ctx}/orderManagementSearch.ajax",
+	      ajaxGridOptions : {async:false},    // 동기로 변환
+	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
+	      rowNum : $('#rownum option:selected').val(),
+	      datatype : "json",
+	   }).trigger('reloadGrid');
 }
 
 </script>
