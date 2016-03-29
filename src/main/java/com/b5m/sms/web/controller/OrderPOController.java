@@ -94,8 +94,8 @@ public class OrderPOController extends AbstractFileController{
 		BigDecimal zeroB =new BigDecimal("0");
 		DecimalFormat dF = new DecimalFormat("#,##0.00");
 		NumberFormat nf = NumberFormat.getPercentInstance();
-		nf.setMinimumFractionDigits(3);
-		nf.setMaximumFractionDigits(4) ;
+		nf.setMinimumFractionDigits(2);
+		nf.setMaximumFractionDigits(2) ;
 		//PO상품정보 표시용
 		BigDecimal pcPrcNoVat=new BigDecimal("0");
 		BigDecimal pcPrcVat=new BigDecimal("0");
