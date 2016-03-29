@@ -196,7 +196,7 @@ $(function(){
             {name:'ordReqDt',index:'ordReqDt',align:'center',width:100,resizable:false,editable:true, editoptions:{readonly:'true'}, formatter:formatterDate,stype:'text', search:true},
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
-            {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
+            {name:'showDetail',index:'showDetail',align:'left',width:200,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
             {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:50,resizable:false,formatter:formatterCurrentIcon , search:false},
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: ""} , classes: 'bold' , search:false},		
 //             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,
@@ -1066,7 +1066,7 @@ function reLoadJqgrid(){
 	   jQuery("#jqgrid_a").setGridParam({
 	      url : "${web_ctx}/orderManagementSearch.ajax",
 	      ajaxGridOptions : {async:false},    // 동기로 변환
-	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
+	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":$("#page").val() , "searchKeyword":$('#searchKeyWord').val()},
 	      rowNum : $('#rownum option:selected').val(),
 	      datatype : "json",
 	   }).trigger('reloadGrid');
