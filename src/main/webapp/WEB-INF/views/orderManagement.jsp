@@ -455,7 +455,7 @@ $(function(){
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
-        rowNum:1,
+        rowNum:20,
 
         gridComplete : function(e){
   

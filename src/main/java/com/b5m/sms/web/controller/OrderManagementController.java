@@ -95,7 +95,7 @@ public class OrderManagementController  extends AbstractFileController{
 		}
 		
 		if(pageInput==null || "".equals(pageInput)){
-			page = 1;
+			page = 20;
 		}else{
 			page = (Integer.parseInt(pageInput));
 		}
