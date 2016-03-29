@@ -478,7 +478,7 @@ $(function(){
 				}
 			});
 	
-		$('#btn_01').click(function(){dialog_upload_form
+		$('#btn_01').click(function(){
 				//$('#dialog_upload').find('input[name=file]').val('');
 				$('#dialog_upload').dialog('open');
 		})
