@@ -24,6 +24,7 @@
 	</h1>
     <div class="ui-layout-single">
         <section>
+        
             <div class="ui-layout-single">
 	                <section class="ui-layout-action tar">
                 	<div class="s_area">
@@ -49,6 +50,7 @@
     </div>
 	<div class="ui-layout-single">
         <section>
+        <h3><span id="countDB">검색결과 : 총 1건</span></h3>
             <div class="ui-layout-jqgrid">
                 <table id="jqgrid_a"></table>
                 <div id="pager_a"></div>
@@ -193,7 +195,7 @@ $(function(){
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
             {name:'showDetail',index:'showDetail',align:'left',width:130,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
-            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}, classes: 'bold' , search:false},		
+            {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:formatterCurrencyForOrdSumAmt,unformat:unformatterCurrencyForOrdSumAmt, classes: 'bold' , search:false},		
             {name:'cnsMng',index:'cnsMng',align:'center',width:100,resizable:false ,stype:'text', search:true},		
             {name:'korMng',index:'korMng',align:'center',width:100,frozen : true,resizable:false   ,stype:'text', search:true},
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,22 +397,22 @@ $(function(){
 				var paptDpstRate = $('#jqgrid_a').getCell(id, 'paptDpstRate');
 				var raptDpstRate = $('#jqgrid_a').getCell(id, 'raptDpstRate');
 				
-				if(paptDpstRate == "100.00"){
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
-				}else if(raptDpstRate == "100.00"){
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
-				}else{
+// 				if(paptDpstRate == "100.00"){
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+// 				}else if(raptDpstRate == "100.00"){
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+// 				}else{
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
-				}
+// 				}
 				if(checkIndex(RolesSaveBtn,roles)){
 					jQuery('#jqgrid_a').jqGrid('editRow',id,false);
 
@@ -501,7 +503,8 @@ $(function(){
 // 			$('.ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all').css("z-index","200 !important")
 
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
-			$('article').css("opacity","1")
+			$('article').css("opacity","1");
+			$('#countDB').html("검색결과 : 총 "+totalDbCount+"건");
         },
         viewrecords: true,
         navGrid : true,
@@ -642,22 +645,26 @@ $(function(){
 				var paptDpstRate = $('#jqgrid_a').getCell(id, 'paptDpstRate');
 				var raptDpstRate = $('#jqgrid_a').getCell(id, 'raptDpstRate');
 				
-				if(paptDpstRate == "100.00"){
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
-				}else if(raptDpstRate == "100.00"){
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
-				}else{
+// 				if(paptDpstRate == "0.00"){
+// 					alert("1");
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
+// 				}else if(raptDpstRate == "0.00"){
+// 					alert("2");
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:false});
+// 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:false});
+// 				}else{
+// 					alert(paptDpstRate);
+// 					alert("3");
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
-				}
+// 				}
 // 				jQuery("#jqgrid_a").jqGrid('setColProp','b5mBuyCont',{editable:true});
 			}else{
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
@@ -729,6 +736,26 @@ $(function(){
 		}else{
 			return "";
 		}
+	}
+	
+	function formatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
+		if(cellvalue == null){
+			return "";
+		}
+		if(rowObject.stdXchrKindCd == "N000590100"){    // 달러
+			return '$ ' + formatMoney(cellvalue,2,',','.');
+		}
+		if(rowObject.stdXchrKindCd == "N000590200"){   // 원화
+			return '₩ ' + formatMoney(cellvalue,2,',','.');
+		}
+		 if(rowObject.stdXchrKindCd == "N000590300"){   // 위안화
+			return '¥ ' + formatMoney(cellvalue,2,',','.');
+		}
+			return rowObject.stdXchrKindCd;
+	
+	}
+	function unformatterCurrencyForOrdSumAmt(cellvalue,options,rowObject){
+		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
 	}
 	
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
@@ -1010,15 +1037,15 @@ function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
 };
 
 function reLoadJqgrid(){
-	  var page = $('#jqgrid_a').getRowData(1).page;
-	   jQuery("#jqgrid_a").setGridParam({
-	      url : "${web_ctx}/orderManagementSearch.ajax",
-	      ajaxGridOptions : {async:false},    // 동기로 변환
-	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
-	      rowNum : $('#rownum option:selected').val(),
-	      datatype : "json",
-	   }).trigger('reloadGrid');
+	jQuery("#jqgrid_a").setGridParam({
+		url : "${web_ctx}/orderManagementSearch.ajax",
+		ajaxGridOptions : {async:false},    // 동기로 변환
+		postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":$('#searchKeyWord').val()},
+		rowNum : $('#rownum option:selected').val(),
+		datatype : "json",
+	}).trigger('reloadGrid');
 }
+
 </script>
 <style>
 #jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}
