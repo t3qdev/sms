@@ -455,7 +455,7 @@ $(function(){
         multiselect: true,
         editurl:'${web_ctx}/orderManagementSave.ajax',
         excel:true,
-        rowNum:20,
+        rowNum:1,
 
         gridComplete : function(e){
   
@@ -532,9 +532,9 @@ $(function(){
 			 pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+1+','+row+')"><span></span><span></span> Prev End</a>';
 			pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+prevPage+','+row+')">Prev <span></span></a>';
 		}
-		if(parseInt(pageCount) >= 10){
+		if(parseInt(pageCount) >= 9){
 			if(parseInt(page) <= 5){
-				for(var i=1; i<=10; i++){
+				for(var i=1; i<=9; i++){
 					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
 					}else{
@@ -542,7 +542,7 @@ $(function(){
 					}
 				}
 			}else if( parseInt(pageCount) - parseInt(page) <=5){
-				for(var i=parseInt(pageCount)-10; i<=parseInt(pageCount); i++){
+				for(var i=parseInt(pageCount)-8; i<=parseInt(pageCount); i++){
 					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
 					}else{
@@ -1062,11 +1062,13 @@ function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
 };
 
 function reLoadJqgrid(){
-	  var page = $('#jqgrid_a').getRowData(1).page;
+	  var page = $("#page").val();
+	  var row = $("#row").val();
+// 	  alert("page : " + page + " row : " + row);
 	   jQuery("#jqgrid_a").setGridParam({
 	      url : "${web_ctx}/orderManagementSearch.ajax",
 	      ajaxGridOptions : {async:false},    // 동기로 변환
-	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":$("#page").val() , "searchKeyword":$('#searchKeyWord').val()},
+	      postData:{"rowInput":row, "pageInput":page, "searchKeyword":$('#searchKeyWord').val()},
 	      rowNum : $('#rownum option:selected').val(),
 	      datatype : "json",
 	   }).trigger('reloadGrid');
