@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -90,65 +91,65 @@ public class OrderDetailController extends AbstractFileController{
 	@RequestMapping(value="/orderDetailView")
 	public String orderDetail(Model model, String ordNo, String reload,String saved) throws Exception{
 		
-		//1.selectBox êµ¬ì„±ìš© ëª¨ë¸
-		//1-1.ë‹´ë‹¹ìë¥¼ ê³ ë¥¼ìˆ˜ ìˆëŠ” SmsMsUser (ì¤‘êµ­ë‹´ë‹¹ìlist/ í•œêµ­ë‹´ë‹¹ìlist)
+		//1.selectBox ±¸¼º¿ë ¸ğµ¨
+		//1-1.´ã´çÀÚ¸¦ °í¸¦¼ö ÀÖ´Â SmsMsUser (Áß±¹´ã´çÀÚlist/ ÇÑ±¹´ã´çÀÚlist)
 		SmsMsUserVO prSmsMsUserVO= new SmsMsUserVO();
 		
-		List<SmsMsUserVO> SmsMsUserList = userService.selectSmsMsUser(prSmsMsUserVO);	//ë¹„ì–´ìˆëŠ”SmsMsUserVOë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë„£ìœ¼ë©´ ì „ì²´ê²€ìƒ‰ 
-		List<SmsMsUserVO> cnsOprList= new ArrayList<SmsMsUserVO>();		//ì¤‘êµ­ë‹´ë‹¹ìë¦¬ìŠ¤íŠ¸
-		List<SmsMsUserVO> krOprList= new ArrayList<SmsMsUserVO>();			//í•œêµ­ë‹´ë‹¹ìë¦¬ìŠ¤íŠ¸
+		List<SmsMsUserVO> SmsMsUserList = userService.selectSmsMsUser(prSmsMsUserVO);	//ºñ¾îÀÖ´ÂSmsMsUserVO¸¦ ¸Å°³º¯¼ö·Î ³ÖÀ¸¸é ÀüÃ¼°Ë»ö 
+		List<SmsMsUserVO> cnsOprList= new ArrayList<SmsMsUserVO>();		//Áß±¹´ã´çÀÚ¸®½ºÆ®
+		List<SmsMsUserVO> krOprList= new ArrayList<SmsMsUserVO>();			//ÇÑ±¹´ã´çÀÚ¸®½ºÆ®
 		
 		
 		for(SmsMsUserVO vo : SmsMsUserList){
-			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 ìƒí•´íŒ€
+			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 »óÇØÆÀ
 				cnsOprList.add(vo);
 				
 			}
-			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 í•œêµ­íŒ€
+			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 ÇÑ±¹ÆÀ
 				krOprList.add(vo);
 			}
 		}
-		//1-2.ê¸°ì¤€í™”í(stdXchrKindCd)
-		List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ê¸°ì¤€í™˜ìœ¨ì½”ë“œ
-		//1-3.ê²¬ì ì¡°ê±´(dlvMode)
-		List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ë°°ì†¡ë°©ì‹ì½”ë“œ
-		//1-4.í•­êµ¬(dlvDest)
-		List<CodeVO> dlvDestCdList = orderService.selectTbmsCmnCd("N00051");	//N00051 ë°°ì†¡ì§€ë„ì°©ì½”ë“œ
+		//1-2.±âÁØÈ­Æó(stdXchrKindCd)
+		List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ±âÁØÈ¯À²ÄÚµå
+		//1-3.°ßÀûÁ¶°Ç(dlvMode)
+		List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ¹è¼Û¹æ½ÄÄÚµå
+		//1-4.Ç×±¸(dlvDest)
+		List<CodeVO> dlvDestCdList = orderService.selectTbmsCmnCd("N00051");	//N00051 ¹è¼ÛÁöµµÂøÄÚµå
 		
-		//2.ê²¬ì ì¡°ê±´ì„ ë‹´ì€ orderDetailVO 
+		//2.°ßÀûÁ¶°ÇÀ» ´ãÀº orderDetailVO 
 		OrderDetailVO orderDetail = orderService. selectSmsMsOrdDetail(ordNo);
-		//ì£¼ë¬¸ë‹´ë‹¹ìì •ë³´ëŠ” ë‹¤ë¥¸ í…Œì´ë¸”ì— ì¡´ì¬í•œë‹¤ ê°€ì ¸ì™€ì„œ orderDetailVOì— ì±„ì›Œì¤Œ						<<--getUserAlasEngNmì´ nullì¼ê²½ìš° ()ì œê±° ìƒê°í•´ë‘˜ê²ƒ
+		//ÁÖ¹®´ã´çÀÚÁ¤º¸´Â ´Ù¸¥ Å×ÀÌºí¿¡ Á¸ÀçÇÑ´Ù °¡Á®¿Í¼­ orderDetailVO¿¡ Ã¤¿öÁÜ						<<--getUserAlasEngNmÀÌ nullÀÏ°æ¿ì ()Á¦°Å »ı°¢ÇØµÑ°Í
 		List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
 		for(SmsMsUserVO vo : oprList){
-			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 ìƒí•´íŒ€
+			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 »óÇØÆÀ
 				/*String oprCns =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
 				orderDetail.setOprCns(oprCns);*/
 				orderDetail.setOprCns(vo.getUserEml());
 				
 			}
-			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 í•œêµ­íŒ€
+			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 ÇÑ±¹ÆÀ
 				/*String oprKr =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
 				orderDetail.setOprKr(oprKr);*/
 				orderDetail.setOprKr(vo.getUserEml());
 			}
 		}
 	
-		//3.ê²¬ì ìƒí’ˆì„ ë‹´ì€ List<smsMsOrdGudsList>			//ì´ë¯¸ì§€-ë°”ì½”ë“œ-ìƒí’ˆëª…-ì˜ˆìƒìš”ì²­ìˆ˜ëŸ‰-ê·œê²©-ê°€ê²©(ë‹¨ê°€)-ì¸ë°•ìŠ¤ìˆ˜ëŸ‰-ìƒí’ˆë§í¬-ê²€ìƒ‰ : ë³´ë¥˜(ë‹¤ì‹œ)
+		//3.°ßÀû»óÇ°À» ´ãÀº List<smsMsOrdGudsList>			//ÀÌ¹ÌÁö-¹ÙÄÚµå-»óÇ°¸í-¿¹»ó¿äÃ»¼ö·®-±Ô°İ-°¡°İ(´Ü°¡)-ÀÎ¹Ú½º¼ö·®-»óÇ°¸µÅ©-°Ë»ö : º¸·ù(´Ù½Ã)
 		List<SmsMsOrdGudsVO> smsMsOrdGudsList =goodsService.selectSmsMsOrdGudsByOrdNo(ordNo);
-		//ì£¼ë¬¸ì— ì¡´ì¬í•˜ëŠ” ìƒí’ˆì´ Mappingì´ ë˜ì—ˆì„ ê²½ìš° ìƒí’ˆí…Œì´ë¸”ì—ì„œ *ì´ë¯¸ì§€,ì¸ë°•ìŠ¤ìˆ˜ëŸ‰,ë°”ì½”ë“œ*ê°’ì„ ê°€ì ¸ì˜¨ë‹¤
+		//ÁÖ¹®¿¡ Á¸ÀçÇÏ´Â »óÇ°ÀÌ MappingÀÌ µÇ¾úÀ» °æ¿ì »óÇ°Å×ÀÌºí¿¡¼­ *ÀÌ¹ÌÁö,ÀÎ¹Ú½º¼ö·®,¹ÙÄÚµå*°ªÀ» °¡Á®¿Â´Ù
 		for(SmsMsOrdGudsVO vo :smsMsOrdGudsList){
 			if("Y".equals(vo.getOrdGudsMpngYn())){
 				SmsMsGudsVO smsGuds = new SmsMsGudsVO();
 				smsGuds=goodsService.selectSmsMsGuds(vo.getGudsId());
 
-				//ë§¤í•‘ì´ ë˜ì—ˆë‹¤ê³  ë‚˜ì˜¤ëŠ”ë° ì‹¤ì œ ìƒí’ˆì •ë³´ê°€ ì—†ëŠ” ê²½ìš°ê°€ ì¡´ì¬í• ìˆ˜ ìˆë‹¤.
+				//¸ÅÇÎÀÌ µÇ¾ú´Ù°í ³ª¿À´Âµ¥ ½ÇÁ¦ »óÇ°Á¤º¸°¡ ¾ø´Â °æ¿ì°¡ Á¸ÀçÇÒ¼ö ÀÖ´Ù.
 				if(smsGuds!=null){
-	 				vo.setOrdGudsUpcId(smsGuds.getGudsUpcId());				//ë°”ì½”ë“œ //vo.setGudsUpcId(smsGuds.getGudsUpcId());		
-					vo.setGudsInbxQty(smsGuds.getGudsInbxQty());	//ì´ë¯¸ì§€
+	 				vo.setOrdGudsUpcId(smsGuds.getGudsUpcId());				//¹ÙÄÚµå //vo.setGudsUpcId(smsGuds.getGudsUpcId());		
+					vo.setGudsInbxQty(smsGuds.getGudsInbxQty());	//ÀÌ¹ÌÁö
 				}else{
 					vo.setOrdGudsMpngYn("N");
 				}
-				//GUDS_IMG_CD  N000080100 ëŒ€í‘œì´ë¯¸ì§€ 	N000080200 ëª©ë¡ì´ë¯¸ì§€
+				//GUDS_IMG_CD  N000080100 ´ëÇ¥ÀÌ¹ÌÁö 	N000080200 ¸ñ·ÏÀÌ¹ÌÁö
 				List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());
 				if(!gudsImgList.isEmpty()){ 
 					if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){
@@ -162,28 +163,28 @@ public class OrderDetailController extends AbstractFileController{
 		
 	
 
-		//4.ê²¬ì íŒŒì¼ì •ë³´ë¥¼ ë‹´ì€ List<orderDetailFileVO>
+		//4.°ßÀûÆÄÀÏÁ¤º¸¸¦ ´ãÀº List<orderDetailFileVO>
 		List<SmsMsOrdFileVO> smsMsOrdFileList= orderService.selectSmsMsOrdFileByOrdNo(ordNo); 	//=orderService.select
 
 		
-		//5.modelì— ê°ì¢… ì •ë³´ë¥¼ ë‹´ëŠ”ë‹¤.
-		model.addAttribute("ordNo", ordNo);		//ì£¼ë¬¸ë²ˆí˜¸	
-		//selectBoxêµ¬ì„±ìš”ì†Œ
-		model.addAttribute("cnsOprList",cnsOprList);		//ì¤‘êµ­íŒ€ì„ íƒ
-		model.addAttribute("krOprList",krOprList);		//í•œêµ­íŒ€ì„ íƒ
-		model.addAttribute("stdXchrKindCdList",stdXchrKindCdList);		//ê¸°ì¤€í™”í(stdXchrKindCd)
-		model.addAttribute("dlvModeCdList",dlvModeCdList);		//ê²¬ì ì¡°ê±´(dlvMode)
-		model.addAttribute("dlvDestCdList",dlvDestCdList);		//í•­êµ¬(dlvDest)
-		//ê°’ìš”ì†Œ
-		model.addAttribute("orderDetail",orderDetail);	//ì£¼ë¬¸ìƒì„¸ì •ë³´
-		model.addAttribute("smsMsOrdGudsList", smsMsOrdGudsList);	//ì£¼ë¬¸ìƒí’ˆë¦¬ìŠ¤íŠ¸
-		model.addAttribute("gudsListSize", smsMsOrdGudsList.size());	//ì£¼ë¬¸ìƒí’ˆë¦¬ìŠ¤íŠ¸
-		model.addAttribute("smsMsOrdFileList", smsMsOrdFileList);		//ì£¼ë¬¸íŒŒì¼ë¦¬ìŠ¤íŠ¸
+		//5.model¿¡ °¢Á¾ Á¤º¸¸¦ ´ã´Â´Ù.
+		model.addAttribute("ordNo", ordNo);		//ÁÖ¹®¹øÈ£	
+		//selectBox±¸¼º¿ä¼Ò
+		model.addAttribute("cnsOprList",cnsOprList);		//Áß±¹ÆÀ¼±ÅÃ
+		model.addAttribute("krOprList",krOprList);		//ÇÑ±¹ÆÀ¼±ÅÃ
+		model.addAttribute("stdXchrKindCdList",stdXchrKindCdList);		//±âÁØÈ­Æó(stdXchrKindCd)
+		model.addAttribute("dlvModeCdList",dlvModeCdList);		//°ßÀûÁ¶°Ç(dlvMode)
+		model.addAttribute("dlvDestCdList",dlvDestCdList);		//Ç×±¸(dlvDest)
+		//°ª¿ä¼Ò
+		model.addAttribute("orderDetail",orderDetail);	//ÁÖ¹®»ó¼¼Á¤º¸
+		model.addAttribute("smsMsOrdGudsList", smsMsOrdGudsList);	//ÁÖ¹®»óÇ°¸®½ºÆ®
+		model.addAttribute("gudsListSize", smsMsOrdGudsList.size());	//ÁÖ¹®»óÇ°¸®½ºÆ®
+		model.addAttribute("smsMsOrdFileList", smsMsOrdFileList);		//ÁÖ¹®ÆÄÀÏ¸®½ºÆ®
 		
-		//ë¶€ëª¨ì°½ ìƒˆë¡œê³ ì¹¨
+		//ºÎ¸ğÃ¢ »õ·Î°íÄ§
 		model.addAttribute("reload", reload);		
 		
-		//ë””ë¹„ì €ì¥ì—¬ë¶€ alert
+		//µğºñÀúÀå¿©ºÎ alert
 		model.addAttribute("saved", saved);
 		return "orderDetail";
 		
@@ -192,57 +193,57 @@ public class OrderDetailController extends AbstractFileController{
 	@RequestMapping(value="/orderDetailSpecialView")
 	public String orderDetail(@RequestParam("file") MultipartFile[] fileArray, Model model, String ordNo) throws Exception{
 		
-		/////////////////////////////////////////// ìŠ¤í˜ì…œ ì˜¤ë”, ê²¬ì ì„œ ì—‘ì…€ ë¡œë“œ - KJY ///////////////////////////////////////////
-		// íŒŒì¼ load
+		/////////////////////////////////////////// ½ºÆä¼È ¿À´õ, °ßÀû¼­ ¿¢¼¿ ·Îµå - KJY ///////////////////////////////////////////
+		// ÆÄÀÏ load
 		MultipartFile excelFile = null;
 		for (MultipartFile multipartFile : fileArray) {		
 			String originalFileName = multipartFile.getOriginalFilename();
-			if (originalFileName.endsWith(".xls") || originalFileName.endsWith(".xlsx")) {          //ì—‘ì…€ íŒŒì¼ í™•ì¸
+			if (originalFileName.endsWith(".xls") || originalFileName.endsWith(".xlsx")) {          //¿¢¼¿ ÆÄÀÏ È®ÀÎ
 				LOGGER.debug("1.1.=============================" );
 				excelFile = multipartFile;
 			}else{
-				LOGGER.debug("1.2.=============================í™•ì¥ì ì˜ëª»ë¨." );
+				LOGGER.debug("1.2.=============================È®ÀåÀÚ Àß¸øµÊ." );
 			}
 		}
-		//workbook ì´ˆê¸°í™”
+		//workbook ÃÊ±âÈ­
 		Workbook wb = WorkbookFactory.create(excelFile.getInputStream());
 		Sheet sheet = wb.getSheetAt(0);                   
 
-		LOGGER.debug(" 2.1.1 ì—‘ì…€ì—ì„œ SMS_MS_ORD ì •ë³´ë¥¼ ë½‘ì•„ì˜¨ë‹¤." );
-		// í´ë¼ì´ì–¸íŠ¸ ìš”ì²­ ê²¬ì ì„œ excel ì—ì„œ ë°›ì•„ì˜¬ ë³€ìˆ˜ë“¤ ì´ˆê¸°í™”.     SmsMsOrdVO
-		String userAlasCnsNm = null;							 //ë‹´ë‹¹ì   (ì¤‘êµ­ì˜ ì¤‘ë¬¸ í™”ëª…)
-		String custId = null;								// í´ë¼ì´ì–¸íŠ¸
-		String ordReqDt = null;							// ë¬¸ì˜ì¼ì
-		String ordHopeArvlDt = null;					// í¬ë§ ì¸ë„ì¼ì
-		String	 dlvModeCdPlusdlvDestCd = null;		// ê²¬ì ì¡°ê±´ + í•­êµ¬ 
-		String ctrtTmplYn = null;						// ê³„ì•½ì„œ í…œí”Œë¦¿ ìœ ë¬´
-		String poSchdDt = null;							// POì˜ˆìƒì¼ì
-		String smplReqYn = null;						// ìƒ˜í”Œìš”ì²­ìœ ë¬´
-		String qlfcReqYn = null;							// ìê²© ìš”ì²­ ìœ ë¬´
-		String custOrdProcCont = null;				 // ì£¼ë¬¸ í”„ë¡œì„¸ìŠ¤
+		LOGGER.debug(" 2.1.1 ¿¢¼¿¿¡¼­ SMS_MS_ORD Á¤º¸¸¦ »Ì¾Æ¿Â´Ù." );
+		// Å¬¶óÀÌ¾ğÆ® ¿äÃ» °ßÀû¼­ excel ¿¡¼­ ¹Ş¾Æ¿Ã º¯¼öµé ÃÊ±âÈ­.     SmsMsOrdVO
+		String userAlasCnsNm = null;							 //´ã´çÀÚ   (Áß±¹ÀÇ Áß¹® È­¸í)
+		String custId = null;								// Å¬¶óÀÌ¾ğÆ®
+		String ordReqDt = null;							// ¹®ÀÇÀÏÀÚ
+		String ordHopeArvlDt = null;					// Èñ¸Á ÀÎµµÀÏÀÚ
+		String	 dlvModeCdPlusdlvDestCd = null;		// °ßÀûÁ¶°Ç + Ç×±¸ 
+		String ctrtTmplYn = null;						// °è¾à¼­ ÅÛÇÃ¸´ À¯¹«
+		String poSchdDt = null;							// PO¿¹»óÀÏÀÚ
+		String smplReqYn = null;						// »ùÇÃ¿äÃ»À¯¹«
+		String qlfcReqYn = null;							// ÀÚ°İ ¿äÃ» À¯¹«
+		String custOrdProcCont = null;				 // ÁÖ¹® ÇÁ·Î¼¼½º
 		
-		String dlvModeCd = null;	 					// ê²¬ì ì¡°ê±´
-		String dlvDestCd = null;						// í•­êµ¬
+		String dlvModeCd = null;	 					// °ßÀûÁ¶°Ç
+		String dlvDestCd = null;						// Ç×±¸
 		
 		String ordTypeCd = null;		
-		String ordMemoCont = null;                   //ë¹„ê³ 
-		// ì—‘ì…€ì—ì„œ ExcelClientReqGudsVO ë³€ìˆ˜ë“¤ ê°€ì ¸ì™€ì„œ ëŒ€ì….
-		userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//ë‹´ë‹¹ì
-		custId = StringUtil.excelGetCell(sheet.getRow(1).getCell(4));    						// í´ë¼ì´ì–¸íŠ¸
-		ordReqDt = StringUtil.excelGetCell(sheet.getRow(1).getCell(6)); 						// ë¬¸ì˜ì¼ì
+		String ordMemoCont = null;                   //ºñ°í
+		// ¿¢¼¿¿¡¼­ ExcelClientReqGudsVO º¯¼öµé °¡Á®¿Í¼­ ´ëÀÔ.
+		userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//´ã´çÀÚ
+		custId = StringUtil.excelGetCell(sheet.getRow(1).getCell(4));    						// Å¬¶óÀÌ¾ğÆ®
+		ordReqDt = StringUtil.excelGetCell(sheet.getRow(1).getCell(6)); 						// ¹®ÀÇÀÏÀÚ
 		if(ordReqDt!=null){
 			ordReqDt = ordReqDt.replace("-", "");
 			if("".equals(ordReqDt)) ordReqDt=null;
 			if(ordReqDt.length()>8) ordReqDt=null;
 		}
-		ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// í¬ë§ ì¸ë„ì¼ì
+		ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// Èñ¸Á ÀÎµµÀÏÀÚ
 		if(ordHopeArvlDt!=null){
 			ordHopeArvlDt = ordHopeArvlDt.replace("-", "");
 			if("".equals(ordHopeArvlDt)) ordHopeArvlDt=null;
 			if(ordHopeArvlDt.length()>8) ordHopeArvlDt=null;	
 		}
-		dlvModeCdPlusdlvDestCd = StringUtil.excelGetCell(sheet.getRow(2).getCell(4));	// ê²¬ì ì¡°ê±´ + í•­êµ¬ 	
-//		ì•½ì - í’€ë„¤ì„(í•­êµ¬)
+		dlvModeCdPlusdlvDestCd = StringUtil.excelGetCell(sheet.getRow(2).getCell(4));	// °ßÀûÁ¶°Ç + Ç×±¸ 	
+//		¾àÀÚ - Ç®³×ÀÓ(Ç×±¸)
 		if(dlvModeCdPlusdlvDestCd!=null){
 			String [] strArr = null;
 			strArr = dlvModeCdPlusdlvDestCd.trim().split(" ");
@@ -255,7 +256,7 @@ public class OrderDetailController extends AbstractFileController{
 			}
 		}
 
-		// ë°°ì†¡ ë°©ë²•ì€- Code í…Œì´ë¸”ì—ì„œ ì§ì ‘ ê°€ì ¸ì˜¤ê³ , ì •í™•í•˜ì§€ ì•Šìœ¼ë©´ null ì²˜ë¦¬ í•œë‹¤.
+		// ¹è¼Û ¹æ¹ıÀº- Code Å×ÀÌºí¿¡¼­ Á÷Á¢ °¡Á®¿À°í, Á¤È®ÇÏÁö ¾ÊÀ¸¸é null Ã³¸® ÇÑ´Ù.
 		if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
 			List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
 			tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvDestCd);
@@ -266,112 +267,112 @@ public class OrderDetailController extends AbstractFileController{
 			}
 		}
 		
-		ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// ê³„ì•½ì„œ í…œí”Œë¦¿ ìœ ë¬´
+		ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// °è¾à¼­ ÅÛÇÃ¸´ À¯¹«
 		if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
 		else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							
 		else{
 			ctrtTmplYn=null;
 		}
-		poSchdDt = StringUtil.excelGetCell(sheet.getRow(3).getCell(6));     							// POì˜ˆìƒì¼ì
+		poSchdDt = StringUtil.excelGetCell(sheet.getRow(3).getCell(6));     							// PO¿¹»óÀÏÀÚ
 		if(poSchdDt!=null){
 			poSchdDt = poSchdDt.replace("-", "");
 			if("".equals(poSchdDt)) poSchdDt=null;
 			if(poSchdDt.length()>8) poSchdDt=null;
 		}
-		smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// ìƒ˜í”Œìš”ì²­ìœ ë¬´
+		smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// »ùÇÃ¿äÃ»À¯¹«
 		if("Y".equalsIgnoreCase(smplReqYn)) {smplReqYn="Y";}
 		else if("N".equalsIgnoreCase(smplReqYn)) {smplReqYn="N";}
 		else{
 			smplReqYn=null;
 		}
-		qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// ìê²© ìš”ì²­ ìœ ë¬´
+		qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// ÀÚ°İ ¿äÃ» À¯¹«
 		if("Y".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="Y";}
 		else if("N".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="N";}
 		else{
 			qlfcReqYn=null;
 		}
-		custOrdProcCont = StringUtil.excelGetCell(sheet.getRow(4).getCell(4));  			// ì£¼ë¬¸ í”„ë¡œì„¸ìŠ¤
+		custOrdProcCont = StringUtil.excelGetCell(sheet.getRow(4).getCell(4));  			// ÁÖ¹® ÇÁ·Î¼¼½º
 		int tempRows = sheet.getPhysicalNumberOfRows();
-		ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//ë¹„ê³ 
+		ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//ºñ°í
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		System.out.println("ë‹´ë‹¹ì ëª… : " + userAlasCnsNm);        //ë‹´ë‹¹ìëª… : ì¤‘ë¬¸í™”ëª…
-//		System.out.println("í´ë¼ì´ì–¸íŠ¸ : " + custId);
-//		System.out.println("ë¬¸ì˜ì¼ì : " + ordReqDt);
-//		System.out.println("í¬ë§ ì¸ë„ì¼ì : " + ordHopeArvlDt);
-//		System.out.println("ê²¬ì ì¡°ê±´ + í•­êµ¬  : " + dlvModeCdPlusdlvDestCd);
-//		System.out.println("ê³„ì•½ì„œ í…œí”Œë¦¿ ìœ ë¬´ : " + ctrtTmplYn);
-//		System.out.println("ìƒ˜í”Œìš”ì²­ìœ ë¬´ : " + smplReqYn);
-//		System.out.println("ìê²© ìš”ì²­ ìœ ë¬´ : " + qlfcReqYn);
-//		System.out.println("ì£¼ë¬¸ í”„ë¡œì„¸ìŠ¤ : " + custOrdProcCont);
+//		System.out.println("´ã´çÀÚ ¸í : " + userAlasCnsNm);        //´ã´çÀÚ¸í : Áß¹®È­¸í
+//		System.out.println("Å¬¶óÀÌ¾ğÆ® : " + custId);
+//		System.out.println("¹®ÀÇÀÏÀÚ : " + ordReqDt);
+//		System.out.println("Èñ¸Á ÀÎµµÀÏÀÚ : " + ordHopeArvlDt);
+//		System.out.println("°ßÀûÁ¶°Ç + Ç×±¸  : " + dlvModeCdPlusdlvDestCd);
+//		System.out.println("°è¾à¼­ ÅÛÇÃ¸´ À¯¹« : " + ctrtTmplYn);
+//		System.out.println("»ùÇÃ¿äÃ»À¯¹« : " + smplReqYn);
+//		System.out.println("ÀÚ°İ ¿äÃ» À¯¹« : " + qlfcReqYn);
+//		System.out.println("ÁÖ¹® ÇÁ·Î¼¼½º : " + custOrdProcCont);
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		
 		String oprCns = null;
 		
 		SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
-		smsMsUserVO.setUserAlasCnsNm(userAlasCnsNm); 								//  SMS_MS_USER ì— ë‹´ë‹¹ì ì¤‘êµ­ì–´ í™”ëª… ìˆëŠ”ì§€ ê²€ìƒ‰
+		smsMsUserVO.setUserAlasCnsNm(userAlasCnsNm); 								//  SMS_MS_USER ¿¡ ´ã´çÀÚ Áß±¹¾î È­¸í ÀÖ´ÂÁö °Ë»ö
 		List <SmsMsUserVO> smsMsUserVOList = orderService.selectSmsMsUser(smsMsUserVO);
-		if(smsMsUserVOList.size()==1){		// ëª‡ê°œ ë” ìˆì„ìˆ˜ë„ ìˆì§€ë§Œ, ì—¬ëŸ¬ê°œê°€ ê²€ìƒ‰ë˜ë©´ ì°¨ë¼ë¦¬ mapping ì„ ì•ˆ í•˜ëŠ” ê²ƒì´ ë‚«ë‹¤.
+		if(smsMsUserVOList.size()==1){		// ¸î°³ ´õ ÀÖÀ»¼öµµ ÀÖÁö¸¸, ¿©·¯°³°¡ °Ë»öµÇ¸é Â÷¶ó¸® mapping À» ¾È ÇÏ´Â °ÍÀÌ ³´´Ù.
 			SmsMsOrdUserVO smsMsOrdUserVO = new SmsMsOrdUserVO();
 			smsMsOrdUserVO.setOrdNo(ordNo);
 			oprCns = smsMsUserVOList.get(0).getUserAlasCnsNm();
 		}
 		
-		// ë³€ìˆ˜ë“¤ì„ OrderDetailVO ì— ì§‘ì–´ ë„£ëŠ”ë‹¤.
+		// º¯¼öµéÀ» OrderDetailVO ¿¡ Áı¾î ³Ö´Â´Ù.
 		OrderDetailVO orderDetailVO = new OrderDetailVO();
 		orderDetailVO.setOrdNo(ordNo);
-		orderDetailVO.setOprCns(oprCns);             // userAlasCnsNm   ë¥¼ ê°€ì§€ê³ , DBì— ê²€ìƒ‰í•´ì„œ ìˆìœ¼ë©´ ë§¤í•‘, ì—†ìœ¼ë©´ NO ë§¤í•‘
-//		orderDetailVO.setOprKr(oprKr);				  // í•„ìš” ì—†ìŒ.
+		orderDetailVO.setOprCns(oprCns);             // userAlasCnsNm   ¸¦ °¡Áö°í, DB¿¡ °Ë»öÇØ¼­ ÀÖÀ¸¸é ¸ÅÇÎ, ¾øÀ¸¸é NO ¸ÅÇÎ
+//		orderDetailVO.setOprKr(oprKr);				  // ÇÊ¿ä ¾øÀ½.
 		orderDetailVO.setCustId(custId);
 		orderDetailVO.setOrdReqDt(ordReqDt);
 		orderDetailVO.setOrdHopeArvlDt(ordHopeArvlDt);
-//		orderDetailVO.setStdXchrAmt(stdXchrAmt);								// ì—‘ì…€ì— ì¡´ì¬ X
-//		orderDetailVO.setStdXchrKindCd(stdXchrKindCd);						// ì—‘ì…€ì— ì¡´ì¬ X	
-//		orderDetailVO.setPymtPrvdModeCont(pymtPrvdModeCont);			// ì—‘ì…€ì— ì¡´ì¬ X
+//		orderDetailVO.setStdXchrAmt(stdXchrAmt);								// ¿¢¼¿¿¡ Á¸Àç X
+//		orderDetailVO.setStdXchrKindCd(stdXchrKindCd);						// ¿¢¼¿¿¡ Á¸Àç X	
+//		orderDetailVO.setPymtPrvdModeCont(pymtPrvdModeCont);			// ¿¢¼¿¿¡ Á¸Àç X
 		orderDetailVO.setDlvModeCd(dlvModeCd);
 		orderDetailVO.setDlvDestCd(dlvDestCd);
 		orderDetailVO.setPoSchdDt(poSchdDt);
-//		orderDetailVO.setOrdEstmDt(ordEstmDt);									// ì—‘ì…€ì— ì¡´ì¬ X
-//		orderDetailVO.setOrdExpDt(ordExpDt);										// ì—‘ì…€ì— ì¡´ì¬ X
+//		orderDetailVO.setOrdEstmDt(ordEstmDt);									// ¿¢¼¿¿¡ Á¸Àç X
+//		orderDetailVO.setOrdExpDt(ordExpDt);										// ¿¢¼¿¿¡ Á¸Àç X
 		orderDetailVO.setCtrtTmplYn(ctrtTmplYn);
 		orderDetailVO.setSmplReqYn(smplReqYn);
-//		orderDetailVO.setPoSchdDt(poSchdDt);									// ì—‘ì…€ì— ì¡´ì¬ X
+//		orderDetailVO.setPoSchdDt(poSchdDt);									// ¿¢¼¿¿¡ Á¸Àç X
 		orderDetailVO.setQlfcReqYn(qlfcReqYn);
 		orderDetailVO.setCustOrdProcCont(custOrdProcCont);
-//		orderDetailVO.setOrdMemoCont(ordMemoCont);							// ì—‘ì…€ì— ì¡´ì¬ X
+//		orderDetailVO.setOrdMemoCont(ordMemoCont);							// ¿¢¼¿¿¡ Á¸Àç X
 		orderDetailVO.setOrdMemoCont(ordMemoCont);
 		
-		LOGGER.debug("2.1.4.1 ì—‘ì…€ì—ì„œ ì£¼ë¬¸ì˜ SMS_MS_ORD_GUDS ë¦¬ìŠ¤íŠ¸ë¥¼ ë½‘ì•„ì˜¨ë‹¤." );
+		LOGGER.debug("2.1.4.1 ¿¢¼¿¿¡¼­ ÁÖ¹®ÀÇ SMS_MS_ORD_GUDS ¸®½ºÆ®¸¦ »Ì¾Æ¿Â´Ù." );
 		int rows = sheet.getPhysicalNumberOfRows();
 
 		
 		
-		int tempNum=1;   					//ord_guds_seqì— ë„£ì„ ìˆ«ì ê´€ë¦¬ìš©
+		int tempNum=1;   					//ord_guds_seq¿¡ ³ÖÀ» ¼ıÀÚ °ü¸®¿ë
 		ordNo = ordNo;						//ordNo
 		String ord_guds_seq=null;   		//NO
-		String gudsId=null;					//ìƒí’ˆid   -   b5c gudsId ì™€ëŠ” ë³„ê°œ.   ì´ í…Œì´ë¸” ìì²´ì˜ ìœ ì¼í‚¤ ê°œë…
-		String ordGudsUpcId=null;       		//ìƒí’ˆë°”ì½”ë“œ		
-		String ordGudsCnsNm=null;  		//ì¤‘ë¬¸ ìƒí’ˆëª…
-		String ordGudsQty=null;     		//ìƒí’ˆ ìˆ˜ëŸ‰, (ì˜ˆìƒìš”ì²­)ìˆ˜ëŸ‰
-		String ordGudsSizeVal=null;		//ì£¼ë¬¸ìƒí’ˆí¬ê¸°ê°’ ,ê·œê²©
-		String ordGudsSalePrc=null;		//ì£¼ë¬¸ìƒí’ˆíŒë§¤ê°€(POë‹¨ê°€USD)
-		String ordGudsUrlAddr=null;	    // //ì£¼ë¬¸ìƒí’ˆurlì£¼ì†Œ, ë§í¬
+		String gudsId=null;					//»óÇ°id   -   b5c gudsId ¿Í´Â º°°³.   ÀÌ Å×ÀÌºí ÀÚÃ¼ÀÇ À¯ÀÏÅ° °³³ä
+		String ordGudsUpcId=null;       		//»óÇ°¹ÙÄÚµå		
+		String ordGudsCnsNm=null;  		//Áß¹® »óÇ°¸í
+		String ordGudsQty=null;     		//»óÇ° ¼ö·®, (¿¹»ó¿äÃ»)¼ö·®
+		String ordGudsSizeVal=null;		//ÁÖ¹®»óÇ°Å©±â°ª ,±Ô°İ
+		String ordGudsSalePrc=null;		//ÁÖ¹®»óÇ°ÆÇ¸Å°¡(PO´Ü°¡USD)
+		String ordGudsUrlAddr=null;	    // //ÁÖ¹®»óÇ°urlÁÖ¼Ò, ¸µÅ©
 
 		boolean gudsExist = false;
 		List<SmsMsOrdGudsVO> smsMsOrdGudsVOList = new ArrayList<SmsMsOrdGudsVO>();
 		for(int i=6; i<rows-1; i++){
-			ordGudsUpcId = StringUtil.excelGetCell(sheet.getRow(i).getCell(1));
+			ordGudsUpcId = StringUtil.getCellUpcId(sheet.getRow(i).getCell(1));
 			ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
 			ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
 			ordGudsSizeVal =  StringUtil.excelGetCell(sheet.getRow(i).getCell(4)); 
 			ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
 			ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
 			
-			// ìƒí’ˆ ì •ë³´ ì¤‘ì—ì„œ, (ordGudsCnsNm) ê°€ ë¹ ì§€ë©´ ì˜ë¯¸ê°€ ì—†ë‹¤.
+			// »óÇ° Á¤º¸ Áß¿¡¼­, (ordGudsCnsNm) °¡ ºüÁö¸é ÀÇ¹Ì°¡ ¾ø´Ù.
 			if(ordGudsCnsNm!=null && "".equals(ordGudsCnsNm)!=true){
 				gudsExist = true;
 				ord_guds_seq =  String.valueOf(tempNum++);
-				SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS ì— ë„£ì„ VO
+				SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS ¿¡ ³ÖÀ» VO
 				smsMsOrdGudsVO.setOrdNo(ordNo);
 				smsMsOrdGudsVO.setOrdGudsSeq(ord_guds_seq);
 				smsMsOrdGudsVO.setOrdGudsMpngYn("N");
@@ -385,16 +386,16 @@ public class OrderDetailController extends AbstractFileController{
 				LOGGER.debug(smsMsOrdGudsVO.toString());
 			}
 		}
-		if(gudsExist == false){        // ìƒí’ˆì´ í•˜ë‚˜ë„ ì—†ìœ¼ë©´, ì£¼ë¬¸ìƒì„± X
+		if(gudsExist == false){        // »óÇ°ÀÌ ÇÏ³ªµµ ¾øÀ¸¸é, ÁÖ¹®»ı¼º X
 			return "error_notException"; 
 		}
-		LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS  List Load==========ì™„ë£Œ" );
-		//END////////////////////////////////////// ìŠ¤í˜ì…œ ì˜¤ë”, ê²¬ì ì„œ ì—‘ì…€ ë¡œë“œ - KJY ///////////////////////////////////////////END
+		LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS  List Load==========¿Ï·á" );
+		//END////////////////////////////////////// ½ºÆä¼È ¿À´õ, °ßÀû¼­ ¿¢¼¿ ·Îµå - KJY ///////////////////////////////////////////END
 
 
 
-		//		smsMsOrdGudsVOList     -> ìƒí’ˆì •ë³´ ë¦¬ìŠ¤íŠ¸	
-//		System.out.println("Excel ì—ì„œ ì½ì–´ì˜¨ smsMsOrdGudsVOList ");
+		//		smsMsOrdGudsVOList     -> »óÇ°Á¤º¸ ¸®½ºÆ®	
+//		System.out.println("Excel ¿¡¼­ ÀĞ¾î¿Â smsMsOrdGudsVOList ");
 //		for(int i=0; i<smsMsOrdGudsVOList.size();i++){
 //			System.out.println(smsMsOrdGudsVOList.get(i).toString());
 //		}
@@ -407,32 +408,32 @@ public class OrderDetailController extends AbstractFileController{
 		
 		
 
-		//1-1.ë‹´ë‹¹ìë¥¼ ê³ ë¥¼ìˆ˜ ìˆëŠ” SmsMsUser (ì¤‘êµ­ë‹´ë‹¹ìlist/ í•œêµ­ë‹´ë‹¹ìlist)
+		//1-1.´ã´çÀÚ¸¦ °í¸¦¼ö ÀÖ´Â SmsMsUser (Áß±¹´ã´çÀÚlist/ ÇÑ±¹´ã´çÀÚlist)
 		SmsMsUserVO prSmsMsUserVO= new SmsMsUserVO();
 		
-		List<SmsMsUserVO> SmsMsUserList = userService.selectSmsMsUser(prSmsMsUserVO);	//ë¹„ì–´ìˆëŠ”SmsMsUserVOë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë„£ìœ¼ë©´ ì „ì²´ê²€ìƒ‰ 
-		List<SmsMsUserVO> cnsOprList= new ArrayList<SmsMsUserVO>();		//ì¤‘êµ­ë‹´ë‹¹ìë¦¬ìŠ¤íŠ¸
-		List<SmsMsUserVO> krOprList= new ArrayList<SmsMsUserVO>();			//í•œêµ­ë‹´ë‹¹ìë¦¬ìŠ¤íŠ¸
+		List<SmsMsUserVO> SmsMsUserList = userService.selectSmsMsUser(prSmsMsUserVO);	//ºñ¾îÀÖ´ÂSmsMsUserVO¸¦ ¸Å°³º¯¼ö·Î ³ÖÀ¸¸é ÀüÃ¼°Ë»ö 
+		List<SmsMsUserVO> cnsOprList= new ArrayList<SmsMsUserVO>();		//Áß±¹´ã´çÀÚ¸®½ºÆ®
+		List<SmsMsUserVO> krOprList= new ArrayList<SmsMsUserVO>();			//ÇÑ±¹´ã´çÀÚ¸®½ºÆ®
 		
 		
 		for(SmsMsUserVO vo : SmsMsUserList){
-			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 ìƒí•´íŒ€
+			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 »óÇØÆÀ
 				cnsOprList.add(vo);
 				
 			}
-			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 í•œêµ­íŒ€
+			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 ÇÑ±¹ÆÀ
 				krOprList.add(vo);
 			}
 		}
-		//1-2.ê¸°ì¤€í™”í(stdXchrKindCd)
-		List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ê¸°ì¤€í™˜ìœ¨ì½”ë“œ
-		//1-3.ê²¬ì ì¡°ê±´(dlvMode)
-		List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ë°°ì†¡ë°©ì‹ì½”ë“œ
-		//1-4.í•­êµ¬(dlvDest)
-		List<CodeVO> dlvDestCdList = orderService.selectTbmsCmnCd("N00051");	//N00051 ë°°ì†¡ì§€ë„ì°©ì½”ë“œ
+		//1-2.±âÁØÈ­Æó(stdXchrKindCd)
+		List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ±âÁØÈ¯À²ÄÚµå
+		//1-3.°ßÀûÁ¶°Ç(dlvMode)
+		List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ¹è¼Û¹æ½ÄÄÚµå
+		//1-4.Ç×±¸(dlvDest)
+		List<CodeVO> dlvDestCdList = orderService.selectTbmsCmnCd("N00051");	//N00051 ¹è¼ÛÁöµµÂøÄÚµå
 		
 		
-		//ê°’ìœ¼ë¡œ ë“¤ì–´ì˜¨ ê²¬ì ì¡°ê±´ì„ ì½”ë“œê°’ìœ¼ë¡œ ë³€ê²½
+		//°ªÀ¸·Î µé¾î¿Â °ßÀûÁ¶°ÇÀ» ÄÚµå°ªÀ¸·Î º¯°æ
 		if(orderDetailVO.getDlvModeCd()!=null){
 			for(CodeVO vo : dlvModeCdList){
 				if(orderDetailVO.getDlvModeCd().equals(vo.getCdVal())){
@@ -442,7 +443,7 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		
 		
-		//ê°’ìœ¼ë¡œ ë“¤ì–´ì˜¨ í•­êµ¬ë¥¼ ì½”ë“œê°’ìœ¼ë¡œ ë³€ê²½
+		//°ªÀ¸·Î µé¾î¿Â Ç×±¸¸¦ ÄÚµå°ªÀ¸·Î º¯°æ
 		if(orderDetailVO.getDlvDestCd()!=null){
 			for(CodeVO vo : dlvDestCdList){
 				if(orderDetailVO.getDlvDestCd().equals(vo.getCdVal())){
@@ -451,7 +452,7 @@ public class OrderDetailController extends AbstractFileController{
 			}
 		}
 		
-		//ê°’ìœ¼ë¡œ ë“¤ì–´ì˜¨ í™”ëª…ì„ ë©”ì¼ê°’ìœ¼ë¡œ ë³€ê²½
+		//°ªÀ¸·Î µé¾î¿Â È­¸íÀ» ¸ŞÀÏ°ªÀ¸·Î º¯°æ
 		if(orderDetailVO.getOprCns()!=null){
 			for(SmsMsUserVO vo : cnsOprList){
 				if(orderDetailVO.getOprCns().equals(vo.getUserAlasCnsNm())){
@@ -461,102 +462,100 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		
 		String isSaved ="N";
-		//5.modelì— ê°ì¢… ì •ë³´ë¥¼ ë‹´ëŠ”ë‹¤.
-		model.addAttribute("ordNo", ordNo);		//ì£¼ë¬¸ë²ˆí˜¸	
-		//selectBoxêµ¬ì„±ìš”ì†Œ
-		model.addAttribute("cnsOprList",cnsOprList);		//ì¤‘êµ­íŒ€ì„ íƒ
-		model.addAttribute("krOprList",krOprList);		//í•œêµ­íŒ€ì„ íƒ
-		model.addAttribute("stdXchrKindCdList",stdXchrKindCdList);		//ê¸°ì¤€í™”í(stdXchrKindCd)
-		model.addAttribute("dlvModeCdList",dlvModeCdList);		//ê²¬ì ì¡°ê±´(dlvMode)
-		model.addAttribute("dlvDestCdList",dlvDestCdList);		//í•­êµ¬(dlvDest)
-		//ê°’ìš”ì†Œ
-		model.addAttribute("orderDetail",orderDetailVO);	//ì£¼ë¬¸ìƒì„¸ì •ë³´
-		model.addAttribute("smsMsOrdGudsList", smsMsOrdGudsVOList);	//ì£¼ë¬¸ìƒí’ˆë¦¬ìŠ¤íŠ¸
-		model.addAttribute("gudsListSize", smsMsOrdGudsVOList.size());	//ì£¼ë¬¸ìƒí’ˆë¦¬ìŠ¤íŠ¸
+		//5.model¿¡ °¢Á¾ Á¤º¸¸¦ ´ã´Â´Ù.
+		model.addAttribute("ordNo", ordNo);		//ÁÖ¹®¹øÈ£	
+		//selectBox±¸¼º¿ä¼Ò
+		model.addAttribute("cnsOprList",cnsOprList);		//Áß±¹ÆÀ¼±ÅÃ
+		model.addAttribute("krOprList",krOprList);		//ÇÑ±¹ÆÀ¼±ÅÃ
+		model.addAttribute("stdXchrKindCdList",stdXchrKindCdList);		//±âÁØÈ­Æó(stdXchrKindCd)
+		model.addAttribute("dlvModeCdList",dlvModeCdList);		//°ßÀûÁ¶°Ç(dlvMode)
+		model.addAttribute("dlvDestCdList",dlvDestCdList);		//Ç×±¸(dlvDest)
+		//°ª¿ä¼Ò
+		model.addAttribute("orderDetail",orderDetailVO);	//ÁÖ¹®»ó¼¼Á¤º¸
+		model.addAttribute("smsMsOrdGudsList", smsMsOrdGudsVOList);	//ÁÖ¹®»óÇ°¸®½ºÆ®
+		model.addAttribute("gudsListSize", smsMsOrdGudsVOList.size());	//ÁÖ¹®»óÇ°¸®½ºÆ®
 		model.addAttribute("isSaved", isSaved);
 		return "orderDetail";
 	}
-	//ì €ì¥
+	//ÀúÀå
 	@RequestMapping(value="/orderDetailSave")
 	public String orderDetailSave(OrderDetailVO orderDetailVo, SmsMsOrdGudsVO smsMsOrdGudsVO, String ordNo, int gudsListSize, String wrtrEml,Model model) throws Exception{
-		
-		//DTì˜ í˜•íƒœë¥¼ dateë¡œ ë³€ê²½
-		orderDetailVo.setOrdEstmDt(StringUtil.dateToDt(orderDetailVo.getOrdEstmDt()));
-		orderDetailVo.setOrdExpDt(StringUtil.dateToDt(orderDetailVo.getOrdExpDt()));
-		orderDetailVo.setOrdHopeArvlDt(StringUtil.dateToDt(orderDetailVo.getOrdHopeArvlDt()));
-		orderDetailVo.setOrdReqDt(StringUtil.dateToDt(orderDetailVo.getOrdReqDt()));
-		orderDetailVo.setPoSchdDt(StringUtil.dateToDt(orderDetailVo.getPoSchdDt()));
-		
-		
-		//ìƒí’ˆì •ë³´ì— ,ê°€ ë“¤ì–´ê°€ë©´ ì—ëŸ¬ë°œìƒì˜ ê°€ëŠ¥ì„±ì´ìˆìŒ <=validate ì²˜ë¦¬
-		List<SmsMsOrdGudsVO> smsMsOrdGudsList= new ArrayList<SmsMsOrdGudsVO>();	
-		String[] ordGudsSeq= new String[0];
-		String[] ordGudsUpcId = new String[0]; 
-		String[] ordGudsCnsNm= new String[0];
-		String[] ordGudsQty= new String[0];
-		String[] ordGudsSizeVal= new String[0];
-//		String[] ordGudsOrgPrc= new String[0];
-		String[] ordGudsSalePrc= new String[0];
-		String[] ordGudsUrlAddr= new String[0];
-		String[] gudsId= new String[0];
-		orderDetailVo.setOrdNo(ordNo);
-	
-		//ê° ìƒí’ˆ ì •ë³´ë¥¼ íŒŒì‹±í•œë‹¤. 		
-		if(gudsListSize>0)	{		//if(smsMsOrdGudsVO.getOrdGudsSeq()!=null){			//ì‹œí€€ìŠ¤ë²ˆí˜¸ ê°’ì´ nullì¸ê²½ìš° ìƒí’ˆì´ ë“¤ì–´ì˜¤ì§€ ì•Šì•˜ìŒì„ ì˜ë¯¸
-			String gudsSeq=smsMsOrdGudsVO.getOrdGudsSeq().replace("," , " , ");
-			String gudsUpcId=smsMsOrdGudsVO.getOrdGudsUpcId().replace("," , " , ");
-			String gudsCnsNm=smsMsOrdGudsVO.getOrdGudsCnsNm().replace("," , " , ");
-			String gudsQty=smsMsOrdGudsVO.getOrdGudsQty().replace("," , " , ");
-			String gudsSizeVal=smsMsOrdGudsVO.getOrdGudsSizeVal().replace("," , " , ");
-//			String gudsOrgPrc= smsMsOrdGudsVO.getOrdGudsOrgPrc().replace("," , " , ");
-			String gudsSalePrc= smsMsOrdGudsVO.getOrdGudsSalePrc().replace("," , " , ");
-			String gudsUrlAddr=smsMsOrdGudsVO.getOrdGudsUrlAddr().replace("," , " , ");
-			String gid=smsMsOrdGudsVO.getGudsId().replace("," , " , ");
-			
-			
-			ordGudsSeq	=gudsSeq.split(",");
-			ordGudsUpcId=gudsUpcId.split(",");			//ë°”ì½”ë“œ
-			ordGudsCnsNm = gudsCnsNm.split(",");		//ìƒí’ˆëª…	
-			ordGudsQty  =gudsQty.split(",");			//ìƒí’ˆìš”ì²­ìˆ˜ëŸ‰
-			ordGudsSizeVal =gudsSizeVal.split(",");		//ìƒí’ˆê·œê²©
-//			ordGudsOrgPrc = gudsOrgPrc.split(",");		//ìƒí’ˆê°€ê²©
-			ordGudsSalePrc = gudsSalePrc.split(",");		//ìƒí’ˆê°€ê²©
-			
-			gudsId=gid.split(",");
-			//String[] gudsInbxQty = smsMsOrdGudsVO.getGudsInbxQty().split(",");	//ì¸ë°•ìŠ¤ìˆ˜ëŸ‰, dbì— ì¡´ì¬ì•ˆí•¨
-			ordGudsUrlAddr =gudsUrlAddr.split(",");
-		}
-		
-		
-//		System.out.println(orderDetailVo);			//ìƒí’ˆì •ë³´ 
-//		System.out.println(smsMsOrdGudsVO);		//ìƒí’ˆ VO
-//		System.out.println(ordNo);						//ì—…ë°ì´íŠ¸ë  ìƒí’ˆë²ˆí˜¸
-//		System.out.println(gudsListSize);			//ìƒí’ˆì˜ ê°œìˆ˜ 
-		
-//		for(String s : ordGudsSeq){
-//			System.out.println("s " +s);
-//		}
-		
-		
-		
-		for(int i=0; i<gudsListSize; i++){
-			SmsMsOrdGudsVO vo =new SmsMsOrdGudsVO();
-			vo.setOrdNo(ordNo);
-			vo.setOrdGudsSeq(ordGudsSeq[i].trim());
-			vo.setOrdGudsUpcId(ordGudsUpcId[i].trim());
-			vo.setOrdGudsCnsNm(ordGudsCnsNm[i].trim());
-			vo.setOrdGudsQty(ordGudsQty[i].trim());
-			vo.setOrdGudsSizeVal(ordGudsSizeVal[i].trim());
-//			vo.setOrdGudsOrgPrc(ordGudsOrgPrc[i].trim());
-			vo.setOrdGudsSalePrc(ordGudsSalePrc[i].trim());
-			vo.setOrdGudsUrlAddr(ordGudsUrlAddr[i].trim());
-			vo.setGudsId(gudsId[i].trim());
-			smsMsOrdGudsList.add(vo);
-			
-		}
-		
-
 		try{
+			//DTÀÇ ÇüÅÂ¸¦ date·Î º¯°æ
+			orderDetailVo.setOrdEstmDt(StringUtil.dateToDt(orderDetailVo.getOrdEstmDt()));
+			orderDetailVo.setOrdExpDt(StringUtil.dateToDt(orderDetailVo.getOrdExpDt()));
+			orderDetailVo.setOrdHopeArvlDt(StringUtil.dateToDt(orderDetailVo.getOrdHopeArvlDt()));
+			orderDetailVo.setOrdReqDt(StringUtil.dateToDt(orderDetailVo.getOrdReqDt()));
+			orderDetailVo.setPoSchdDt(StringUtil.dateToDt(orderDetailVo.getPoSchdDt()));
+			
+			
+			//»óÇ°Á¤º¸¿¡ ,°¡ µé¾î°¡¸é ¿¡·¯¹ß»ıÀÇ °¡´É¼ºÀÌÀÖÀ½ <=validate Ã³¸®
+			List<SmsMsOrdGudsVO> smsMsOrdGudsList= new ArrayList<SmsMsOrdGudsVO>();	
+			String[] ordGudsSeq= new String[0];
+			String[] ordGudsUpcId = new String[0]; 
+			String[] ordGudsCnsNm= new String[0];
+			String[] ordGudsQty= new String[0];
+			String[] ordGudsSizeVal= new String[0];
+	//		String[] ordGudsOrgPrc= new String[0];
+			String[] ordGudsSalePrc= new String[0];
+			String[] ordGudsUrlAddr= new String[0];
+			String[] gudsId= new String[0];
+			orderDetailVo.setOrdNo(ordNo);
+		
+			//°¢ »óÇ° Á¤º¸¸¦ ÆÄ½ÌÇÑ´Ù. 		
+			if(gudsListSize>0)	{		//if(smsMsOrdGudsVO.getOrdGudsSeq()!=null){			//½ÃÄö½º¹øÈ£ °ªÀÌ nullÀÎ°æ¿ì »óÇ°ÀÌ µé¾î¿ÀÁö ¾Ê¾ÒÀ½À» ÀÇ¹Ì
+				String gudsSeq=smsMsOrdGudsVO.getOrdGudsSeq().replace("," , " , ");
+				String gudsUpcId=smsMsOrdGudsVO.getOrdGudsUpcId().replace("," , " , ");
+				String gudsCnsNm=smsMsOrdGudsVO.getOrdGudsCnsNm().replace("," , " , ");
+				String gudsQty=smsMsOrdGudsVO.getOrdGudsQty().replace("," , " , ");
+				String gudsSizeVal=smsMsOrdGudsVO.getOrdGudsSizeVal().replace("," , " , ");
+	//			String gudsOrgPrc= smsMsOrdGudsVO.getOrdGudsOrgPrc().replace("," , " , ");
+				String gudsSalePrc= smsMsOrdGudsVO.getOrdGudsSalePrc().replace("," , " , ");
+				String gudsUrlAddr=smsMsOrdGudsVO.getOrdGudsUrlAddr().replace("," , " , ");
+				String gid=smsMsOrdGudsVO.getGudsId().replace("," , " , ");
+				
+				
+				ordGudsSeq	=gudsSeq.split(",");
+				ordGudsUpcId=gudsUpcId.split(",");			//¹ÙÄÚµå
+				ordGudsCnsNm = gudsCnsNm.split(",");		//»óÇ°¸í	
+				ordGudsQty  =gudsQty.split(",");			//»óÇ°¿äÃ»¼ö·®
+				ordGudsSizeVal =gudsSizeVal.split(",");		//»óÇ°±Ô°İ
+	//			ordGudsOrgPrc = gudsOrgPrc.split(",");		//»óÇ°°¡°İ
+				ordGudsSalePrc = gudsSalePrc.split(",");		//»óÇ°°¡°İ
+				
+				gudsId=gid.split(",");
+				//String[] gudsInbxQty = smsMsOrdGudsVO.getGudsInbxQty().split(",");	//ÀÎ¹Ú½º¼ö·®, db¿¡ Á¸Àç¾ÈÇÔ
+				ordGudsUrlAddr =gudsUrlAddr.split(",");
+			}
+			
+			
+	//		System.out.println(orderDetailVo);			//»óÇ°Á¤º¸ 
+	//		System.out.println(smsMsOrdGudsVO);		//»óÇ° VO
+	//		System.out.println(ordNo);						//¾÷µ¥ÀÌÆ®µÉ »óÇ°¹øÈ£
+	//		System.out.println(gudsListSize);			//»óÇ°ÀÇ °³¼ö 
+			
+	//		for(String s : ordGudsSeq){
+	//			System.out.println("s " +s);
+	//		}
+			
+			
+			
+			for(int i=0; i<gudsListSize; i++){
+				SmsMsOrdGudsVO vo =new SmsMsOrdGudsVO();
+				vo.setOrdNo(ordNo);
+				vo.setOrdGudsSeq(ordGudsSeq[i].trim());
+				vo.setOrdGudsUpcId(ordGudsUpcId[i].trim());
+				vo.setOrdGudsCnsNm(ordGudsCnsNm[i].trim());
+				vo.setOrdGudsQty(ordGudsQty[i].trim());
+				vo.setOrdGudsSizeVal(ordGudsSizeVal[i].trim());
+	//			vo.setOrdGudsOrgPrc(ordGudsOrgPrc[i].trim());
+				vo.setOrdGudsSalePrc(ordGudsSalePrc[i].trim());
+				vo.setOrdGudsUrlAddr(ordGudsUrlAddr[i].trim());
+				vo.setGudsId(gudsId[i].trim());
+				smsMsOrdGudsList.add(vo);
+				
+			}
+
 			orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml );
 		}catch(Exception e){
 			return "redirect:orderDetailView.do?ordNo="+ordNo+"&reload=YES&saved=NO";
@@ -571,25 +570,25 @@ public class OrderDetailController extends AbstractFileController{
 
 		String result="success";
 		try{
-		//1.ë¡œì»¬ì— ì—…ë¡œë“œí•œ íŒŒì¼ ì €ì¥
+		//1.·ÎÄÃ¿¡ ¾÷·ÎµåÇÑ ÆÄÀÏ ÀúÀå
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf = request.getFile(itr.next());
 		FileResultVO fileResultVO = uploadMultipartFileToDisk(mpf);
 
 		LOGGER.debug(fileResultVO.toString());
-//		System.out.println(fileResultVO.getSavedRealFileNm());		//ì›ë³¸ íŒŒì¼ ì´ë¦„
-//		System.out.println(fileResultVO.getSavedFileNm());				//ì‹œìŠ¤í…œ íŒŒì¼ì´ë¦„
-//		System.out.println(ordNo);			//ì£¼ë¬¸ë²ˆí˜¸	
-//		System.out.println(wrtrEml);			//ì‘ì„±ì
+//		System.out.println(fileResultVO.getSavedRealFileNm());		//¿øº» ÆÄÀÏ ÀÌ¸§
+//		System.out.println(fileResultVO.getSavedFileNm());				//½Ã½ºÅÛ ÆÄÀÏÀÌ¸§
+//		System.out.println(ordNo);			//ÁÖ¹®¹øÈ£	
+//		System.out.println(wrtrEml);			//ÀÛ¼ºÀÚ
 		
-		//2.DBì— ì—…ë¡œë“œ íŒŒì¼ ì •ë³´ ì €ì¥
+		//2.DB¿¡ ¾÷·Îµå ÆÄÀÏ Á¤º¸ ÀúÀå
 		SmsMsOrdFileVO ordFileVo = new SmsMsOrdFileVO();
-		ordFileVo.setOrdFileKindCd("N000540100");					//ì½”ë“œ N000540100 (ì£¼ë¬¸íŒŒì¼ì¢…ë¥˜ì½”ë“œ POB)
-		//ordFileVo.setOrdFilepath(ordFilepath);					//ê²½ë¡œ
-		ordFileVo.setOrdFileRegrEml(wrtrEml);					//ë“±ë¡ì
-		ordFileVo.setOrdFileOrgtFileNm(fileResultVO.getSavedRealFileNm());	//ì›ë˜ íŒŒì¼ì´ë¦„
-		ordFileVo.setOrdFileSysFileNm(fileResultVO.getSavedFileNm());  //ì‹¤ì œ ì €ì¥ëœ íŒŒì¼ ì´ë¦„
-		ordFileVo.setOrdNo(ordNo);		//ì£¼ë¬¸ë²ˆí˜¸
+		ordFileVo.setOrdFileKindCd("N000540100");					//ÄÚµå N000540100 (ÁÖ¹®ÆÄÀÏÁ¾·ùÄÚµå POB)
+		//ordFileVo.setOrdFilepath(ordFilepath);					//°æ·Î
+		ordFileVo.setOrdFileRegrEml(wrtrEml);					//µî·ÏÀÚ
+		ordFileVo.setOrdFileOrgtFileNm(fileResultVO.getSavedRealFileNm());	//¿ø·¡ ÆÄÀÏÀÌ¸§
+		ordFileVo.setOrdFileSysFileNm(fileResultVO.getSavedFileNm());  //½ÇÁ¦ ÀúÀåµÈ ÆÄÀÏ ÀÌ¸§
+		ordFileVo.setOrdNo(ordNo);		//ÁÖ¹®¹øÈ£
 		ordFileVo.setOrdFileSeq(orderService.selectSmsMsOrdFileSeqNext(ordNo));
 		
 			orderService.insertSmsMsOrdFile(ordFileVo);
@@ -625,7 +624,7 @@ public class OrderDetailController extends AbstractFileController{
 		File downloadFile = new File(fullPath);
 		FileInputStream inputStream = new FileInputStream(downloadFile);
 
-		// MIME Type íŒŒì¼ë¡œ ë¶€í„° ì–»ì–´ì˜¤ê¸°.
+		// MIME Type ÆÄÀÏ·Î ºÎÅÍ ¾ò¾î¿À±â.
 		ServletContext context = request.getSession().getServletContext();
 		String mimeType = context.getMimeType(fullPath);
 		if (mimeType == null) {
@@ -634,11 +633,11 @@ public class OrderDetailController extends AbstractFileController{
 		}
 		LOGGER.debug("MIME type: " + mimeType);
 
-		// Content íŠ¹ì„± ì •ì˜
+		// Content Æ¯¼º Á¤ÀÇ
 		response.setContentType(mimeType);
 		response.setContentLength((int) downloadFile.length());
 
-		// Header ê°’ ì •ì˜
+		// Header °ª Á¤ÀÇ
 		String headerKey = "Content-Disposition";
 		String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
 		if(fileName!=null){
@@ -674,7 +673,7 @@ public class OrderDetailController extends AbstractFileController{
 				// construct the complete absolute path of the file
 				String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "ORDER_DETAIL.xlsx";
 
-				LOGGER.info("í…œí”Œë¦¿ ì—‘ì…€íŒŒì¼ ìœ„ì¹˜ =" + fullPath);
+				LOGGER.info("ÅÛÇÃ¸´ ¿¢¼¿ÆÄÀÏ À§Ä¡ =" + fullPath);
 
 				File templateFile = new File(fullPath);
 /*				Workbook wb = WorkbookFactory.create(templateFile);
@@ -682,34 +681,34 @@ public class OrderDetailController extends AbstractFileController{
 				
 				XSSFWorkbook wb = (XSSFWorkbook) WorkbookFactory.create(templateFile);
 				XSSFSheet sheet = wb.getSheetAt(0);
-				String oprKr_alas_eng=null;		//í•œêµ­ë‹´ë‹¹ì ì•½ì¹­ ì €ì¥ìš©
+				String oprKr_alas_eng=null;		//ÇÑ±¹´ã´çÀÚ ¾àÄª ÀúÀå¿ë
 				
-				//1.ê¸°ë³¸ì •ë³´ì…ë ¥ 
+				//1.±âº»Á¤º¸ÀÔ·Â 
 				OrderDetailVO orderDetailVO = orderService.selectSmsMsOrdDetail(ordNo);
 
-				//ë‹´ë‹¹ì ì°¾ê¸° 
+				//´ã´çÀÚ Ã£±â 
 				List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
 				for(SmsMsUserVO vo : oprList){
-					if(("N000530200").equals(vo.getOgnzDivCd())){			//N000530200 í•œêµ­íŒ€
+					if(("N000530200").equals(vo.getOgnzDivCd())){			//N000530200 ÇÑ±¹ÆÀ
 						oprKr_alas_eng = vo.getUserAlasEngNm();
 						orderDetailVO.setOprKr(vo.getUserAlasCnsNm());
 					}
 				}
-				//1-1.ê²¬ì ì„œì´ë¦„
+				//1-1.°ßÀû¼­ÀÌ¸§
 				Row row = sheet.getRow(3);
 				Cell cell = row.getCell(10);
 				cell.setCellValue(orderDetailVO.getOrdNm());
 				
-				//1-2.ê¸°ì¤€í™˜ìœ¨
+				//1-2.±âÁØÈ¯À²
 				row = sheet.getRow(4);
 				cell = row.getCell(10);
 				if(orderDetailVO.getStdXchrAmt()!=null)
 					cell.setCellValue(orderDetailVO.getStdXchrAmt().intValue());
 
-				//1-3.ê¸°ì¤€í™”í
+				//1-3.±âÁØÈ­Æó
 				row = sheet.getRow(5);
 				cell = row.getCell(10);
-				List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ê¸°ì¤€í™˜ìœ¨ì½”ë“œ
+				List<CodeVO> stdXchrKindCdList = orderService.selectTbmsCmnCd("N00059");	//N00059 ±âÁØÈ¯À²ÄÚµå
 				if(orderDetailVO.getStdXchrKindCd()!=null){
 					for(CodeVO vo : stdXchrKindCdList){
 						if(orderDetailVO.getStdXchrKindCd().equals(vo.getCd())){
@@ -725,11 +724,11 @@ public class OrderDetailController extends AbstractFileController{
 				
 				
 				
-				//1-4.ê²¬ì ì¡°ê±´
+				//1-4.°ßÀûÁ¶°Ç
 				row = sheet.getRow(6);
 				cell = row.getCell(10);
-				List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ë°°ì†¡ë°©ì‹ì½”ë“œ
-				//ê°’ìœ¼ë¡œ ë“¤ì–´ì˜¨ ê²¬ì ì¡°ê±´ì„ ì½”ë“œê°’ìœ¼ë¡œ ë³€ê²½
+				List<CodeVO> dlvModeCdList = orderService.selectTbmsCmnCd("N00052");	//N00052 ¹è¼Û¹æ½ÄÄÚµå
+				//°ªÀ¸·Î µé¾î¿Â °ßÀûÁ¶°ÇÀ» ÄÚµå°ªÀ¸·Î º¯°æ
 				if(orderDetailVO.getDlvModeCd()!=null){
 					for(CodeVO vo : dlvModeCdList){
 //						System.out.println(vo.getCd());
@@ -742,11 +741,11 @@ public class OrderDetailController extends AbstractFileController{
 				cell = row.getCell(14);
 				cell.setCellValue(orderDetailVO.getDlvModeCd());
 				
-				//1-5.ê²¬ì ì¼ì
+				//1-5.°ßÀûÀÏÀÚ
 				row = sheet.getRow(7);
 				cell = row.getCell(10);
 				cell.setCellValue(orderDetailVO.getOrdEstmDt());
-				//1-6.ê²¬ì ìœ íš¨ì¼ì
+				//1-6.°ßÀûÀ¯È¿ÀÏÀÚ
 				row = sheet.getRow(8);
 				cell = row.getCell(10);
 				cell.setCellValue(orderDetailVO.getOrdExpDt());
@@ -754,27 +753,27 @@ public class OrderDetailController extends AbstractFileController{
 				cell = row.getCell(14);
 				cell.setCellValue(orderDetailVO.getOrdExpDt());
 				
-//				System.out.println("ì—‘ì…€ì— ì‚½ì…ë  :"+orderDetailVO);
+//				System.out.println("¿¢¼¿¿¡ »ğÀÔµÉ :"+orderDetailVO);
 				
-				//DBì—ì„œ ìƒí’ˆ ì •ë³´ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+				//DB¿¡¼­ »óÇ° Á¤º¸¸¦ °¡Á®¿Â´Ù.
 				List<SmsMsOrdGudsVO> smsMsOrdGudsList =goodsService.selectSmsMsOrdGudsByOrdNo(ordNo);
 
 
-				//ì£¼ë¬¸ì— ì¡´ì¬í•˜ëŠ” ìƒí’ˆì´ Mappingì´ ë˜ì—ˆì„ ê²½ìš° ìƒí’ˆí…Œì´ë¸”ì—ì„œ *ì´ë¯¸ì§€,ì¸ë°•ìŠ¤ìˆ˜ëŸ‰,ë°”ì½”ë“œ*ê°’ì„ ê°€ì ¸ì˜¨ë‹¤
+				//ÁÖ¹®¿¡ Á¸ÀçÇÏ´Â »óÇ°ÀÌ MappingÀÌ µÇ¾úÀ» °æ¿ì »óÇ°Å×ÀÌºí¿¡¼­ *ÀÌ¹ÌÁö,ÀÎ¹Ú½º¼ö·®,¹ÙÄÚµå*°ªÀ» °¡Á®¿Â´Ù
 				for(SmsMsOrdGudsVO vo :smsMsOrdGudsList){
 					
 					if("Y".equals(vo.getOrdGudsMpngYn())){
 						SmsMsGudsVO smsGuds = new SmsMsGudsVO();
 						smsGuds=goodsService.selectSmsMsGuds(vo.getGudsId());
 
-						//ë§¤í•‘ì´ ë˜ì—ˆë‹¤ê³  ë‚˜ì˜¤ëŠ”ë° ì‹¤ì œ ìƒí’ˆì •ë³´ê°€ ì—†ëŠ” ê²½ìš°ê°€ ì¡´ì¬í• ìˆ˜ ìˆë‹¤.
+						//¸ÅÇÎÀÌ µÇ¾ú´Ù°í ³ª¿À´Âµ¥ ½ÇÁ¦ »óÇ°Á¤º¸°¡ ¾ø´Â °æ¿ì°¡ Á¸ÀçÇÒ¼ö ÀÖ´Ù.
 						if(smsGuds!=null){
-			 				vo.setOrdGudsUpcId(smsGuds.getGudsUpcId());				//ë°”ì½”ë“œ //vo.setGudsUpcId(smsGuds.getGudsUpcId());		
-							vo.setGudsInbxQty(smsGuds.getGudsInbxQty());	//ì¸ë°•ìŠ¤ìˆ˜ëŸ‰
+			 				vo.setOrdGudsUpcId(smsGuds.getGudsUpcId());				//¹ÙÄÚµå //vo.setGudsUpcId(smsGuds.getGudsUpcId());		
+							vo.setGudsInbxQty(smsGuds.getGudsInbxQty());	//ÀÎ¹Ú½º¼ö·®
 						}else{
 							vo.setOrdGudsMpngYn("N");
 						}
-						//GUDS_IMG_CD  N000080100 ëŒ€í‘œì´ë¯¸ì§€ 	N000080200 ëª©ë¡ì´ë¯¸ì§€
+						//GUDS_IMG_CD  N000080100 ´ëÇ¥ÀÌ¹ÌÁö 	N000080200 ¸ñ·ÏÀÌ¹ÌÁö
 						List<SmsMsGudsImgVO> gudsImgList = goodsService.selectSmsMsGudsImg(vo.getGudsId());
 						if(!gudsImgList.isEmpty()){ 
 							if(!StringUtil.isNullOrEmpty(gudsImgList.get(0).getGudsImgSysFileNm())){
@@ -784,9 +783,9 @@ public class OrderDetailController extends AbstractFileController{
 					}
 				}//End_for(SmsMsOrdGudsVO vo :smsMsOrdGudsList)
 				
-				int sourceRowNum = 11;		//ì°¸ê³ í•  ìŠ¤íƒ€ì¼í–‰
-				int destinationRowNum = 12;	//~ë¶€í„° ìƒì„±
-				int addRowCountNum =smsMsOrdGudsList.size()-1 ;		//ìƒì„±í•  ë¼ì¸ìˆ˜(ìƒí’ˆ4ê°œ->3ê°œì¶”ê°€, ê¸°ì¡´1ì¤„)
+				int sourceRowNum = 11;		//Âü°íÇÒ ½ºÅ¸ÀÏÇà
+				int destinationRowNum = 12;	//~ºÎÅÍ »ı¼º
+				int addRowCountNum =smsMsOrdGudsList.size()-1 ;		//»ı¼ºÇÒ ¶óÀÎ¼ö(»óÇ°4°³->3°³Ãß°¡, ±âÁ¸1ÁÙ)
 
 				
 				
@@ -794,47 +793,57 @@ public class OrderDetailController extends AbstractFileController{
 				Row sourceRow = sheet.getRow(sourceRowNum);
 				
 				
-				Cell newCell0 = sourceRow.getCell(0);		//ë¸Œëœë“œ
+				Cell newCell0 = sourceRow.getCell(0);		//ºê·£µå
 				String brndId =orderService.selectSmsMsGudsBrndId(smsMsOrdGudsList.get(0).getGudsId());
 				if(brndId!=null){
 					newCell0.setCellValue(brndId);
 				}
-				//ì´ë¯¸ì§€
+				//ÀÌ¹ÌÁö
 				if(smsMsOrdGudsList.get(0).getImgSrcPath()!=null){
 					addPricture(smsMsOrdGudsList.get(0).getImgSrcPath(),1,(11),wb,sheet);
 					addPricture(smsMsOrdGudsList.get(0).getImgSrcPath(),13,(11),wb,sheet);
 				}
-				Cell newCell2 = sourceRow.getCell(2);		//ë°”ì½”ë“œ
+				Cell newCell2 = sourceRow.getCell(2);		//¹ÙÄÚµå
 				newCell2.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUpcId());
-				Cell newCell3 = sourceRow.getCell(3);		//ìƒí’ˆëª…ì¹­
+				Cell newCell3 = sourceRow.getCell(3);		//»óÇ°¸íÄª
 				/*newCell3.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsKorNm());*/
 				newCell3.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsCnsNm());
-				Cell newCell4 = sourceRow.getCell(4);		//ìƒí’ˆëª…ì¹­(ì¤‘)
+				Cell newCell4 = sourceRow.getCell(4);		//»óÇ°¸íÄª(Áß)
 				newCell4.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsCnsNm());
-				Cell newCell5 = sourceRow.getCell(5);		//ì¸ë°•ìŠ¤ìˆ˜ëŸ‰
+				Cell newCell5 = sourceRow.getCell(5);		//ÀÎ¹Ú½º¼ö·®
 				newCell5.setCellValue(smsMsOrdGudsList.get(0).getGudsInbxQty());
-				Cell newCell6 = sourceRow.getCell(6);		//ë‹¨ê°€
-				newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsSalePrc());
+				Cell newCell6 = sourceRow.getCell(6);		//´Ü°¡
+				if(smsMsOrdGudsList.get(0).getOrdGudsSalePrc()!=null){
+					newCell6.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(0).getOrdGudsSalePrc()));
+				}else{
+					newCell6.setCellValue(0);
+				}
+				
 				//newCell6.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
-				Cell newCell7 = sourceRow.getCell(7);		//ì£¼ë¬¸ìˆ˜ëŸ‰
+				Cell newCell7 = sourceRow.getCell(7);		//ÁÖ¹®¼ö·®
 				newCell7.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsQty());
-				Cell newCell8 = sourceRow.getCell(8);		//ê¸ˆì•¡
+				Cell newCell8 = sourceRow.getCell(8);		//±İ¾×
 				newCell8.setCellFormula("G12*H12");
 				Cell newCell9 = sourceRow.getCell(9);		//URL
 				newCell9.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsUrlAddr());
-				Cell newCell10= sourceRow.getCell(10);		//ë‹´ë‹¹ì
+				Cell newCell10= sourceRow.getCell(10);		//´ã´çÀÚ
 				if(orderDetailVO.getOprKr()!=null){
 					newCell10.setCellValue(orderDetailVO.getOprKr());
 				}
 				
-				//ìš”ì•½ì •ë³´ í‘œì‹œ
+				//¿ä¾àÁ¤º¸ Ç¥½Ã
 
-				Cell newCell14= sourceRow.getCell(14);		//ë‹¨ê°€
+				Cell newCell14= sourceRow.getCell(14);		//´Ü°¡
+				if(smsMsOrdGudsList.get(0).getOrdGudsSalePrc()!=null){
+					newCell14.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(0).getOrdGudsSalePrc()));
+				}else{
+					newCell14.setCellValue(0);
+				}
 				//newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsOrgPrc());
-				newCell14.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsSalePrc());
-				Cell newCell15= sourceRow.getCell(15);		//ì£¼ë¬¸ìˆ˜ëŸ‰
+				
+				Cell newCell15= sourceRow.getCell(15);		//ÁÖ¹®¼ö·®
 				newCell15.setCellValue(smsMsOrdGudsList.get(0).getOrdGudsQty());
-				Cell newCell16= sourceRow.getCell(16);		//ì´ì•¡
+				Cell newCell16= sourceRow.getCell(16);		//ÃÑ¾×
 				newCell16.setCellFormula("G12*H12");
 				
 				
@@ -853,31 +862,31 @@ public class OrderDetailController extends AbstractFileController{
 			            // Copy style from old cell and apply to new cell
 			            CellStyle newCellStyle = wb.createCellStyle();
 			           // if(newCellStyle!=null && oldCell!=null){
-			            	newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//ìŠ¤íƒ€ì¼ì„ ì„ ì–¸í•˜ê³  ê¸°ì¡´ ìŠ¤íƒ€ì¼ì„ ë„£ëŠ”ë‹¤
+			            	newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//½ºÅ¸ÀÏÀ» ¼±¾ğÇÏ°í ±âÁ¸ ½ºÅ¸ÀÏÀ» ³Ö´Â´Ù
 			            	newCell.setCellStyle(newCellStyle);	
 			         //   }
 			            
 			           
 			            switch (j) {
-			                case 0:		//ë¸Œëœë“œID
+			                case 0:		//ºê·£µåID
 			                	brndId=null;
 			                	brndId=orderService.selectSmsMsGudsBrndId(smsMsOrdGudsList.get(i+1).getGudsId());
 			                	if(brndId!=null){
 			                		newCell.setCellValue(brndId);
 			                	}
 			                    break;
-			                case 1:		//ì´ë¯¸ì§€
+			                case 1:		//ÀÌ¹ÌÁö
 			                	if(smsMsOrdGudsList.get(i+1).getImgSrcPath()!=null){
 			                		addPricture(smsMsOrdGudsList.get(i+1).getImgSrcPath(),1,(i+12),wb,sheet);
 			                		addPricture(smsMsOrdGudsList.get(i+1).getImgSrcPath(),13,(i+12),wb,sheet);
 			                	}
 			                    break;
-			                case 2:		//ë°”ì½”ë“œ
+			                case 2:		//¹ÙÄÚµå
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsUpcId()!=null){
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsUpcId());
 			                	}
 			                    break;
-			                case 3:		//ìƒí’ˆëª…ì¹­
+			                case 3:		//»óÇ°¸íÄª
 			                	/*if(smsMsOrdGudsList.get(i+1).getOrdGudsKorNm()!=null){
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsKorNm());
 			                	}		*/
@@ -885,29 +894,32 @@ public class OrderDetailController extends AbstractFileController{
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                	}	
 			                    break;
-			                case 4:		//ìƒí’ˆëª…ì¹­(ì¤‘)
+			                case 4:		//»óÇ°¸íÄª(Áß)
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm()!=null){
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                	}			                    
 			                    break;
-			                case 5:		//ì¸ë°•ìŠ¤ìˆ˜ëŸ‰
+			                case 5:		//ÀÎ¹Ú½º¼ö·®
 			                    newCell.setCellValue(smsMsOrdGudsList.get(i+1).getGudsInbxQty());
 			                    break;
-			                case 6:		//ë‹¨ê°€
+			                case 6:		//´Ü°¡
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
-			                		//newCell.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(j).getOrdGudsSalePrc()));;
-			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc());
-			                		//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
-			                	}
+			                		System.out.println("|||"+smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()+"|||");
+			                		newCell.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()));
+			        			}else{
+			        				newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			        				newCell.setCellValue(0);
+			        			}
+			                	//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());			             
 			                    break;
-			                case 7:		//ì£¼ë¬¸ìˆ˜ëŸ‰
+			                case 7:		//ÁÖ¹®¼ö·®
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsQty()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsQty());
 			                	}
 			                    break;
-			                case 8:		//ê¸ˆì•¡
+			                case 8:		//±İ¾×
 			                		int intk=destinationRowNum+1+i;
 			                		String k=Integer.toString(intk); 
 			                		newCell.setCellFormula("G"+k+"*H"+k);                		
@@ -921,21 +933,24 @@ public class OrderDetailController extends AbstractFileController{
 			                case 10:		
 			                	newCell.setCellValue(orderDetailVO.getOprKr());
 			                    break;
-			                case 14:		//ìš”ì•½ì •ë³´-ë‹¨ê°€
+			                case 14:		//¿ä¾àÁ¤º¸-´Ü°¡
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()!=null){
-			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
-			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc());
+			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);			        
+			                		newCell.setCellValue(Double.parseDouble(smsMsOrdGudsList.get(i+1).getOrdGudsSalePrc()));
+			        			}else{
+			        				newCell.setCellValue(0);
+			        			}
 			                		//newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsOrgPrc());
-			                	}
+			                	
 			                    break;
-			                case 15:		//ìš”ì•½ì •ë³´-ì£¼ë¬¸ìˆ˜ëŸ‰
+			                case 15:		//¿ä¾àÁ¤º¸-ÁÖ¹®¼ö·®
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsQty()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsQty());
 			                	}
 			                	
 			                    break;
-			                case 16:		//ìš”ì•½ì •ë³´ -ì´ì•¡
+			                case 16:		//¿ä¾àÁ¤º¸ -ÃÑ¾×
 			                	intk=destinationRowNum+1+i;
 		                		k=Integer.toString(intk); 
 		                		newCell.setCellFormula("G"+k+"*H"+k);       
@@ -945,14 +960,29 @@ public class OrderDetailController extends AbstractFileController{
 					}//end for j
 				}//end for i 
 
-				//ë§ˆì§€ë§‰ ì´ì•¡
+				//¸¶Áö¸· ÃÑ¾×
 				if(addRowCountNum>0){
 					Row lastRow = sheet.getRow(12+addRowCountNum);
 					Cell lastCell=lastRow.getCell(8);
+					lastCell.setCellType(Cell.CELL_TYPE_FORMULA);
 					lastCell.setCellFormula("SUM(I12:I"+(12+addRowCountNum)+")");
 					
+					
+					Cell lastCell2=lastRow.getCell(16);
+					lastCell2.setCellType(Cell.CELL_TYPE_FORMULA);
+					lastCell2.setCellFormula("SUM(I12:I"+(12+addRowCountNum)+")");
+				}else{
+					Row lastRow = sheet.getRow(12);
+					
+					Cell lastCell=lastRow.getCell(8);
+					lastCell.setCellType(Cell.CELL_TYPE_FORMULA);
+					lastCell.setCellFormula("SUM(I12:I12)");
+					
+					Cell lastCell2=lastRow.getCell(16);
+					lastCell2.setCellType(Cell.CELL_TYPE_FORMULA);
+					lastCell2.setCellFormula("SUM(I12:I12)");
 				}
-				// ë‹¤ìš´ë¡œë“œ ë  í…œí”Œë¦¿ íŒŒì¼ ì´ë¦„ í˜•ì‹ : ORDER_DETAIL+_ë…„ì›”ì¼ì‹œë¶„ì´ˆ.xls
+				// ´Ù¿î·Îµå µÉ ÅÛÇÃ¸´ ÆÄÀÏ ÀÌ¸§ Çü½Ä : ORDER_DETAIL+_³â¿ùÀÏ½ÃºĞÃÊ.xls
 				 Date d = new Date();
 			     SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
 			     
@@ -960,7 +990,7 @@ public class OrderDetailController extends AbstractFileController{
 
 				
 				//String downloadedTemplateName = "[ORDER_DETAIL]" + "_" + DateUtil.sGetCurrentTime("yyyyMMdd_HHmm_ss") + ".xlsx";
-				// ì—‘ì…€ ë‹¤ìš´ë¡œë“œ
+				// ¿¢¼¿ ´Ù¿î·Îµå
 				writeExcelAttachmentForDownload(response, downloadedTemplateName, wb);
 
 	}
@@ -1009,18 +1039,18 @@ public class OrderDetailController extends AbstractFileController{
 				// construct the complete absolute path of the file
 				String fullPath = appPath + "WEB-INF" + File.separator + "templates" + File.separator + "PURCHASE_PO.xlsx";
 
-				LOGGER.info("í…œí”Œë¦¿ ì—‘ì…€íŒŒì¼ ìœ„ì¹˜ =" + fullPath);
+				LOGGER.info("ÅÛÇÃ¸´ ¿¢¼¿ÆÄÀÏ À§Ä¡ =" + fullPath);
 
 				File templateFile = new File(fullPath);
 				List<Workbook> wbList = new ArrayList<Workbook>();
 				List<String> excelNmList = new ArrayList<String>();
 				
 				
-				//1.cellì„ ì±„ìš°ëŠ”ë° í•„ìš”í•œ ë°ì´í„°ê°€ì ¸ì˜¤ê¸°
+				//1.cellÀ» Ã¤¿ì´Âµ¥ ÇÊ¿äÇÑ µ¥ÀÌÅÍ°¡Á®¿À±â
 				SmsMsEstmVO poVo = orderService.selectSmsMsEstmVO(ordNo);
 				List<SmsMsEstmGudsVO> poGudsList= goodsService.selectSmsMsEstmGuds(ordNo);
 				List<SmsMsEstmGudsVO> poPrvdList= goodsService.selectSmsMsEstmGudsGroupByPrvd(ordNo);
-				int sourceRowNum =17;				//ì°¸ê³ í•  ìŠ¤íƒ€ì¼í–‰
+				int sourceRowNum =17;				//Âü°íÇÒ ½ºÅ¸ÀÏÇà
 				
 				int prvdSize = poPrvdList.size();
 				int gudsSize = poGudsList.size();
@@ -1028,37 +1058,37 @@ public class OrderDetailController extends AbstractFileController{
 				int gudsNo=0;	
 				//String rowNoStr="";
 				
-				//í•´ë‹¹ ìƒí’ˆ ê³µê¸‰ì ìˆ˜ ë§Œí¼ ë§¤ì…PO ì—‘ì…€ì„ ë§Œë“ ë‹¤.
+				//ÇØ´ç »óÇ° °ø±ŞÀÚ ¼ö ¸¸Å­ ¸ÅÀÔPO ¿¢¼¿À» ¸¸µç´Ù.
 				for(int prvdIndex=0;prvdIndex<prvdSize ;prvdIndex++){
-					int rowNo =sourceRowNum;				//ì†ŒìŠ¤ë„˜ë²„ì²´í¬ 
+					int rowNo =sourceRowNum;				//¼Ò½º³Ñ¹öÃ¼Å© 
 					
 					//List<SmsMsEstmGudsVO> poGudsList= goodsService.selectSmsMsEstmGuds(ordNo, crn); 
 					
 					Workbook wb =  WorkbookFactory.create(templateFile);
 					
 					Sheet sheet = wb.getSheetAt(0);
-					Row sourceRow = sheet.getRow(sourceRowNum);			//ìŠ¤íƒ€ì¼ì„ ê°€ì§€ê³  ìˆëŠ” í–‰
-					gudsNo=0;			//ì‚½ì…ë  ìƒí’ˆì˜ ê°œìˆ˜ 	
+					Row sourceRow = sheet.getRow(sourceRowNum);			//½ºÅ¸ÀÏÀ» °¡Áö°í ÀÖ´Â Çà
+					gudsNo=0;			//»ğÀÔµÉ »óÇ°ÀÇ °³¼ö 	
 
 					
 					String poNo="IZK"+poVo.getPoDt()+String.format("%03d", (prvdIndex+1));
 					
-					//1-1.PO NO (IZK+ë‚ ì§œ+ë²ˆí˜¸)
+					//1-1.PO NO (IZK+³¯Â¥+¹øÈ£)
 					Row row = sheet.getRow(2);
 					Cell cell = row.getCell(9);
 					cell.setCellValue(poNo);	
 					
-					//1-2.POë‚ ì§œ 
+					//1-2.PO³¯Â¥ 
 					row=sheet.getRow(3);
 					cell = row.getCell(9);
 					cell.setCellValue(StringUtil.dtToDate(poVo.getPoDt()));	
 					
-					//1-3.ì‚¬ì—…ìë²ˆí˜¸
+					//1-3.»ç¾÷ÀÚ¹øÈ£
 					row=sheet.getRow(6);
 					cell = row.getCell(3);
 					cell.setCellValue(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn());
 					
-					//1-4.ìƒí˜¸
+					//1-4.»óÈ£
 					row=sheet.getRow(7);
 					cell = row.getCell(3);
 					cell.setCellValue(poPrvdList.get(prvdIndex).getOrdGudsPrvdNm());
@@ -1068,20 +1098,20 @@ public class OrderDetailController extends AbstractFileController{
 					
 					List<SmsMsEstmGudsVO> tempEstmGudsList = new ArrayList<SmsMsEstmGudsVO>();
 					for(int gudsIndex=0; gudsIndex<gudsSize;gudsIndex++){
-						if(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn().equals(poGudsList.get(gudsIndex).getOrdGudsPrvdCrn())){		//ì‚¬ì—…ìë²ˆí˜¸ê°€ ê°™ì€ê²½ìš° ì‚½ì…
+						if(poPrvdList.get(prvdIndex).getOrdGudsPrvdCrn().equals(poGudsList.get(gudsIndex).getOrdGudsPrvdCrn())){		//»ç¾÷ÀÚ¹øÈ£°¡ °°Àº°æ¿ì »ğÀÔ
 							tempEstmGudsList.add(poGudsList.get(gudsIndex));
 							gudsNo++;
 						}
 					}
 					
-					sheet.shiftRows(18, 34, gudsNo);		//ìƒí’ˆì´ë™
+					sheet.shiftRows(18, 34, gudsNo);		//»óÇ°ÀÌµ¿
 					
 					for(int gudsIndex=0; gudsIndex<gudsNo;gudsIndex++){	
 						
 							gudsNmTemp = tempEstmGudsList.get(0).getOrdGudsCnsNm();
 				
-							SmsMsEstmGudsVO gudsVo = tempEstmGudsList.get(gudsIndex);		//gudsVOì— í˜„ì¬ poìƒí’ˆ ì‚½ì…	
-							Row newRow = sheet.createRow(sourceRowNum+1+gudsIndex);			//ìƒˆë¡œìš´row ìƒì„± 
+							SmsMsEstmGudsVO gudsVo = tempEstmGudsList.get(gudsIndex);		//gudsVO¿¡ ÇöÀç po»óÇ° »ğÀÔ	
+							Row newRow = sheet.createRow(sourceRowNum+1+gudsIndex);			//»õ·Î¿îrow »ı¼º 
 							newRow.setHeight(sourceRow.getHeight());
 							Row nowRow=sheet.getRow(sourceRowNum+gudsIndex);			
 								for(int j=1;j<sourceRow.getLastCellNum(); j++){
@@ -1091,28 +1121,28 @@ public class OrderDetailController extends AbstractFileController{
 									Cell nowCell =nowRow.getCell(j);
 						            // Copy style from old cell and apply to new cell
 						            CellStyle newCellStyle = wb.createCellStyle();						          
-						            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//ìŠ¤íƒ€ì¼ì„ ì„ ì–¸í•˜ê³  ê¸°ì¡´ ìŠ¤íƒ€ì¼ì„ ë„£ëŠ”ë‹¤
+						            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());			//½ºÅ¸ÀÏÀ» ¼±¾ğÇÏ°í ±âÁ¸ ½ºÅ¸ÀÏÀ» ³Ö´Â´Ù
 						            newCell.setCellStyle(newCellStyle);	
 						            
-						            //ì‹¤ì œ ë°ì´í„° ì‚½ì…
+						            //½ÇÁ¦ µ¥ÀÌÅÍ »ğÀÔ
 						            switch (j) {
 						            case 1:
 						            	nowCell.setCellValue(gudsIndex+1);
 						            	break;
-					                case 2:		//2-1.ë°”ì½”ë“œ
+					                case 2:		//2-1.¹ÙÄÚµå
 					                	nowCell.setCellValue(gudsVo.getGudsUpcId());
 					                    break;
-					                case 3:		//2-2.ìƒí’ˆëª…
+					                case 3:		//2-2.»óÇ°¸í
 					                	nowCell.setCellValue(gudsVo.getOrdGudsCnsNm());		
 					                    break;
-					                case 6:		//2-3.ì£¼ë¬¸ìˆ˜ëŸ‰
+					                case 6:		//2-3.ÁÖ¹®¼ö·®
 					                	nowCell.setCellValue(Integer.parseInt(gudsVo.getOrdGudsQty()));
 					                    break;
-					                case 7:		//2-4.ë§¤ì…ë‹¨ê°€
+					                case 7:		//2-4.¸ÅÀÔ´Ü°¡
 					                	nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsOrgPrc()));
 					                	//nowCell.setCellValue(Double.parseDouble(gudsVo.getOrdGudsSalePrc()));
 					                    break;
-					                case 8:		//2-5.ë§¤ì…í•©ê³„
+					                case 8:		//2-5.¸ÅÀÔÇÕ°è
 					                	rowNo +=1;
 					                	//rowNoStr=Integer.toString(rowNo); 
 					                	nowCell.setCellFormula("G"+rowNo+"*H"+rowNo);                    
@@ -1122,25 +1152,28 @@ public class OrderDetailController extends AbstractFileController{
 					}//end for gudsIndex
 					
 					
-					//3-1. í•©ê³„ìˆ˜ëŸ‰
+					//3-1. ÇÕ°è¼ö·®
 					row = sheet.getRow(rowNo+1);
 					cell = row.getCell(7);
+					cell.setCellType(XSSFCell.CELL_TYPE_FORMULA);
 					cell.setCellFormula("SUM(G18:G"+(rowNo+1)+")");
 							
-					//3-2. í•©ê³„ê¸ˆì•¡(VAT ë³„ë„)
+					//3-2. ÇÕ°è±İ¾×(VAT º°µµ)
 					row = sheet.getRow(rowNo+2);
 					cell = row.getCell(7);
+					cell.setCellType(XSSFCell.CELL_TYPE_FORMULA);
 					cell.setCellFormula("SUM(I18:I"+(rowNo+1)+")");
 					
-					//4. íŠ¹ì •ì…€ ì…€ë³‘í•©(ìƒí’ˆëª…,ë§¤ì…í•©ê³„)	 : ì½ì„ ìˆ˜ ì—†ëŠ” ë‚´ìš©ì´ ìˆìŠµë‹ˆë‹¤ë¼ëŠ” ê²½ê³ ë¥¼ ë°œìƒì‹œí‚¨ë‹¤.
+					
+					//4. Æ¯Á¤¼¿ ¼¿º´ÇÕ(»óÇ°¸í,¸ÅÀÔÇÕ°è)	 : ÀĞÀ» ¼ö ¾ø´Â ³»¿ëÀÌ ÀÖ½À´Ï´Ù¶ó´Â °æ°í¸¦ ¹ß»ı½ÃÅ²´Ù.
 					for(int gudsIndex=0; gudsIndex<gudsNo;gudsIndex++){
-						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex,sourceRowNum+gudsIndex , 3, 4));
-						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex,sourceRowNum+gudsIndex , 8, 9));
+						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex, (short)(sourceRowNum+gudsIndex), 3, (short)4));
+						sheet.addMergedRegion(new CellRangeAddress(sourceRowNum+gudsIndex, (short)(sourceRowNum+gudsIndex) , 8, (short)9));
 						
 					}
+					sheet.shiftRows(18+gudsNo, 34+gudsNo, -1);			//ÁÙÀ» ÁÙÀÌ±âÀ§ÇÔ
 					
-					
-					//íŒŒì¼ ì´ë¦„ì„ ë§Œë“¤ì–´ ì£¼ê¸° ìœ„í•´ orderì •ë³´ë¥¼ ë°›ì•„ì˜¨ë‹¤
+					//ÆÄÀÏ ÀÌ¸§À» ¸¸µé¾î ÁÖ±â À§ÇØ orderÁ¤º¸¸¦ ¹Ş¾Æ¿Â´Ù
 					OrderDetailVO orderDetailVo = orderService.selectSmsMsOrdDetail(ordNo);
 					
 					
@@ -1154,8 +1187,8 @@ public class OrderDetailController extends AbstractFileController{
 					
 					
 					
-					wbList.add(wb);	//ìƒì„±ëœ ì—‘ì…€íŒŒì¼ì„ ë¦¬ìŠ¤íŠ¸ì— ë‹´ëŠ”ë‹¤.
-					excelNmList.add(downloadedTemplateName);		//ìƒì„±ëœ ì—‘ì…€íŒŒì¼ì˜ ì´ë¦„ì„ ë¦¬ìŠ¤íŠ¸ì— ë‹´ëŠ”ë‹¤
+					wbList.add(wb);	//»ı¼ºµÈ ¿¢¼¿ÆÄÀÏÀ» ¸®½ºÆ®¿¡ ´ã´Â´Ù.
+					excelNmList.add(downloadedTemplateName);		//»ı¼ºµÈ ¿¢¼¿ÆÄÀÏÀÇ ÀÌ¸§À» ¸®½ºÆ®¿¡ ´ã´Â´Ù
 				}//end for prvdIndex
 				
 

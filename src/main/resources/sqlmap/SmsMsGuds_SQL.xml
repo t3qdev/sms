@@ -136,7 +136,7 @@
 				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsCnsNm#,'%') ]]>
 				      </isNotEmpty >
 				      <isNotEmpty  prepend="OR" property="gudsKorNm">
-				      <![CDATA[	GUDS_CNS_NM LIKE CONCAT('%',#gudsKorNm#,'%') ]]>
+				      <![CDATA[	GUDS_KOR_NM LIKE CONCAT('%',#gudsKorNm#,'%') ]]>
 				      </isNotEmpty >
 				      <isNotEmpty  prepend="OR" property="gudsUpcId">
 				      		GUDS_UPC_ID =#gudsUpcId#

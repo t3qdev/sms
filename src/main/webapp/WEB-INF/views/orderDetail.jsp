@@ -194,8 +194,10 @@
 <%--                         <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="汇率&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
                         <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsUrlAddr" name="ordGudsUrlAddr" value="${smsMsOrdGuds.ordGudsUrlAddr}"></div></a></td>
+                        <c:set var="name" value="${smsMsOrdGuds.ordGudsCnsNm }"/>
+                        <c:set var="gudsNm" value="${fn:replace(name,'&','%26') }"/> 
+                        <td class="tac"><a href="#" class="btn-search btn_pop" id="mappingBtn" data-href="orderGoodsMappingView.do?gudsNm=${gudsNm}&UpcId=${smsMsOrdGuds.ordGudsUpcId}&index=${status.index}&ordNo=${smsMsOrdGuds.ordNo }&ordGudsSeq=${smsMsOrdGuds.ordGudsSeq }" data-popw="1000" data-poph="600"></a></td>
                         
-                        <td class="tac"><a href="#" class="btn-search btn_pop" id="mappingBtn" data-href="orderGoodsMappingView.do?gudsNm=${smsMsOrdGuds.ordGudsCnsNm}&UpcId=${smsMsOrdGuds.ordGudsUpcId}&index=${status.index}&ordNo=${smsMsOrdGuds.ordNo }&ordGudsSeq=${smsMsOrdGuds.ordGudsSeq }" data-popw="1000" data-poph="600"></a></td>
                         </tr> 
                     </c:forEach> 
 

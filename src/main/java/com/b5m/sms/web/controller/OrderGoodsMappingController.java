@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.velocity.anakia.Escape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -34,10 +36,10 @@ public class OrderGoodsMappingController extends AbstractFileController{
 	@RequestMapping(value="/orderGoodsMappingView")
 	public String orderGoodsMapping(String gudsNm, String UpcId, Model model, String index, String ordNo, String ordGudsSeq ) throws Exception{
 		List<SmsMsGudsVO> smsMsGudsList;//검색된 상품정보 List
-		
+		System.out.println(gudsNm);
+
 		//1.입력된 상품명,바코드로 상품을 검색한다.
 		SmsMsGudsVO smsMsGudsVo = new SmsMsGudsVO();
-		smsMsGudsVo.setGudsCnsNm(gudsNm);
 		smsMsGudsVo.setGudsUpcId(UpcId);
 		 
 		smsMsGudsList=goodsService.selectSmsMsGudsByVO(smsMsGudsVo);	

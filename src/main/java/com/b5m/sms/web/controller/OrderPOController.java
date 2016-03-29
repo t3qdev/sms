@@ -409,7 +409,7 @@ public class OrderPOController extends AbstractFileController{
 				//poGudsVo.setImgSrcPath("file:///"+imgName+ordNo+i+".jpg");
 				Row getRow=sheet.getRow(i);
 				poGudsVo.setImgSrcPath(ordNo+i+".jpg");
-				poGudsVo.setGudsUpcId(StringUtil.excelGetCell(getRow.getCell(2)));
+				poGudsVo.setGudsUpcId(StringUtil.getCellUpcId(getRow.getCell(2)));
 				poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
 				poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
 				poGudsVo.setOrdGudsQty(StringUtil.excelGetCell(getRow.getCell(5)));
