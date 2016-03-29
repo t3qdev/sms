@@ -1039,16 +1039,18 @@ function formatMoney(number, decPlaces, thouSeparator, decSeparator) {
 };
 
 function reLoadJqgrid(){
-	jQuery("#jqgrid_a").setGridParam({
-		url : "${web_ctx}/orderManagementSearch.ajax",
-		ajaxGridOptions : {async:false},    // 동기로 변환
-		postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":$("#page").val(page), "searchKeyword":$('#searchKeyWord').val()},
-		rowNum : $('#rownum option:selected').val(),
-		datatype : "json",
-	}).trigger('reloadGrid');
+	  var page = $('#jqgrid_a').getRowData(1).page;
+	   jQuery("#jqgrid_a").setGridParam({
+	      url : "${web_ctx}/orderManagementSearch.ajax",
+	      ajaxGridOptions : {async:false},    // 동기로 변환
+	      postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":page , "searchKeyword":$('#searchKeyWord').val()},
+	      rowNum : $('#rownum option:selected').val(),
+	      datatype : "json",
+	   }).trigger('reloadGrid');
 }
 
 </script>
 <style>
 #jqgrid_a_ordTypeCd #jqgh_jqgrid_a_ordTypeCd{top:19px !important;}
+>>>>>>> branch 'SMS_online' of http://gitlab.izene.com/izene-korea/b5c-sms.git
 </style>
