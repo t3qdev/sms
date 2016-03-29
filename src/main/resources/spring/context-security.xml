@@ -24,9 +24,9 @@
      <http auto-config="true" use-expressions="true" >
      
 		 <intercept-url pattern="/userManagementView.do" access="hasAnyRole('N000580100')" />     
-         <intercept-url pattern="/passwordChangeView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
-         <intercept-url pattern="/orderManagementView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
-         <intercept-url pattern="/orderDetailView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
+         <intercept-url pattern="/passwordChangeView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400','N000580500')" />
+         <intercept-url pattern="/orderManagementView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400','N000580500')" />
+         <intercept-url pattern="/orderDetailView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400','N000580500')" />
          <intercept-url pattern="/orderGoodsMappingView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
          <intercept-url pattern="/orderPOView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
          <intercept-url pattern="/orderCalculateView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />

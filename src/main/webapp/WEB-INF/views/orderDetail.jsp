@@ -373,17 +373,18 @@ $(function(){
 	if(!checkIndex(RolesPoZip,roles)){			//6.매입po
 		$('#poExcelDownload').hide();
 	}
-	if(!checkIndex(RolesSave,roles)){			//7.상품매핑
+	if(!checkIndex(RolesMapping,roles)){			//7.상품매핑
 		$(".btn-search").hide();		
 	}
-	if(!checkIndex(RolesSave,roles)){			//8.첨부파일다운 
+	if(!checkIndex(RolesFileDown,roles)){			//8.첨부파일다운 
 		$("#orderFileUpload").hide();//파일업로드
 		$("#orderFile").hide();	//파일선택창
 		//$(".fileDown").unbind("click");
 		$(".fileDown").click(function(a) {
 			a.preventDefault();
+			alert("권한없음");
 			});
-		 $(".fileDown").hide();		//상품 매핑
+		 //$(".fileDown").hide();		//내용 숨김
 	}
 	
 	
@@ -435,7 +436,7 @@ $(function(){
 	}
 	if(ordStatCd=='N000550300' || ordStatCd=='N000550400'){
 		$("#detailSave").hide();		//detail저장
-		$("#mappingBtn").unbind("click"); 	//매핑연결버튼
+		$(".btn-search").hide();		
 		$(":text").attr("disabled","true");
 		$(".selectbox").attr("disabled","true");
 	}
