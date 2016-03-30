@@ -299,8 +299,13 @@ public class OrderPOController extends AbstractFileController{
 	public String orderPOSave(OrderPOVO orderPoVo, OrderPOGudsVO orderPoGudsVo,int gudsCnt,FileResultVO fileResultVo) throws Exception{
 		String result="success";
 		try{
+			System.out.println("save [orderPO]"+orderPoVo);
+			System.out.println("save [orderPoGudsVo]"+orderPoGudsVo);
+
+			
 			orderService.orderPOSave(orderPoVo,orderPoGudsVo,gudsCnt,fileResultVo);
 		}catch(Exception e){
+			e.printStackTrace();
 			result="fail";
 		}
 		return result;
@@ -345,6 +350,7 @@ public class OrderPOController extends AbstractFileController{
 			
 			//계산을 위한 포맷터
 			DecimalFormat dF = new DecimalFormat("#,##0.00");
+			DecimalFormat qty = new DecimalFormat("0");
 			NumberFormat nf = NumberFormat.getPercentInstance();
 			nf.setMinimumFractionDigits(2);
 			nf.setMaximumFractionDigits(2) ;
@@ -364,25 +370,25 @@ public class OrderPOController extends AbstractFileController{
 			OrderPOVO poVo = new OrderPOVO();
 			List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
 			
-			String poAmt=StringUtil.excelGetCell(sheet.getRow(4).getCell(1));
-			String poXchrAmt=StringUtil.excelGetCell(sheet.getRow(4).getCell(2));
-			String pcSum=StringUtil.excelGetCell(sheet.getRow(4).getCell(3));
-			String pcSumNoVat=StringUtil.excelGetCell(sheet.getRow(4).getCell(4));
-			String dlvPcSum=StringUtil.excelGetCell(sheet.getRow(4).getCell(5));
+			String poAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(1))));
+			String poXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(2))));
+			String pcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(3))));
+			String pcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(4))));
+			String dlvPcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(5))));
 
-			String dlvPcSumNoVat=StringUtil.excelGetCell(sheet.getRow(4).getCell(6));
-			String dlvAmt=StringUtil.excelGetCell(sheet.getRow(7).getCell(1));
-			String pf=StringUtil.excelGetCell(sheet.getRow(7).getCell(3));
-			String pfNoVat=StringUtil.excelGetCell(sheet.getRow(7).getCell(4));
-			String pfDlvAmt=StringUtil.excelGetCell(sheet.getRow(7).getCell(5));
+			String dlvPcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(6))));
+			String dlvAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(1))));
+			String pf=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(3))));
+			String pfNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(4))));
+			String pfDlvAmt=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(5))));
 			
-			String pfDlvAmtNoVat=StringUtil.excelGetCell(sheet.getRow(7).getCell(6));
+			String pfDlvAmtNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(6))));
 			String poMemoCont=StringUtil.excelGetCell(sheet.getRow(9).getCell(1));
 			//String ordNo=StringUtil.excelGetCell(sheet.getRow(3).getCell(13));	//엑셀값은 사용안함
 			String poNo=StringUtil.excelGetCell(sheet.getRow(4).getCell(13));
 			String custId=StringUtil.excelGetCell(sheet.getRow(5).getCell(13));
 		
-			String stdXchrAmt=StringUtil.excelGetCell(sheet.getRow(6).getCell(13));
+			String stdXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(6).getCell(13))));
 			String stdXchrKindCd=StringUtil.excelGetCell(sheet.getRow(7).getCell(13));
 			String dlvModeCd=StringUtil.excelGetCell(sheet.getRow(8).getCell(13));
 			String poDt=StringUtil.excelGetCell(sheet.getRow(9).getCell(13));
@@ -431,32 +437,40 @@ public class OrderPOController extends AbstractFileController{
 
 			
 			for(int i=13; i<rows-1; i++){
+
+				
 				OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
 				
 				//poGudsVo.setImgSrcPath("file:///"+imgName+ordNo+i+".jpg");
 				Row getRow=sheet.getRow(i);
-				poGudsVo.setImgSrcPath(ordNo+i+".jpg");
-				poGudsVo.setGudsUpcId(StringUtil.getCellUpcId(getRow.getCell(2)));
-				poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
-				poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
-				poGudsVo.setOrdGudsQty(StringUtil.excelGetCell(getRow.getCell(5)));
+				if(StringUtil.getCellUpcId(getRow.getCell(2))!=null){			//physicalNumber는 엑셀에 따라 더 커질수 있으므로 바코드를 기준으로 값을 관리한다.
+					poGudsVo.setImgSrcPath(ordNo+i+".jpg");
+					poGudsVo.setGudsUpcId(StringUtil.getCellUpcId(getRow.getCell(2)));
+					poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
+					poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
+					System.out.println("제품수량 : "+StringUtil.excelGetCell(getRow.getCell(5)));
+					poGudsVo.setOrdGudsQty(qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(5)))));
+					
+					poGudsVo.setGudsInbxQty( qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(6)))));
+					poGudsVo.setVatYn(StringUtil.excelGetCell(getRow.getCell(7)));
+					System.out.println("pcprc value :"+StringUtil.excelGetCell(getRow.getCell(8)));
+					System.out.println("bigDecimal로 변경 :" +new BigDecimal(StringUtil.excelGetCell(getRow.getCell(8))));
+					
+					poGudsVo.setPcPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(8)))));
+					poGudsVo.setPcPrcVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(9)))));
+					poGudsVo.setPcPrcNoVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(10)))));
+					
+					poGudsVo.setPoPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(11)))));
+					poGudsVo.setPoPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(12)))));
+					poGudsVo.setPoXchrPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(13)))));
+					poGudsVo.setPoXchrPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(14)))));
+					poGudsVo.setPvdrnNm(StringUtil.excelGetCell(getRow.getCell(15)));
 				
-				poGudsVo.setGudsInbxQty(StringUtil.excelGetCell(getRow.getCell(6)));
-				poGudsVo.setVatYn(StringUtil.excelGetCell(getRow.getCell(7)));
-				poGudsVo.setPcPrc(StringUtil.excelGetCell(getRow.getCell(8)));
-				poGudsVo.setPcPrcVat(StringUtil.excelGetCell(getRow.getCell(9)));
-				poGudsVo.setPcPrcNoVat(StringUtil.excelGetCell(getRow.getCell(10)));
-				
-				poGudsVo.setPoPrc(StringUtil.excelGetCell(getRow.getCell(11)));
-				poGudsVo.setPoPrcSum(StringUtil.excelGetCell(getRow.getCell(12)));
-				poGudsVo.setPoXchrPrc(StringUtil.excelGetCell(getRow.getCell(13)));
-				poGudsVo.setPoXchrPrcSum(StringUtil.excelGetCell(getRow.getCell(14)));
-				poGudsVo.setPvdrnNm(StringUtil.excelGetCell(getRow.getCell(15)));
-			
-				poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
-				
-				if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
-					poGudsList.add(poGudsVo);
+					poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
+					
+					if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
+						poGudsList.add(poGudsVo);
+					}
 				}
 			}
 			

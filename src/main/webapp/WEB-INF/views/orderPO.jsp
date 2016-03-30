@@ -129,7 +129,7 @@ body{min-width:1900px}
                     <tr>
                     <th>标准汇率</th>
                     	<td>${poVo.stdXchrAmt}</td>
-                    	<input type="hidden" id="stdXchrAmt" name="stdXchrAmt" value="${poVo.stdXchrAmt}">
+              	<input type="hidden" id="stdXchrAmt" name="stdXchrAmt" value="${poVo.stdXchrAmt}">
                     </tr>
                     <tr>
                     <th>报价货币</th>
@@ -278,6 +278,36 @@ body{min-width:1900px}
 
 <script>
 $(function(){
+	
+	//각값들을 unformat해서 hidden에 넣어둔다
+	
+	$('#poAmt').val(unformatterAmt($('#poAmt').val()));
+	$('#poXchrAmt').val(unformatterAmt($('#poXchrAmt').val()));
+	$('#pcSum').val(unformatterAmt($('#pcSum').val()));
+	$('#pcSumNoVat').val(unformatterAmt($('#pcSumNoVat').val()));
+	$('#dlvPcSum').val(unformatterAmt($('#dlvPcSum').val()));
+	
+	$('#dlvPcSumNoVat').val(unformatterAmt($('#dlvPcSumNoVat').val()));
+	$('#dlvAmt').val(unformatterAmt($('#dlvAmt').val()));
+	$('#stdXchrAmt').val(unformatterAmt($('#stdXchrAmt').val()));
+	
+	
+	
+	
+ 	
+
+	for(i=0; i<$("#gudsCnt").val(); i++){
+		$('input[name="pcPrc"]').eq(i).val(unformatterAmt($('input[name="pcPrc"]').eq(i).val()));
+		$('input[name="pcPrcVat"]').eq(i).val(unformatterAmt($('input[name="pcPrcVat"]').eq(i).val()));
+		$('input[name="pcPrcNoVat"]').eq(i).val(unformatterAmt($('input[name="pcPrcNoVat"]').eq(i).val()));
+		$('input[name="poPrc"]').eq(i).val(unformatterAmt($('input[name="poPrc"]').eq(i).val()));
+		$('input[name="poPrcSum"]').eq(i).val(unformatterAmt($('input[name="poPrcSum"]').eq(i).val()));
+		$('input[name="poXchrPrc"]').eq(i).val(unformatterAmt($('input[name="poXchrPrc"]').eq(i).val()));
+		$('input[name="poXchrPrcSum"]').eq(i).val(unformatterAmt($('input[name="poXchrPrcSum"]').eq(i).val()));
+		
+	}
+	
+
 	//1.취소버튼
 	$('.btn-cancel').click(function(){
 		//1-1.업로드한 파일/사진/상품이미지등을 삭제한다. (덮어씌워줌으로 반드시 필요 X)
@@ -297,7 +327,11 @@ $(function(){
 		
 	
 		$('#check').click(function(){
-		var formData = $("#orderPOForm").serialize();
+		
+			
+			var formData = $("#orderPOForm").serialize();
+		
+		
 		$.ajax({
 			type : "POST",
 			url : '${web_ctx}/orderPOSave.do',
@@ -323,4 +357,13 @@ $(function(){
 	});//end click
 })
 
+//use -DecimalFormat("#,##0.00");
+function unformatterAmt(str){
+	console.log("first : "+str)
+	str=str.substring(0,str.indexOf("."));
+	str=str.replace(/,/gi, "");
+	console.log("end : "+str)
+	return str;
+
+}
 </script>

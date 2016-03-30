@@ -877,21 +877,24 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			List<TbMsCmnCdVO> tempCdList=null;
 			String dlvModeCd=null;
 			String stdXchrKindCd=null;
-			try{		//코드값이 제대로 지정이안되있는 경우가있는 관계로 임시 try
-			//코드값 변경이 필요한 부분
-				tempCdList =tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getDlvModeCd());
+				
+			tempCdList =tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getDlvModeCd());
+
+			if(tempCdList.size()!=0){
 				dlvModeCd = tempCdList.get(0).getCd();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{		//코드값이 제대로 지정이안되있는 경우가있는 관계로 임시 try
-				tempCdList=tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getStdXchrKindCd());
-				stdXchrKindCd = tempCdList.get(0).getCd();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
 				smsMsEstmVo.setDlvModeCd(dlvModeCd);				//코드값으로 변경_견적조건(dlvMode)
+			}
+
+			
+			tempCdList=tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(orderPoVo.getStdXchrKindCd());
+
+
+			if(tempCdList.size()!=0){
+				stdXchrKindCd = tempCdList.get(0).getCd();
 				smsMsEstmVo.setStdXchrKindCd(stdXchrKindCd);		//코드값으로 변경_기준화폐(stdXchrKindCd)
+			}
+			
+			
 			
 			
 			smsMsEstmDAO.deleteSmsMsEstm(orderPoVo.getOrdNo());		//기존 PO정보 삭제
@@ -985,6 +988,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					smsMsEstmGudsList.get(i).setOrdGudsPrvdNm(pvdrnNm[i].trim());
 					smsMsEstmGudsList.get(i).setOrdGudsPrvdCrn(crn[i].trim());
 					
+					
+					System.out.println(smsMsEstmGudsList.get(i));
 					//3_4.값을 estm_guds테이블에 저장한다.
 					smsMsEstmGudsDAO.insertSmsMsEstmGuds(smsMsEstmGudsList.get(i));
 					

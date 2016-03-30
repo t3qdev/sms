@@ -1000,7 +1000,8 @@ public class StringUtil {
 					break;
 				}
 				
-				sReturn = Double.toString(cell.getNumericCellValue());
+				//sReturn = Double.toString(cell.getNumericCellValue());
+				sReturn=String.format("%.4f", cell.getNumericCellValue());
 				break;
 				
 			case Cell.CELL_TYPE_BOOLEAN :
