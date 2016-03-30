@@ -197,7 +197,7 @@ $(function(){
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
             {name:'showDetail',index:'showDetail',align:'left',width:200,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
-            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:50,resizable:false,formatter:formatterCurrentIcon , search:false},
+            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:70,resizable:false,formatter:formatterCurrentIcon , search:false},
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: ""} , classes: 'bold' , search:false},		
 //             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,
 //             		prefix: "
@@ -293,11 +293,11 @@ $(function(){
 					 							}
           	  , search:false
 			},
-             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false,  search:false},		
+             {name:'bactPrvdDtPlusbactPrvdAmt',index:'bactPrvdDtPlusbactPrvdAmt',align:'center',resizable:false,  search:false, width:200},		
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, search:false,editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}   },		
+            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
             {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
             {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
@@ -322,7 +322,7 @@ $(function(){
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "₩ "}},
+            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}},
             {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
             {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, search:false,editable:true},
            
@@ -512,6 +512,8 @@ $(function(){
 			customPager($("#totalDbCount").val(),$("#page").val(), $("#row").val());
 			$('article').css("opacity","1");
 			$('#countDB').html("搜索结果: 共 "+$("#totalDbCount").val()+"件");  
+			
+
         },
         viewrecords: true,
         navGrid : true,
@@ -720,9 +722,72 @@ $(function(){
 				rowNum : $('#rownum option:selected').val(),
 				datatype : "json",
 			}).trigger('reloadGrid');
+
+
+			
+			// 필터 체크 초기화 -> 페이징 or rownum 조정 or 검색 시에 바꿔준다.
+			if($('#ui-multiselect-gs_ordTypeCd-option-0').is(':checked')){
+				$('#ui-multiselect-gs_ordTypeCd-option-0').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordTypeCd-option-1').is(':checked')){
+				$('#ui-multiselect-gs_ordTypeCd-option-1').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordTypeCd-option-2').is(':checked')){
+				$('#ui-multiselect-gs_ordTypeCd-option-2').trigger('click');
+			}
+			
+			if($('#ui-multiselect-gs_ordStatCd-option-0').is(':checked')){
+				$('#ui-multiselect-gs_ordStatCd-option-0').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordStatCd-option-1').is(':checked')){
+				$('#ui-multiselect-gs_ordStatCd-option-1').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordStatCd-option-2').is(':checked')){
+				$('#ui-multiselect-gs_ordStatCd-option-2').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordStatCd-option-3').is(':checked')){
+				$('#ui-multiselect-gs_ordStatCd-option-3').trigger('click');
+			}
+			if($('#ui-multiselect-gs_ordStatCd-option-4').is(':checked')){
+				$('#ui-multiselect-gs_ordStatCd-option-4').trigger('click');
+			}
+			
+			
+			
+
+			
+			
 		}
 	});	
 	$('.btn-search').click(function(){
+		
+		// 필터 체크 초기화 -> 페이징 or rownum 조정 or 검색 시에 바꿔준다.
+		if($('#ui-multiselect-gs_ordTypeCd-option-0').is(':checked')){
+			$('#ui-multiselect-gs_ordTypeCd-option-0').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordTypeCd-option-1').is(':checked')){
+			$('#ui-multiselect-gs_ordTypeCd-option-1').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordTypeCd-option-2').is(':checked')){
+			$('#ui-multiselect-gs_ordTypeCd-option-2').trigger('click');
+		}
+		
+		if($('#ui-multiselect-gs_ordStatCd-option-0').is(':checked')){
+			$('#ui-multiselect-gs_ordStatCd-option-0').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordStatCd-option-1').is(':checked')){
+			$('#ui-multiselect-gs_ordStatCd-option-1').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordStatCd-option-2').is(':checked')){
+			$('#ui-multiselect-gs_ordStatCd-option-2').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordStatCd-option-3').is(':checked')){
+			$('#ui-multiselect-gs_ordStatCd-option-3').trigger('click');
+		}
+		if($('#ui-multiselect-gs_ordStatCd-option-4').is(':checked')){
+			$('#ui-multiselect-gs_ordStatCd-option-4').trigger('click');
+		}
+		
 		jQuery("#jqgrid_a").setGridParam({
 			url : "${web_ctx}/orderManagementSearch.ajax",
 			ajaxGridOptions : {async:false},    // 동기로 변환
@@ -1029,12 +1094,42 @@ function popUpHistory(ordNo){
 // pager 링크 함수.    jqgrid 아래에 pager 가 클릭되면, 이 함수가 실행.
 // 선택한 page 로 DB 검색 후 jqgrid reload
 function goToSelectedPage(totalDbCount, page, row){
-		jQuery("#jqgrid_a").setGridParam({
+	// 필터 체크 초기화 -> 페이징 or rownum 조정 or 검색 시에 바꿔준다.
+	if($('#ui-multiselect-gs_ordTypeCd-option-0').is(':checked')){
+		$('#ui-multiselect-gs_ordTypeCd-option-0').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordTypeCd-option-1').is(':checked')){
+		$('#ui-multiselect-gs_ordTypeCd-option-1').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordTypeCd-option-2').is(':checked')){
+		$('#ui-multiselect-gs_ordTypeCd-option-2').trigger('click');
+	}
+	
+	if($('#ui-multiselect-gs_ordStatCd-option-0').is(':checked')){
+		$('#ui-multiselect-gs_ordStatCd-option-0').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordStatCd-option-1').is(':checked')){
+		$('#ui-multiselect-gs_ordStatCd-option-1').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordStatCd-option-2').is(':checked')){
+		$('#ui-multiselect-gs_ordStatCd-option-2').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordStatCd-option-3').is(':checked')){
+		$('#ui-multiselect-gs_ordStatCd-option-3').trigger('click');
+	}
+	if($('#ui-multiselect-gs_ordStatCd-option-4').is(':checked')){
+		$('#ui-multiselect-gs_ordStatCd-option-4').trigger('click');
+	}
+	
+	
+	
+	jQuery("#jqgrid_a").setGridParam({
 		url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
 		postData:{"rowInput":row, "pageInput":page},
 		datatype : "json",
 	}).trigger('reloadGrid');
+
 };
 
 //array와 array를 비교해여 해당값이 존재하는지 체크 
