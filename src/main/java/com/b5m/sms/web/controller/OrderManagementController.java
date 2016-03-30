@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,7 +113,10 @@ public class OrderManagementController  extends AbstractFileController{
 		for(int i=0; i<smsMsOrdVOList.size(); i++){
 			if(smsMsOrdVOList.get(i).getBactPrvdDt() != null && smsMsOrdVOList.get(i).getBactPrvdAmt() !=null ){
 				
-				smsMsOrdVOList.get(i).setBactPrvdDtPlusbactPrvdAmt(""+formatterDate(smsMsOrdVOList.get(i).getBactPrvdDt())+" "+smsMsOrdVOList.get(i).getBactPrvdAmt());
+				DecimalFormat df = new DecimalFormat("#,###.00");
+				df.format(smsMsOrdVOList.get(i).getBactPrvdAmt());
+				NumberFormat.getCurrencyInstance();
+				smsMsOrdVOList.get(i).setBactPrvdDtPlusbactPrvdAmt(""+formatterDate(smsMsOrdVOList.get(i).getBactPrvdDt())+"  ₩ "+df.format(smsMsOrdVOList.get(i).getBactPrvdAmt()));
 			}
 
 			smsMsOrdVOList.get(i).setPaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getPaptDpstDt()))  ;
