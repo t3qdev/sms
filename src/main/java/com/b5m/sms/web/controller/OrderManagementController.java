@@ -52,6 +52,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
+import com.b5m.sms.biz.service.UserService;
 import com.b5m.sms.common.security.User;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.ExcelClientReqGudsVO;
@@ -59,6 +60,7 @@ import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
 import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
+import com.b5m.sms.vo.SmsMsUserVO;
 import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +70,8 @@ public class OrderManagementController  extends AbstractFileController{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderManagementController.class);
 		
+	@Resource(name = "userService")
+	public UserService userService;
 	
 	@Resource(name = "orderService")
 	public OrderService orderService;
@@ -119,6 +123,23 @@ public class OrderManagementController  extends AbstractFileController{
 				smsMsOrdVOList.get(i).setBactPrvdDtPlusbactPrvdAmt(""+formatterDate(smsMsOrdVOList.get(i).getBactPrvdDt())+"  ₩ "+df.format(smsMsOrdVOList.get(i).getBactPrvdAmt()));
 			}
 
+			//한국담당자가 여러명으로  변경
+			List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(smsMsOrdVOList.get(i).getOrdNo());
+			String oprKrList="";
+			for(SmsMsUserVO vo : oprList){
+				if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 한국팀
+					if(!"".equals(oprKrList)){
+						oprKrList+=",";
+					}
+					oprKrList+=vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
+					System.out.println("oprKrList ::::::::::::"+oprKrList);
+					/*String oprKr =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
+					orderDetail.setOprKr(oprKr);
+					orderDetail.setOprKr(vo.getUserEml());*/
+				}
+			}
+			smsMsOrdVOList.get(i).setKorMng((oprKrList));
+			
 			smsMsOrdVOList.get(i).setPaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getPaptDpstDt()))  ;
 			smsMsOrdVOList.get(i).setRaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getRaptDpstDt()))  ;
 			smsMsOrdVOList.get(i).setWrhsDlvDt(formatterDate(smsMsOrdVOList.get(i).getWrhsDlvDt()))  ;

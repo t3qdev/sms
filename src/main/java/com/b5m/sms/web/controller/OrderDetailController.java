@@ -120,6 +120,7 @@ public class OrderDetailController extends AbstractFileController{
 		OrderDetailVO orderDetail = orderService. selectSmsMsOrdDetail(ordNo);
 		//주문담당자정보는 다른 테이블에 존재한다 가져와서 orderDetailVO에 채워줌						<<--getUserAlasEngNm이 null일경우 ()제거 생각해둘것
 		List<SmsMsUserVO> oprList = userService.selectSmsMsUserByOrdNo(ordNo);
+		String oprKrList="";
 		for(SmsMsUserVO vo : oprList){
 			if(("N000530100").equals(vo.getOgnzDivCd())){			//N000530100 상해팀
 				/*String oprCns =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
@@ -128,11 +129,17 @@ public class OrderDetailController extends AbstractFileController{
 				
 			}
 			else if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 한국팀
+				if(!"".equals(oprKrList)){
+					oprKrList+=",";
+				}
+				oprKrList+=vo.getUserEml();
+				System.out.println("oprKrList ::::::::::::"+oprKrList);
 				/*String oprKr =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
-				orderDetail.setOprKr(oprKr);*/
-				orderDetail.setOprKr(vo.getUserEml());
+				orderDetail.setOprKr(oprKr);
+				orderDetail.setOprKr(vo.getUserEml());*/
 			}
 		}
+		orderDetail.setOprKr(oprKrList);
 	
 		//3.견적상품을 담은 List<smsMsOrdGudsList>			//이미지-바코드-상품명-예상요청수량-규격-가격(단가)-인박스수량-상품링크-검색 : 보류(다시)
 		List<SmsMsOrdGudsVO> smsMsOrdGudsList =goodsService.selectSmsMsOrdGudsByOrdNo(ordNo);
@@ -555,7 +562,7 @@ public class OrderDetailController extends AbstractFileController{
 				smsMsOrdGudsList.add(vo);
 				
 			}
-
+			System.out.println(orderDetailVo);
 			orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml );
 		}catch(Exception e){
 

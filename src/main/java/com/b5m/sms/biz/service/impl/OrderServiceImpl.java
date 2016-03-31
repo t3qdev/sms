@@ -734,7 +734,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		//변경된 detail정보를 update
 		@Override
 		public void updateSmsMsOrdGudsDetail(OrderDetailVO orderDetailVo, List<SmsMsOrdGudsVO> smsMsOrdGudsList, String wrtrEml) throws Exception {		
-			
+			try{			
 			//1. 주문상세정보 업데이트
 			smsMsOrdDAO.updateSmsMsOrdDetail(orderDetailVo);		
 			
@@ -751,10 +751,24 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				opr.setUserEml(orderDetailVo.getOprCns());
 				smsMsOrdUserDAO.insertSmsMsOrdUser_S(opr);
 			}
+			//기존 oprKr이 단일에서 List형태로 변경됨 (사용자,사용자,사용자)형태로들어온다
 			if(orderDetailVo.getOprKr()!=null){
-				opr.setUserEml(orderDetailVo.getOprKr());
-				smsMsOrdUserDAO.insertSmsMsOrdUser_S(opr);
+				String[] oprKrList=orderDetailVo.getOprKr().split(",");
+				
+				for(String s:oprKrList){
+					System.out.println("split : "+s);
+					opr.setUserEml(s);
+					System.out.println(opr);
+					smsMsOrdUserDAO.insertSmsMsOrdUser_S(opr);
+				}
 			}
+
+			
+//			//기존코드
+//			//if(orderDetailVo.getOprKr()!=null){
+//				opr.setUserEml(orderDetailVo.getOprKr());
+//				smsMsOrdUserDAO.insertSmsMsOrdUser_S(opr);
+//			}
 			
 			
 			String nextNum =smsMsOrdGudsDAO.selectSmsMsOrdGudsSeqCount(orderDetailVo.getOrdNo());		//엑셀에서 생성된 주문상품은 해당값이 1로 들어온다(주문상품이없다) 
@@ -844,7 +858,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 
 
 			
-			 
+}
+catch(Exception e){
+	e.printStackTrace();
+}
 			
 			 
 			

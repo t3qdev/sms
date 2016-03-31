@@ -71,11 +71,11 @@
 										</c:forEach>
 						</select> </div></td>
                         <th>韩国负责人</th>
-                        <td><div><select id="oprKr" name="oprKr" class="selectbox">
+                        <td><div><select id="oprKrList" name="oprKrList" class="selectbox" multiple="multiple">
                         				<c:forEach var="krOpr" items="${krOprList}">
 											<option  value="${krOpr.userEml}">${krOpr.userAlasCnsNm}(${krOpr.userAlasEngNm})</option>
 										</c:forEach>
-						</select></div></td>
+						</select><input type="hidden" id="oprKr" name="oprKr" value=""></div></td>
                         <th>客户</th>
                         <td><div><input type="text" id="custId" name="custId" value="${orderDetail.custId }"></div></td>
                         <th>询盘日期</th>
@@ -343,7 +343,7 @@ $(function(){
 		roles.push("${role.name}");
 	</c:forEach>
 	
-	console.log(roles.indexOf("N000580300"));
+// 	console.log(roles.indexOf("N000580300"));
 	
 	//버튼별 권한테이블
 	var RolesSave = new Array("N000580100","N000580200","N000580300");		//1.저장버튼
@@ -390,9 +390,33 @@ $(function(){
 	}
 	
 	
+	//한국담당자는 멀티 셀렉트가 가능해야한다.
+	$("#oprKrList").multiselect({
+		selectedList :4 
+	}); 
 	
-
-
+	//한국담당자를 split 으로 분리
+	var oprKrsplit="";
+	var temp = "${orderDetail.oprKr}";
+	if(temp!=""){
+			oprKrsplit = temp.split(",");
+			for(var i in oprKrsplit){
+				
+			}
+	}
+	//한국담당자를 멀티셀렉터에 세팅
+	$("#oprKrList").multiselect("widget").find(":checkbox").each(function(){
+		for(var i in oprKrsplit){
+			if($(this).attr("value")==oprKrsplit[i]){
+				console.log($(this).attr("value"));
+				this.click();
+			}
+		}
+	});
+	
+	 
+	
+	
 	//1.날짜정보는 초기화시 세팅해줘야함
 	
 	$("#ordReqDt").val(dtToDate("${orderDetail.ordReqDt}"));		//문의일자
@@ -448,7 +472,7 @@ $(function(){
 	
 	
 	if("YES"=="${reload}"){
-		//opener.parent.location.reload();
+		//opener.parent.location.reload();		사용안함 (페이징기능때문에 특정함수필요)
 		opener.parent.reLoadJqgrid();
 	}
 	
@@ -539,16 +563,32 @@ $(function(){
 			
 
 		},
-		submitHandler: function(form){
+		submitHandler: function(form,event){
+			event.preventDefault();
 			var stdXchrAmt = $("#stdXchrAmt").val().replace(",","");
-			if(isNaN(stdXchrAmt)){
-// 					alert("숫자아님");
-					$("#stdXchrAmt").focus();
-			}else{
-// 				alert("숫자");
-				form.submit();
-			}
 			
+			//한국사용자를 사용자,사용자,사용자, 형태로 변경
+			var oprKrStr="";
+			$("#oprKrList").multiselect("getChecked").each(function(index,item){
+				if(oprKrStr!=""){ 
+					oprKrStr+=','
+				}
+				oprKrStr+=item.value;
+			})
+			$("#oprKr").val(oprKrStr); 
+		//	alert($("#oprKr").val());
+			
+			 	
+			
+			
+			
+			
+			
+			if(isNaN(stdXchrAmt)){
+					$("#stdXchrAmt").focus();
+					return false;
+			}
+			form.submit();
 		}
 
 	});
