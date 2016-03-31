@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -139,6 +140,7 @@ public class OrderManagementController  extends AbstractFileController{
 				}
 			}
 			smsMsOrdVOList.get(i).setKorMng((oprKrList));
+			//smsMsOrdVOList.get(i).setDpstXchrCd("N000590200");  테스트용
 			
 			smsMsOrdVOList.get(i).setPaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getPaptDpstDt()))  ;
 			smsMsOrdVOList.get(i).setRaptDpstDt(formatterDate(smsMsOrdVOList.get(i).getRaptDpstDt()))  ;
@@ -366,6 +368,9 @@ public class OrderManagementController  extends AbstractFileController{
 		TbMsOrdVO tbMsOrdVO = null;
 		tbMsOrdVO = orderService.selectTbMsOrdSplReqCont(ordNo);
 		result = tbMsOrdVO.getReqCont();
+		result = URLEncoder.encode(result , "UTF-8");
+		
+
 		return result ;
 	}
 	

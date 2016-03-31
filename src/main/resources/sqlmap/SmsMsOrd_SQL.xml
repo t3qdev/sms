@@ -123,6 +123,8 @@
 		<result property="bactPrvdMemoCont" column="BACT_PRVD_MEMO_CONT"/>
 		<result property="stdXchrKindCd" column="STD_XCHR_KIND_CD"/>
 		<result property="stdXchrAmt" column="STD_XCHR_AMT"/>
+		<result property="dpstXchrCd" column="DPST_XCHR_CD"/>
+		
 
 	</resultMap>
 	<resultMap id="smsMsOrdViewWithXchr" class="com.b5m.sms.vo.SmsMsOrdVO">
@@ -164,6 +166,7 @@
 		<result property="krwXchrAmt" column="KRW_XCHR_AMT"/>
 		<result property="usdXchrAmt" column="USD_XCHR_AMT"/>
 		<result property="cnsXchrAmt" column="CNS_XCHR_AMT"/>
+		<result property="dpstXchrCd" column="DPST_XCHR_CD"/>
 	</resultMap>
 		
 	<insert id="smsMsOrdDAO.insertSmsMsOrd_S" parameterClass="smsMsOrdVO">
@@ -557,6 +560,7 @@
                              THEN C.PO_SUM_AMT
                         END
               END,2) CNS_XCHR_AMT  
+              ,A.DPST_XCHR_CD AS DPST_XCHR_CD
      FROM
              sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
                                ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)
@@ -678,6 +682,7 @@
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
 	    		 ,A.B5C_GUDS_REG_DT AS B5C_GUDS_REG_DT
              ,A.B5C_GUDS_REG_MEMO AS B5C_GUDS_REG_MEMO
+             ,A.DPST_XCHR_CD AS DPST_XCHR_CD
 		FROM
 				 sms_ms_ord A
 		WHERE 1=1 
@@ -731,6 +736,7 @@
 	    		,A.STD_XCHR_AMT AS STD_XCHR_AMT
 	    		,A.B5C_GUDS_REG_DT AS B5C_GUDS_REG_DT
              	,A.B5C_GUDS_REG_MEMO AS B5C_GUDS_REG_MEMO
+             	,A.DPST_XCHR_CD AS DPST_XCHR_CD
 		FROM
 				 sms_ms_ord A
 		WHERE 1=1 
@@ -763,6 +769,7 @@
 			    ,B5M_BUY_CONT = #b5mBuyCont#
 			    ,B5C_GUDS_REG_DT = #b5cGudsRegDt#
 				,B5C_GUDS_REG_MEMO = #b5cGudsRegMemo#
+				,DPST_XCHR_CD =#dpstXchrCd#
 				WHERE ORD_NO=#ordNo#
 			]]>
 	</update>
