@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.velocity.tools.generic.LoopTool.Equals;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -532,6 +533,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			String dlvModeCd = null;	 					// 견적조건
 			String dlvDestCd = null;						// 항구
 			String ordTypeCd = null;
+			String pymtPrvdModeCont=null;				//결제지급방식내용 : 추가됨
 			String ordMemoCont = null;                   //비고
 			// 엑셀에서 ExcelClientReqGudsVO 변수들 가져와서 대입.
 			userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//담당자
@@ -573,10 +575,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					dlvDestCd = null;
 				}
 			}
-			
+			pymtPrvdModeCont=StringUtil.excelGetCell(sheet.getRow(2).getCell(6)); 
 			ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
-			if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
-			else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							
+			if("Y".equalsIgnoreCase(ctrtTmplYn) || "有".equals(ctrtTmplYn)){ctrtTmplYn="Y";}									
+			else if("N".equalsIgnoreCase(ctrtTmplYn) || "无".equals(ctrtTmplYn)) {ctrtTmplYn="N";}							
 			else{
 				ctrtTmplYn=null;
 			}
@@ -588,14 +590,14 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			}
 			
 			smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// 샘플요청유무
-			if("Y".equalsIgnoreCase(smplReqYn)) {smplReqYn="Y";}
-			else if("N".equalsIgnoreCase(smplReqYn)) {smplReqYn="N";}
+			if("Y".equalsIgnoreCase(smplReqYn)|| "有".equals(smplReqYn)) {smplReqYn="Y";}
+			else if("N".equalsIgnoreCase(smplReqYn)|| "无".equals(smplReqYn)) {smplReqYn="N";}
 			else{
 				smplReqYn=null;
 			}
 			qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// 자격 요청 유무
-			if("Y".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="Y";}
-			else if("N".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="N";}
+			if("Y".equalsIgnoreCase(qlfcReqYn)|| "有".equals(qlfcReqYn)) {qlfcReqYn="Y";}
+			else if("N".equalsIgnoreCase(qlfcReqYn)|| "无".equals(qlfcReqYn)) {qlfcReqYn="N";}
 			else{
 				qlfcReqYn=null;
 			}
@@ -631,6 +633,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdVO.setQlfcReqYn(qlfcReqYn);
 			smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
 			smsMsOrdVO.setOrdMemoCont(ordMemoCont);
+			smsMsOrdVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160401 
 			String ordNo = null;
 			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
 			smsMsOrdVO.setOrdNo(ordNo);
@@ -710,8 +713,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
 					smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 					smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
+					smsMsOrdGudsVO.setOrdGudsSizeVal(ordGudsSizeVal); 		//추가됨 
 					
-
 					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);
 //					LOGGER.debug(smsMsOrdGudsVO.toString());
 				}

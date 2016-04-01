@@ -769,7 +769,7 @@ public class OrderDetailController extends AbstractFileController{
 				//DB에서 상품 정보를 가져온다.
 				List<SmsMsOrdGudsVO> smsMsOrdGudsList =goodsService.selectSmsMsOrdGudsByOrdNo(ordNo);
 
-
+				System.out.println("--------------------------------------------"+smsMsOrdGudsList.size());
 				//주문에 존재하는 상품이 Mapping이 되었을 경우 상품테이블에서 *이미지,인박스수량,바코드*값을 가져온다
 				for(SmsMsOrdGudsVO vo :smsMsOrdGudsList){
 					
@@ -862,6 +862,7 @@ public class OrderDetailController extends AbstractFileController{
 					sheet.shiftRows(12, 16, addRowCountNum);
 				}
 				for(int i=0; i<addRowCountNum;i++){
+					System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii        "+i);
 					Row newRow = sheet.createRow(12+i);
 					newRow.setHeight(sourceRow.getHeight());
 					
@@ -904,6 +905,7 @@ public class OrderDetailController extends AbstractFileController{
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm()!=null){
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                	}	
+			                	System.out.println((i+2) +"번째상품 이름 : "+smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm());
 			                    break;
 			                case 4:		//상품명칭(중)
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsCnsNm()!=null){
@@ -928,6 +930,7 @@ public class OrderDetailController extends AbstractFileController{
 			                	if(smsMsOrdGudsList.get(i+1).getOrdGudsQty()!=null){
 			                		newCell.setCellType(Cell.CELL_TYPE_NUMERIC);
 			                		newCell.setCellValue(smsMsOrdGudsList.get(i+1).getOrdGudsQty());
+			                		System.out.println((i+2) +"번째상품 주문수량 : "+smsMsOrdGudsList.get(i+1).getOrdGudsQty());
 			                	}
 			                    break;
 			                case 8:		//금액
