@@ -181,8 +181,6 @@ $(function(){
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
 
-	var DpstXchrCd = ":;N000590100:$;N000590200:₩;N000590300:¥";
-	
 	$('#jqgrid_a').jqGrid({
         url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
@@ -191,7 +189,7 @@ $(function(){
 		loadonce: true,            
         width: 1200,
         //height: 250,
-        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','报价货币','订单/交易金额','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','선금환율','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余款结算日期','余付','余款百分比','是否在帮韩品购买','上传日期','上传内容'
+        colNames:['Order Number','申请日期','客户名称','订购商品', '查看详情','报价货币','订单/交易金额','上海负责人','韩国负责人','订购路径','状态','状态详情','最终状态','商品供应商汇款','首付日期','首付金额','首付百分比','入库日期','入库地点','出港日期','出港地点','到岸日期','到岸地点','P/O日期','P/O地点','余款结算日期','余付','余款百分比','是否在帮韩品购买','上传日期','上传内容'
                   			,'COUNT','PAGE','ROW','bactPrvdMemoCont','stdXchrAmt','krwXchrAmt','usdXchrAmt','cnsXchrAmt'],
         colModel:[
             {name:'ordNo',index:'ordNo',align:'center',width:100,resizable:false, editable:true, editoptions:{readonly:'true'},stype:'text', search:true},
@@ -299,7 +297,6 @@ $(function(){
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, search:false,editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'dpstXchrCd',index:'dpstXchrCd',align:'center',width:100,resizable:false, search:false,editable:true ,edittype:"select",editoptions:{value:DpstXchrCd},formatter:formatterDpstXchrCd},
             {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
             {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
             {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
@@ -369,12 +366,10 @@ $(function(){
 				if(!checkIndex(RolesEditPapt,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});	
 				}else{
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});	
 				}
 				
@@ -422,7 +417,6 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 // 				}
@@ -432,7 +426,6 @@ $(function(){
 				}
 			}else{
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
-				jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
@@ -532,7 +525,7 @@ $(function(){
 	// jqgrid가 로딩완료 되면, 이 pager로 jqgrid 아래에 pager를 지우고 새로 그린다.
 	// 이 페이저에는 goToSelectedPage() 함수가 링크 걸려 있다.
 	function customPager(totalDbCount, page, row){
-		var pageCount = Math.ceil(totalDbCount / row);		//총페이지수
+		var pageCount = Math.ceil(totalDbCount / row);
 		$('.paginate_complex').html('');
 		var pagerHtml ='';
 		var prevPage = parseInt(page)-1;
@@ -542,7 +535,7 @@ $(function(){
 			pagerHtml += '<a href="#" class="direction prev" onclick="goToSelectedPage('+totalDbCount+','+prevPage+','+row+')">Prev <span></span></a>';
 		}
 		if(parseInt(pageCount) >= 9){
-			if(parseInt(page) <= 5){			//page : 현재페이지
+			if(parseInt(page) <= 5){
 				for(var i=1; i<=9; i++){
 					if(i==parseInt(page)){
 						pagerHtml += '<strong>'+i+'</strong>'
@@ -623,12 +616,10 @@ $(function(){
 				if(!checkIndex(RolesEditPapt,roles)){
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:false});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});	
 				}else{
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});	
 				}
 				
@@ -680,7 +671,6 @@ $(function(){
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','raptDpstRate',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:true});
-					jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:true});
 					jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:true});
 // 				}
@@ -688,7 +678,6 @@ $(function(){
 			}else{
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstDt',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstAmt',{editable:false});
-				jQuery("#jqgrid_a").jqGrid('setColProp','dpstXchrCd',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','paptDpstRate',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDt',{editable:false});
 				jQuery("#jqgrid_a").jqGrid('setColProp','wrhsDlvDestCd',{editable:false});
@@ -886,19 +875,6 @@ $(function(){
 		}
 	}  
 
-	function formatterDpstXchrCd(cellvalue,options,rowObjec){
-	
-		if(cellvalue == 'N000590100'){    // 달러
-			return "$ ";
-		}else if(cellvalue == 'N000590200'){   // 원화
-			return "₩ ";
-		}else if(cellvalue == 'N000590300'){   // 위안화
-			return "¥ ";
-		}else{
-			return "未知";
-		}
-	}
-	
     // jqgrid의 DlvDestCd 컬럼에 대한 formatter
     function formatterDlvDestCd(cellvalue,options,rowObject){
   	
@@ -938,7 +914,7 @@ $(function(){
  	$("#jqgrid_a").jqGrid('setGroupHeaders', {
 		useColSpanStyle: true, 
 		groupHeaders:[
-			{startColumnName: 'paptDpstDt', numberOfColumns: 4, titleText: '首付'},
+			{startColumnName: 'paptDpstDt', numberOfColumns: 3, titleText: '首付'},
 			{startColumnName: 'wrhsDlvDt', numberOfColumns: 2, titleText: '入库'},
 			{startColumnName: 'dptrDlvDt', numberOfColumns: 2, titleText: '出港'},
 			{startColumnName: 'arvlDlvDt', numberOfColumns: 2, titleText: '到岸'},
@@ -1093,10 +1069,7 @@ function dialogSpecialExcel(ordNo){
 		async: false,
 		cache : false,
 		success:function(result){
-		
-			
-	 		$('#special_req_cont').val(decodeURIComponent(result));
-
+	 		$('#special_req_cont').val(result);
 		}
 	});//end $.ajax	
 	

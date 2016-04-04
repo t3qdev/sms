@@ -75,6 +75,16 @@
 		<property name="senderPassword" value="${mail.senderPassword}" />
 		<property name="port" value="${mail.port}" />
 	</bean>
+	
+	<!--  /opt/b5c/img/ext static 변수 초기화  메소드를 만들고 이를 호출. -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.b5m.sms.web.controller.AbstractFileController.setOPT_B5C_IMG_EXT" />
+		<property name="arguments">
+			<list>
+				<value>${file.opt.b5c.img.ext}</value>
+			</list>
+		</property>
+	</bean>
 
 
 

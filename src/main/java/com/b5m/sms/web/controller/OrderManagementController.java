@@ -362,16 +362,16 @@ public class OrderManagementController  extends AbstractFileController{
 	}
 	@ResponseBody
 	@RequestMapping(value="/orderManagementSelectTbMsOrdSplReqCont.ajax")
-	public String orderManagementSelectTbMsOrdSplReqCont(String ordNo) throws Exception{
+	public TbMsOrdVO orderManagementSelectTbMsOrdSplReqCont(String ordNo) throws Exception{
 
-		String result = "false";
+
+		//String result = "false";
 		TbMsOrdVO tbMsOrdVO = null;
 		tbMsOrdVO = orderService.selectTbMsOrdSplReqCont(ordNo);
-		result = tbMsOrdVO.getReqCont();
-		result = URLEncoder.encode(result , "UTF-8");
+		//result = tbMsOrdVO.getReqCont();
+		//result = URLEncoder.encode(result , "UTF-8");
 		
-
-		return result ;
+		return tbMsOrdVO ;
 	}
 	
 	

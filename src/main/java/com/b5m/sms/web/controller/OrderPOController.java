@@ -1,15 +1,10 @@
 package com.b5m.sms.web.controller;
 
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -17,14 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javassist.expr.NewArray;
-
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.Select;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
@@ -49,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.b5m.sms.biz.service.GoodsService;
 import com.b5m.sms.biz.service.OrderService;
 import com.b5m.sms.common.file.FileResultVO;
+import com.b5m.sms.common.file.FileUtil;
 import com.b5m.sms.common.util.StringUtil;
 import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.OrderDetailVO;
@@ -66,9 +56,8 @@ import com.b5m.sms.vo.SmsMsEstmGudsVO;
 import com.b5m.sms.vo.SmsMsEstmVO;
 import com.b5m.sms.vo.SmsMsGudsImgVO;
 import com.b5m.sms.vo.SmsMsGudsVO;
-import com.b5m.sms.vo.SmsMsOrdFileVO;
-import com.b5m.sms.vo.SmsMsOrdGudsVO;
-import com.b5m.sms.vo.SmsMsOrdVO;
+
+import egovframework.rte.fdl.cmmn.exception.EgovBizException;
 
 
 
@@ -323,13 +312,19 @@ public class OrderPOController extends AbstractFileController{
 			for (MultipartFile multipartFile : fileArray) {		
 			LOGGER.debug("2.  ====== inner For ");
 
-
+			
 				String originalFileName = multipartFile.getOriginalFilename();
-				if (originalFileName.endsWith(".png") || originalFileName.endsWith(".jpg")) {
+		
+				if(StringUtil.isNullOrEmpty(originalFileName)){
+					throw new EgovBizException("filename not exist");
+				}
+				String originalFileNameLowerCase = originalFileName.toLowerCase();
+				String originalFileNameExt=FileUtil.getExt(originalFileNameLowerCase);
+				if (StringUtil.isImgExt(originalFileNameExt)) {
 					LOGGER.debug("2.1=============================" );
 					imgFileNameList.add(originalFileName.trim());
 					imgFileList.add(multipartFile);					//PO파일에 바로저장
-				} else if (originalFileName.endsWith(".xls") || originalFileName.endsWith(".xlsx")) {
+				} else if (originalFileNameLowerCase.endsWith(".xls") || originalFileNameLowerCase.endsWith(".xlsx")) {
 					LOGGER.debug("2.2.=============================" );
 					excelFile = multipartFile;						//엑셀파일
 				}

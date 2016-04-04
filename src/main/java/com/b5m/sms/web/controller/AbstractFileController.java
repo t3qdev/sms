@@ -54,9 +54,17 @@ public class AbstractFileController {
 	//final static String OPT_B5C_ETC = File.separator + "opt" + File.separator + "sms-disk + File.separator + "doc" + File.separator;
 	protected static String OPT_B5C_ETC;
 	
-	protected static String[] imgExt = {"jpeg","png","jpg","bmp"};
+	public static String OPT_B5C_IMG_EXT;
+
 	
-	
+
+	public static String getOPT_B5C_IMG_EXT() {
+		return OPT_B5C_IMG_EXT;
+	}
+
+	public static void setOPT_B5C_IMG_EXT(String oPT_B5C_IMG_EXT) {
+		OPT_B5C_IMG_EXT = oPT_B5C_IMG_EXT;
+	}
 
 	public static String getOPT_B5C_DISK() {
 		return OPT_B5C_DISK;
@@ -445,8 +453,9 @@ public class AbstractFileController {
 			//final String systemFileName = FileUtil.getBRSaveFileNameForCurrentTime() + "." + FileUtil.getExt(fileName);
 			String ext=FileUtil.getExt(fileName);
 			final String systemFileName = FileUtil.getBRSaveFileNameForCurrentTime() + "." +ext;
+			
 			try {
-				if(StringUtil.containStr(imgExt, ext)){
+				if(StringUtil.isImgExt(ext)){
 					writeFileToDiskFromMultipartFile(multiPartFile, systemFileName, OPT_B5C_IMG);
 				}else{
 					writeFileToDiskFromMultipartFile(multiPartFile, systemFileName, OPT_B5C_ETC);

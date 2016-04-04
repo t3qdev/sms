@@ -268,8 +268,9 @@
 	                  <tr>
 	                    	<td class="tac">${file.ordFileRegDttm}</td>
 	                        <td class="tac">${file.userAlasCnsNm }(${file.userAlasEngNm })</td>
+	                        <c:set var="fileSysNm" value="${fn:toLowerCase(file.ordFileSysFileNm) }"/>
 	                        <c:choose>
-		                        <c:when test="${fn:contains(file.ordFileSysFileNm, 'xls')}">
+		                        <c:when test="${fn:endsWith(fileSysNm, '.xls')||fn:endsWith(fileSysNm, '.xlsx')}">
 		                        	<td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td>
 		                        </c:when>
 		                        <c:otherwise>
@@ -277,7 +278,7 @@
 		                        </c:otherwise>
 	                        </c:choose>
 <%-- 	                        <td><div><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="ico ico_xls fileDown">${file.ordFileOrgtFileNm }</a></td> --%>
-	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download fileDown" id="btnFileDownload${status.index }">다운로드</a></td>
+	                        <td class="tac"><a href="${web_ctx}/orderDetailFileDownload.do?filePath=${file.ordFileSysFileNm }&fileName=${file.ordFileOrgtFileNm }" class="btn-download fileDown" id="btnFileDownload${status.index }">下载</a></td>
 	                  </tr>
 	                   </c:forEach> 
 	                   
@@ -441,7 +442,7 @@ $(function(){
 	var ordStatCd = '${orderDetail.ordStatCd }';
 	
 	//버튼핸들링
-	if(ordStatCd==''){
+	if(ordStatCd=='' || ordStatCd=='N000550500'){		//드랍인경우도 사용불가 
 		$('#btn_01').hide();	//PO업로드
 		$("#btn_proc01").hide();	//PO확인
 		$('#poExcelDownload').hide();	//매입PO다운

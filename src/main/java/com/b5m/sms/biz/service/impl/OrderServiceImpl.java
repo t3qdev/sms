@@ -690,10 +690,10 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			for(int i=6; i<rows-1; i++){
 				
 				
-				ordGudsUpcId = StringUtil.excelGetCell(sheet.getRow(i).getCell(1));
+				ordGudsUpcId = StringUtil.getCellUpcId(sheet.getRow(i).getCell(1));
 				ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
 				ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
-				ordGudsSizeVal =  StringUtil.excelGetCell(sheet.getRow(i).getCell(4)); 
+				ordGudsSizeVal =  StringUtil.getCellUpcId(sheet.getRow(i).getCell(4)); 
 				ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
 //				유효기간 =   ?????= StringUtil.excelGetCell(sheet.getRow(i).getCell(6));      //skip 무시
 				ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
@@ -824,6 +824,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			 histVo.setOrdHistSeq(seq);
 			 histVo.setOrdHistWrtrEml(wrtrEml);
 			 //2-2.현재 주문 상태에 따라 메세지를 다르게 보여준다.
+			 System.out.println("ordStatCdordStatCdordStatCdordStatCdordStatCdordStatCdordStatCdordStatCdordStatCdordStatCd"+ordStatCd);
 			if("N000550100".equals(ordStatCd)){					//접수 
 				
 				if("N000620100".equals(ordTypeCd)){
@@ -1153,8 +1154,10 @@ catch(Exception e){
 				throws Exception {
 			JSONParser jsonParser = new JSONParser();
 			JSONArray jsonArray = (JSONArray) jsonParser.parse(jsonString);
-	
 			List<SmsMsOrdVO> smsMsOrdVOList = new ArrayList<SmsMsOrdVO>();
+			
+						
+			
 			if(jsonArray.size() > 0){
 				for (Object obj : jsonArray) {
 					HashMap<String, Object> rs = new ObjectMapper().readValue(obj.toString(), HashMap.class);
@@ -1163,6 +1166,21 @@ catch(Exception e){
 					smsMsOrdVO.setOrdNo(ordNo);
 					SmsMsOrdVO smsMsOrdVO1 = new SmsMsOrdVO();
 					smsMsOrdVO1 = smsMsOrdDAO.selectSmsMsOrdForOrderManamentViewByOrdNoChangeCD(smsMsOrdVO);
+					List<SmsMsUserVO> oprList = smsMsUserDAO.selectSmsMsUserbyOrdNo(smsMsOrdVO1.getOrdNo());
+					String oprKrList="";
+					for(SmsMsUserVO vo : oprList){
+						if(("N000530200").equals(vo.getOgnzDivCd())){		//N000530200 한국팀
+							if(!"".equals(oprKrList)){
+								oprKrList+=",";
+							}
+							oprKrList+=vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
+							System.out.println("oprKrList ::::::::::::"+oprKrList);
+							/*String oprKr =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
+							orderDetail.setOprKr(oprKr);
+							orderDetail.setOprKr(vo.getUserEml());*/
+						}
+					}
+					smsMsOrdVO1.setKorMng((oprKrList));
 					smsMsOrdVOList.add(smsMsOrdVO1);
 				}
 			}

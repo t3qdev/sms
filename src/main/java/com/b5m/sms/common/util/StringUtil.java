@@ -9,6 +9,9 @@ import java.util.StringTokenizer;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.springframework.web.servlet.mvc.AbstractController;
+
+import com.b5m.sms.web.controller.AbstractFileController;
 
 /**
  * 문자열(String)를 정의한 Util Class <br />
@@ -1087,12 +1090,13 @@ public class StringUtil {
 		}
 	}
 	
-	public static Boolean containStr(String[] arr, String str){
+	public static Boolean containStrIgnoreCase(String[] arr, String str){
 		if(isNullOrEmpty(str)|| arr.length==0){
 			return false;
 		}
 		for(int i=0;i<arr.length;i++){
-			if(str.equals(arr[i])){
+			
+			if(str.equalsIgnoreCase(arr[i])){
 				return true;
 			}
 		}
@@ -1125,6 +1129,25 @@ public class StringUtil {
 			}
 		}
 		return sReturn;
+		
+	}
+	/**
+	 * 환경변수에서 이미지확장자를 불러와서 입력받은 ext(대소문자무시)와 비교한다.
+	 * @param ext
+	 * @return
+	 */
+	public static boolean isImgExt(String ext){
+		String[] extArr = AbstractFileController.OPT_B5C_IMG_EXT.split(",");
+		if(isNullOrEmpty(ext)|| extArr.length==0){
+			return false;
+		}
+		for(int i=0;i<extArr.length;i++){
+			
+			if(ext.equalsIgnoreCase(extArr[i])){
+				return true;
+			}
+		}
+		return false;
 		
 	}
 }

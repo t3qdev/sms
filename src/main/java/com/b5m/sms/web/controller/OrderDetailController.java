@@ -205,7 +205,8 @@ public class OrderDetailController extends AbstractFileController{
 		MultipartFile excelFile = null;
 		for (MultipartFile multipartFile : fileArray) {		
 			String originalFileName = multipartFile.getOriginalFilename();
-			if (originalFileName.endsWith(".xls") || originalFileName.endsWith(".xlsx")) {          //엑셀 파일 확인
+			String originalFileNameLowerCase = originalFileName.toLowerCase();
+			if (originalFileNameLowerCase.endsWith(".xls") || originalFileNameLowerCase.endsWith(".xlsx")) {          //엑셀 파일 확인
 				LOGGER.debug("1.1.=============================" );
 				excelFile = multipartFile;
 			}else{
@@ -369,9 +370,10 @@ public class OrderDetailController extends AbstractFileController{
 		List<SmsMsOrdGudsVO> smsMsOrdGudsVOList = new ArrayList<SmsMsOrdGudsVO>();
 		for(int i=6; i<rows-1; i++){
 			ordGudsUpcId = StringUtil.getCellUpcId(sheet.getRow(i).getCell(1));
+			System.out.println("ordGudsUpcId : "+ordGudsUpcId);
 			ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
 			ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
-			ordGudsSizeVal =  StringUtil.excelGetCell(sheet.getRow(i).getCell(4)); 
+			ordGudsSizeVal =  StringUtil.getCellUpcId(sheet.getRow(i).getCell(4)); 
 			ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
 			ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
 			
@@ -620,7 +622,7 @@ public class OrderDetailController extends AbstractFileController{
 		
 		
 		
-		if(StringUtil.containStr(imgExt, ext)){
+		if(StringUtil.isImgExt(ext)){
 			fullPath=OPT_B5C_IMG + filePath;
 		}else{
 			fullPath=OPT_B5C_ETC + filePath;
