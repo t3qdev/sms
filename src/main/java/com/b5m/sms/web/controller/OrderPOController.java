@@ -315,9 +315,9 @@ public class OrderPOController extends AbstractFileController{
 			
 				String originalFileName = multipartFile.getOriginalFilename();
 		
-				if(StringUtil.isNullOrEmpty(originalFileName)){
+/*			if(StringUtil.isNullOrEmpty(originalFileName)){
 					throw new EgovBizException("filename not exist");
-				}
+				}*/
 				String originalFileNameLowerCase = originalFileName.toLowerCase();
 				String originalFileNameExt=FileUtil.getExt(originalFileNameLowerCase);
 				if (StringUtil.isImgExt(originalFileNameExt)) {
