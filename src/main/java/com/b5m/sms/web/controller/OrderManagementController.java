@@ -162,6 +162,8 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping("/orderManagementSave.ajax")
 	public String orderManagementSave(SmsMsOrdVO smsMsOrdVO) throws Exception{
 		
+		System.out.println("smsMsOrdVO.getStdXchrKindCd() : "+smsMsOrdVO.getStdXchrKindCd());
+		
 		if(smsMsOrdVO.getPaptDpstDt() != null) smsMsOrdVO.setPaptDpstDt(smsMsOrdVO.getPaptDpstDt().replace("-",""));
 		if(smsMsOrdVO.getWrhsDlvDt() != null) smsMsOrdVO.setWrhsDlvDt(smsMsOrdVO.getWrhsDlvDt().replace("-",""));
 		if(smsMsOrdVO.getDptrDlvDt() != null) smsMsOrdVO.setDptrDlvDt(smsMsOrdVO.getDptrDlvDt().replace("-",""));
@@ -169,6 +171,7 @@ public class OrderManagementController  extends AbstractFileController{
 		if(smsMsOrdVO.getPoDlvDt() != null) smsMsOrdVO.setPoDlvDt(smsMsOrdVO.getPoDlvDt().replace("-",""));
 		if(smsMsOrdVO.getRaptDpstDt() != null) smsMsOrdVO.setRaptDpstDt(smsMsOrdVO.getRaptDpstDt().replace("-",""));
 		if(smsMsOrdVO.getB5cGudsRegDt() != null) smsMsOrdVO.setB5cGudsRegDt(smsMsOrdVO.getB5cGudsRegDt().replace("-",""));
+		
 		
 		if("".equals(smsMsOrdVO.getPaptDpstDt())) smsMsOrdVO.setPaptDpstDt(null);
 		if("".equals(smsMsOrdVO.getRaptDpstDt())) smsMsOrdVO.setRaptDpstDt(null);
@@ -183,7 +186,10 @@ public class OrderManagementController  extends AbstractFileController{
 		if("".equals(smsMsOrdVO.getB5mBuyCont())) smsMsOrdVO.setB5mBuyCont(null);
 		if("".equals(smsMsOrdVO.getB5cGudsRegDt())) smsMsOrdVO.setB5cGudsRegDt(null);
 		if("".equals(smsMsOrdVO.getB5cGudsRegMemo())) smsMsOrdVO.setB5cGudsRegMemo(null);
-			
+		if("".equals(smsMsOrdVO.getStdXchrKindCd())) smsMsOrdVO.setStdXchrKindCd(null);	
+		
+		
+		
 		if(smsMsOrdVO.getPaptDpstRate()  !=null && new BigDecimal("100").equals(smsMsOrdVO.getPaptDpstRate())){
 //			선금 100%, 잔금 0%
 			BigDecimal zero = new BigDecimal("0");

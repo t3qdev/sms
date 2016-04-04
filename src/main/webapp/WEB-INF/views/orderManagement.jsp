@@ -180,7 +180,8 @@ $(function(){
 
 	var DlvDestCd = ':;N000510100:ICN;N000510200:PUS;N000510300:PTK;N000510400:PVG;N000510500:NGB;N000510600:CGO;N000510700:CKG;N000510800:CAN;N000510900:HGH;'
 							+'N000511000:TSN;N00051100:NKG;N000511200:SZX;N000511300:TAO;N000511400:HKG';
-
+	var StdXchrCd = ':;N000590100:$;N000590200:₩;N000590300:¥';
+	
 	$('#jqgrid_a').jqGrid({
         url : "${web_ctx}/orderManagementSearch.ajax",
 		ajaxGridOptions : {async:false},    // 동기로 변환
@@ -197,7 +198,8 @@ $(function(){
             {name:'clientNm',index:'clientNm',align:'center',width:100,resizable:false,stype:'text', search:true},
             {name:'orderedGudsNm',index:'orderedGudsNm',align:'left',width:250,resizable:false, classes: 'bold', formatter:stringLengthLimit, search:false},
             {name:'showDetail',index:'showDetail',align:'left',width:200,resizable:false, formatter : formatterShowDetail, stype:'input' , classes: 'boldAndBlue', search:false},
-            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:70,resizable:false,formatter:formatterCurrentIcon , search:false},
+//             {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:70,resizable:false,formatter:formatterCurrentIcon , search:false},
+            {name:'stdXchrKindCd',index:'stdXchrKindCd',align:'center',width:70,resizable:false, search:false,editable:true,edittype:"select",editoptions:{value:StdXchrCd}, formatter : formatterCurrentIcon },
             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,prefix: ""} , classes: 'bold' , search:false},		
 //             {name:'ordSumAmt',index:'ordSumAmt',align:'right',width:130,resizable:false, stype:'input', editable:true, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2,
 //             		prefix: "
@@ -297,7 +299,8 @@ $(function(){
             {name:'paptDpstDt',index:'paptDpstDt',align:'center',width:90,resizable:false, search:false,editable:true, formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
                   }},		
-            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}   },		
+/*             {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}   }, */		
+            {name:'paptDpstAmt',index:'paptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:formatterCurrentAmt ,unformat:unformatterCurrencyForOrdSumAmt  },		
             {name:'paptDpstRate',index:'paptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"} },		
             {name:'wrhsDlvDt',index:'wrhsDlvDt',align:'center',width:90,resizable:false, search:false,editable:true,formatter:formatterDate,
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
@@ -322,7 +325,7 @@ $(function(){
             	editoptions:{readonly:'true',size:20, dataInit:function(el){$(el).datepicker({dateFormat:'yy-mm-dd'}); }
 
 					}},
-            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true}, formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "}},
+            {name:'raptDpstAmt',index:'raptDpstAmt',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true},formatter:formatterCurrentAmt ,unformat:unformatterCurrencyForOrdSumAmt  },	
             {name:'raptDpstRate',index:'raptDpstRate',align:'center',width:90,resizable:false, search:false,editable:true,editrules:{number:true} , formatter:"currency", formatoptions:{defaultValue:'',decimalSeparator:".",  decimalPlaces: 2, suffix: " %"}},
             {name:'b5mBuyCont',index:'b5mBuyCont',align:'center',width:160,resizable:false, search:false,editable:true},
            
@@ -834,7 +837,7 @@ $(function(){
 	}
 	function unformatterCurrencyForOrdSumAmt(cellvalue,options){
 // 		alert("3");
-		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","").replace(".","");
+		return cellvalue.replace("$","").replace("₩","").replace("¥","").replace(" ","").replace(",","");
 	}
 	
 	function formatterCurrentIcon(cellvalue,options,rowObject){
@@ -845,11 +848,22 @@ $(function(){
 				else if(cellvalue == "N000590300")   // 위안화
 					return '¥ ';
 				else{
-					return '未知';
+					return ' ';
 				}
 	}
 	
-	
+	function formatterCurrentAmt(cellvalue,options,rowObject){
+		//3자리수마다 콤마 , 소수점이하 2자리까지 표시, prefix에 통화마크 표시(stdXchrKindCd)
+		var ro = rowObject.stdXchrKindCd;
+		if(ro) {
+			ro = formatterCurrentIcon(ro); 
+		} else {
+			ro = '';
+		}
+		//return '$ ' + $.number(cellvalue, 2);
+		return ro + ' ' + formatMoney(cellvalue);
+		
+	}
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
 	function formatterShowDetail(cellvalue,options,rowObject){
 		if(rowObject.ordTypeCd=="N000620200" && rowObject.ordStatCd=="N000550100"){

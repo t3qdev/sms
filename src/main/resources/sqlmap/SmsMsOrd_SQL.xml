@@ -764,6 +764,7 @@
 			    ,B5M_BUY_CONT = #b5mBuyCont#
 			    ,B5C_GUDS_REG_DT = #b5cGudsRegDt#
 				,B5C_GUDS_REG_MEMO = #b5cGudsRegMemo#
+				,STD_XCHR_KIND_CD=#stdXchrKindCd#
 				WHERE ORD_NO=#ordNo#
 			]]>
 	</update>

@@ -466,6 +466,9 @@ $(function(){
 		$(".btn-search").hide();		
 		$(":text").attr("disabled","true");
 		$(".selectbox").attr("disabled","true");
+		$("#oprKrList").multiselect('disable');	
+		
+		
 	}
 /* 	if('${isSaved}'=='N'){
 		$(".btn-search").hide();

@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="${web_ctx}/libs/multiselect/jquery.multiselect.js"></script>
 <%-- 	<script type="text/javascript" src="${web_ctx}/libs/multiselect/jquery.multiselect.css"></script> --%>
     <script type="text/javascript" src="${web_ctx}/js/common/lib/jquery.form.min.js" ></script>
+    <script type="text/javascript" src="${web_ctx}/js/common/lib/jquery.number.min.js" ></script>
 </head>
 <body class="">
 	<!-- head 영역 -->

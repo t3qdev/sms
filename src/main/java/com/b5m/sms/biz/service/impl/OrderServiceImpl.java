@@ -973,7 +973,13 @@ catch(Exception e){
 							 smsMsGudsVo.setGudsKorNm(gudsKorNm[i].trim());
 							 smsMsGudsVo.setGudsCnsNm(gudsCnsNm[i].trim());
 							 smsMsGudsVo.setGudsUpcId(gudsUpcId[i].trim());
-							 smsMsGudsVo.setGudsVatRfndYn(vatYn[i].trim().equals("과세")?"Y":"N");
+							
+							if("Y".equalsIgnoreCase(vatYn[i].trim()) || "有".equals(vatYn[i].trim())||"과세".equals(vatYn[i].trim())){
+								 smsMsGudsVo.setGudsVatRfndYn("Y");
+							}else{
+								 smsMsGudsVo.setGudsVatRfndYn("N");
+							}
+							 smsMsGudsVo.setGudsVatRfndYn(vatYn[i].trim().equalsIgnoreCase("Y")?"Y":"N");
 							 //smsMsGudsVo.setGudsUrlAddr(gudsUrlAddr[i].trim());		항목이없음
 							 smsMsGudsVo.setGudsInbxQty(gudsInbxQty[i].trim());
 							

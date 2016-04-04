@@ -232,7 +232,7 @@ public class OrderDetailController extends AbstractFileController{
 		
 		String dlvModeCd = null;	 					// 견적조건
 		String dlvDestCd = null;						// 항구
-		
+		String pymtPrvdModeCont=null;				//결제지급방식내용 : 추가됨
 		String ordTypeCd = null;		
 		String ordMemoCont = null;                   //비고
 		// 엑셀에서 ExcelClientReqGudsVO 변수들 가져와서 대입.
@@ -274,10 +274,10 @@ public class OrderDetailController extends AbstractFileController{
 				dlvDestCd = null;
 			}
 		}
-		
+		pymtPrvdModeCont=StringUtil.excelGetCell(sheet.getRow(2).getCell(6));
 		ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
-		if("Y".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="Y";}									
-		else if("N".equalsIgnoreCase(ctrtTmplYn)) {ctrtTmplYn="N";}							
+		if("Y".equalsIgnoreCase(ctrtTmplYn) || "有".equals(ctrtTmplYn)){ctrtTmplYn="Y";}									
+		else if("N".equalsIgnoreCase(ctrtTmplYn) || "无".equals(ctrtTmplYn)) {ctrtTmplYn="N";}							
 		else{
 			ctrtTmplYn=null;
 		}
@@ -287,15 +287,16 @@ public class OrderDetailController extends AbstractFileController{
 			if("".equals(poSchdDt)) poSchdDt=null;
 			if(poSchdDt.length()>8) poSchdDt=null;
 		}
+		
 		smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// 샘플요청유무
-		if("Y".equalsIgnoreCase(smplReqYn)) {smplReqYn="Y";}
-		else if("N".equalsIgnoreCase(smplReqYn)) {smplReqYn="N";}
+		if("Y".equalsIgnoreCase(smplReqYn)|| "有".equals(smplReqYn)) {smplReqYn="Y";}
+		else if("N".equalsIgnoreCase(smplReqYn)|| "无".equals(smplReqYn)) {smplReqYn="N";}
 		else{
 			smplReqYn=null;
 		}
 		qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// 자격 요청 유무
-		if("Y".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="Y";}
-		else if("N".equalsIgnoreCase(qlfcReqYn)) {qlfcReqYn="N";}
+		if("Y".equalsIgnoreCase(qlfcReqYn)|| "有".equals(qlfcReqYn)) {qlfcReqYn="Y";}
+		else if("N".equalsIgnoreCase(qlfcReqYn)|| "无".equals(qlfcReqYn)) {qlfcReqYn="N";}
 		else{
 			qlfcReqYn=null;
 		}
@@ -349,6 +350,7 @@ public class OrderDetailController extends AbstractFileController{
 		orderDetailVO.setCustOrdProcCont(custOrdProcCont);
 //		orderDetailVO.setOrdMemoCont(ordMemoCont);							// 엑셀에 존재 X
 		orderDetailVO.setOrdMemoCont(ordMemoCont);
+		orderDetailVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160404
 		
 		LOGGER.debug("2.1.4.1 엑셀에서 주문의 SMS_MS_ORD_GUDS 리스트를 뽑아온다." );
 		int rows = sheet.getPhysicalNumberOfRows();
@@ -390,6 +392,7 @@ public class OrderDetailController extends AbstractFileController{
 				smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
 				smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
 				smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
+				smsMsOrdGudsVO.setOrdGudsSizeVal(ordGudsSizeVal); //추가됨 160404
 				
 				smsMsOrdGudsVOList.add(smsMsOrdGudsVO);
 				LOGGER.debug(smsMsOrdGudsVO.toString());
