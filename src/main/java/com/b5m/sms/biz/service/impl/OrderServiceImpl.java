@@ -187,9 +187,14 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		String ordHistHistCont=null;             // 
 		String ordReqDt=null;     //주문등록일
 		String dlvModeCd = null;
-		
+		String stdXchrKindCd=null;
 		String ordEstmDt = null;			// 견적일자 - 주문발생일자 - B5C(일반)의 경우 견적일자 = 문의일자
-		String stdXchrKindCd = "N000590200";      //  기준화폐종류코드 - B5C의 경우 무조건 원화 사용
+		if("N000620100".equals(ordTypeCd)){
+			stdXchrKindCd = "N000590300";      //  N000620100 일반일 경우 =>위안화로 변경(160404)
+		}else if("N000620200".equals(ordTypeCd)){
+			stdXchrKindCd = "N000590100";      //  N000620200 스페셜일 경우 =>달러로 변경(160404)
+		}
+		
 		BigDecimal stdXchrAmt = new BigDecimal("1");			//  기준환율 테이블이 원화로 되어 있으므로 1로 세팅
 		String ordHopeArvlDt = null;      //  희망인도일자 - B5C의 ESTM_RCP_REQ_DT
 		
@@ -634,6 +639,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
 			smsMsOrdVO.setOrdMemoCont(ordMemoCont);
 			smsMsOrdVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160401 
+			smsMsOrdVO.setStdXchrKindCd("N000590300");		//일반주문인경우 위안화 160404
 			String ordNo = null;
 			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
 			smsMsOrdVO.setOrdNo(ordNo);
