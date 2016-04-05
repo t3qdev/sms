@@ -1016,6 +1016,7 @@ $(function(){
 
     // ajaxform
     $('#dialog_upload_form').ajaxForm({
+    	forceSync:true,
         success: function(data){
            
       	  if(data=="success"){
@@ -1053,9 +1054,6 @@ $(function(){
 			
 // 			location.reload();
 			
-          },
-          error : function(data){				//ajax전송시 잘못되는 경우 
-        	  alert('订单保存失败');
           }
     }); 	
 	// [+신규주문등록] Dialog Control

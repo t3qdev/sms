@@ -117,9 +117,6 @@
 				            	alert("false");
 				            }
 
-			          },
-			          error : function(data){
-			        	  alert('error');
 			          }
 		        });   
 				location.reload();

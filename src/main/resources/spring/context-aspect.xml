@@ -10,13 +10,13 @@
 		<aop:pointcut id="controllerMethod" expression="execution(* com.b5m.sms..controller.*Controller.*(..))" />
 		<aop:pointcut id="daoMethod" expression="execution(* com.b5m.sms..dao.*DAO.*(..))" />
 
-		<aop:aspect ref="exceptionTransfer">
+<!-- 		<aop:aspect ref="exceptionTransfer">
 			<aop:after-throwing throwing="exception" pointcut-ref="controllerMethod" method="transfer" />
-			<!-- 			
+						
 			<aop:after-throwing throwing="exception" pointcut-ref="serviceMethod" method="transfer" />
 			<aop:after-throwing throwing="exception" pointcut-ref="daoMethod" method="transfer" />
- 			-->		
- 		</aop:aspect>
+ 					
+ 		</aop:aspect> -->
 	</aop:config>
  	
  	<!-- Annotation AOP 적용  for Root Web App. Context -->
@@ -27,7 +27,7 @@
 
 		
 	
-	<bean id="exceptionTransfer" class="egovframework.rte.fdl.cmmn.aspect.ExceptionTransfer">
+	<!-- <bean id="exceptionTransfer" class="egovframework.rte.fdl.cmmn.aspect.ExceptionTransfer">
 		<property name="exceptionHandlerService">
 			<list>
 				<ref bean="defaultExceptionHandleManager" />
@@ -71,5 +71,5 @@
 
 	<bean id="svcHandler" class="com.b5m.sms.common.exception.EgovServiceExcepHndlr" />
 	<bean id="ctrlHandler" class="com.b5m.sms.common.exception.EgovControllerExcepHndlr" />	
-	
+	 -->
 </beans>

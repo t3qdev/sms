@@ -813,12 +813,12 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 //					LOGGER.debug(smsMsOrdGudsVO.toString());
 				}
 			}
-/*			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
-				//throw new Exception("Goods list is empty!!");
-				return "false";
+			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
+				throw new Exception("Goods list is empty!!");
+				//return "false";
 						
 			}
-			*/
+			
 			if(errorCnt==0){				//성공인경우 각종 insert실행
 				//주문정보 삽입
 				smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  			

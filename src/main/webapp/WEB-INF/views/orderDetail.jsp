@@ -546,14 +546,8 @@ $(function(){
 				}else{
 					alert("上传失败");
 				}
-					
-				
-				
-			}//success function
-/* 			,error : function(jqXHR, textStatus, errorThrown) {
-				//Error시, 처리
-				alert("上传文件失败");
-			} */
+
+			}
 		});//ajax
 	});
 	

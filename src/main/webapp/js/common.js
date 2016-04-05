@@ -20,22 +20,40 @@ $(function(){
 	$('.btn-proc').button();
 	
 	$('.ui-selector').selectmenu();
-	$('.autofinder').combobox();
 	
 	$('.ui-calendar').datepicker();
 	$('.ui-calendar').datepicker('option', 'dateFormat', 'yy-mm-dd' );
 	
-	
 	$('body').on("change","i.file input",function(){
 		$(this).parent().find("em").html($(this).val());
 	});
-	
 	
 	$('.sms_theme li a').each(function(){
 		$(this).click(function(){
 			localStorage.sms2Theme = 'theme_'+$(this).data('sms2theme');
 			$("html").attr('class',localStorage.sms2Theme)
 		});
+	});
+	
+	//ajax default Setting
+	$.ajaxSetup({
+	   error: function(jqXHR, textStatus, errorThrown ){
+	    	var statusCode = jqXHR.status;
+	    	if(statusCode === 500) {
+	    		alert("An error orcured!");
+	    		var jsonObj =$.parseJSON(jqXHR.responseText);
+	    		$('<form action="/sms/common/ajaxError.jsp" method="POST">' + 
+	    				'<input type="hidden" name="error" value="' + jsonObj.error + '">' +
+	    				'<input type="hidden" name="message" value="' + jsonObj.stackTrace + '">' +
+	    		'</form>').appendTo('body').submit();
+	    	} else if(statusCode === 401) {
+	    		alert("Unauthorized! It will be redirected login page.");
+	    		location.href = "/sms/login.do";
+	    	} else if(statusCode === 403) {
+	    		alert("Unauthorized! It will be redirected login page.");
+	    		location.href = "/sms/login.do";
+	    	}
+	    }
 	});
 	
 });

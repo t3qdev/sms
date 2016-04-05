@@ -57,9 +57,6 @@
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>*.do</url-pattern>
 		<url-pattern>*.file</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>*.ajax</url-pattern>
 	</servlet-mapping>
 
@@ -104,7 +101,7 @@
 		<auth-method>BASIC</auth-method>
 	</login-config>
 
-
+<!-- 
 	<error-page>
 		<error-code>403</error-code>
 		<location>/common/authError.jsp</location>
@@ -112,7 +109,7 @@
 	<error-page>
 		<error-code>404</error-code>
 		<location>/common/noResource.jsp</location>
-	</error-page>
+	</error-page> -->
 	
 <!-- 	<session-config> -->
 <!-- 		<cookie-config> -->

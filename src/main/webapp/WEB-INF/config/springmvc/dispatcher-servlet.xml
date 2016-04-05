@@ -59,19 +59,6 @@
         <property name="paramName" value="language" />
     </bean>
 
-
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-        <property name="defaultErrorView" value="error"/>
-        <property name="exceptionMappings">
-            <props>
-                <prop key="org.springframework.dao.DataAccessException">error</prop>
-                <prop key="org.springframework.transaction.TransactionException">error</prop>
-                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">error</prop>
-                <prop key="org.springframework.security.AccessDeniedException">error</prop>
-            </props>
-        </property>
-    </bean>
-
 	<!-- Tiles 적용. 시작 -->
 	<!-- 타일즈 적용 보류   -->
 	
@@ -112,5 +99,22 @@
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
     
  -->
+ <bean class="com.b5m.sms.common.exception.B5MSimpleMappingExceptionResolver">
+        <property name="defaultErrorView" value="error"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">error</prop>
+                <prop key="org.springframework.transaction.TransactionException">error</prop>
+                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">error</prop>
+                <prop key="java.lang.Exception">error</prop>
+                <prop key="java.lang.Throwable">error</prop>
+            </props>
+        </property>
+    </bean>
+    
+   	<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" id="jsonView">
+		<property name="contentType" value="application/json;charset=UTF-8">
+		</property>
+	</bean>
     
 </beans>
