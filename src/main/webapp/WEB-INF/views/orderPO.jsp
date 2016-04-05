@@ -324,7 +324,9 @@ $(function(){
 	if("YES"=="${view}"){
 		$("#check").hide();
 	}
-		
+	if("YES"=="${invaild}"){
+		$("#check").hide();
+	}
 	
 		$('#check').click(function(){
 		

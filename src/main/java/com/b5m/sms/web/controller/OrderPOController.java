@@ -65,6 +65,10 @@ import egovframework.rte.fdl.cmmn.exception.EgovBizException;
 @Controller
 public class OrderPOController extends AbstractFileController{
 	
+	private static final String YES = "YES";
+
+	private static final String INVAILD_VALUE = "INVALID VALUE";
+
 	@Resource(name = "orderService")
 	public OrderService orderService;	
 	
@@ -75,7 +79,7 @@ public class OrderPOController extends AbstractFileController{
 		
 	@RequestMapping(value="/orderPOView")
 	public String orderPO(Model model, String ordNo) throws Exception{
-		String yes="YES";
+		String yes=YES;
 		
 		//0.화면에 표시될 내용 (정보+상품) 해당 VO를 모두 채워넣으면 화면에 값 표시 완료 
 		OrderPOVO poVo = new OrderPOVO();
@@ -356,6 +360,118 @@ public class OrderPOController extends AbstractFileController{
 			Workbook wb = WorkbookFactory.create(excelFile.getInputStream());		//엑셀 파일생성
 			Sheet sheet = wb.getSheetAt(0);														//엑셀 시트선택
 
+			
+			String invaild ="N";
+			OrderPOVO poVo = new OrderPOVO();
+			List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
+			
+			
+			//	1-2.버전에 따른 이미지 저장방법이 다름
+			
+	        if(wb instanceof HSSFWorkbook) { 
+	            this.excelHSSFPictureInfo((HSSFWorkbook)wb,ordNo); 
+	        } 
+	        else { 
+	            this.excelXSSFPictureInfo((XSSFWorkbook)wb,ordNo); 
+	        } 
+			//validate 를 위해 상품부터 체크하여 DB에 넣는다
+			int rows = sheet.getPhysicalNumberOfRows();
+
+			
+			for(int i=13; i<rows-1; i++){
+
+				
+				OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
+				
+				//poGudsVo.setImgSrcPath("file:///"+imgName+ordNo+i+".jpg");
+				Row getRow=sheet.getRow(i);
+				if(StringUtil.getCellUpcId(getRow.getCell(2))!=null){			//physicalNumber는 엑셀에 따라 더 커질수 있으므로 바코드를 기준으로 값을 관리한다.
+					poGudsVo.setImgSrcPath(ordNo+i+".jpg");
+					poGudsVo.setGudsUpcId(StringUtil.getCellUpcId(getRow.getCell(2)));
+					poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
+					poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
+
+					try{
+						poGudsVo.setOrdGudsQty(qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(5)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setOrdGudsQty(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setGudsInbxQty( qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(6)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setGudsInbxQty(INVAILD_VALUE);
+						invaild=YES;
+					}
+					poGudsVo.setVatYn(StringUtil.excelGetCell(getRow.getCell(7)));
+
+					try{
+						poGudsVo.setPcPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(8)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPcPrc(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPcPrcVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(9)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPcPrcVat(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPcPrcNoVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(10)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPcPrcNoVat(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPoPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(11)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPoPrc(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPoPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(12)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPoPrcSum(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPoXchrPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(13)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPoXchrPrc(INVAILD_VALUE);
+						invaild=YES;
+					}
+					try{
+						poGudsVo.setPoXchrPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(14)))));
+					}catch(NumberFormatException e){
+						poGudsVo.setPoXchrPrcSum(INVAILD_VALUE);
+						invaild=YES;
+					}
+					
+					poGudsVo.setPvdrnNm(StringUtil.excelGetCell(getRow.getCell(15)));
+
+				
+					poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
+					
+					if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
+						poGudsList.add(poGudsVo);
+					}
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			String poAmt=null;
 			String poXchrAmt=null;
 			String pcSum=null;
@@ -367,35 +483,76 @@ public class OrderPOController extends AbstractFileController{
 			String pfNoVat=null;
 			String pfDlvAmt=null;
 			String pfDlvAmtNoVat=null;
-			
-			//1.PO정보 VO생성
-			OrderPOVO poVo = new OrderPOVO();
-			List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
+			String stdXchrAmt=null;
 			
 			
 			
-			poAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(1))));
-		
-			
-			poXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(2))));
-			
-			 pcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(3))));
-			
-			 pcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(4))));
-			
-			 dlvPcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(5))));
-			
-			 dlvPcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(6))));
-			
-			 dlvAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(1))));
-			
-			 pf=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(3))));
-			
-			 pfNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(4))));
-			
-			 pfDlvAmt=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(5))));
-			
-			pfDlvAmtNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(6))));
+			try{
+				poAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(1))));
+			}catch(NumberFormatException e){
+				poAmt=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				poXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(2))));
+			}catch(NumberFormatException e){
+				poXchrAmt=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(3))));
+			}catch(NumberFormatException e){
+				pcSum=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(4))));
+			}catch(NumberFormatException e){
+				pcSumNoVat=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				dlvPcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(5))));
+			}catch(NumberFormatException e){
+				dlvPcSum=INVAILD_VALUE;
+				invaild=YES;
+			}	
+			try{
+				dlvPcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(6))));
+			}catch(NumberFormatException e){
+				dlvPcSumNoVat=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				dlvAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(1))));
+			}catch(NumberFormatException e){
+				dlvAmt=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pf=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(3))));
+			}catch(NumberFormatException e){
+				pf=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pfNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(4))));
+			}catch(NumberFormatException e){
+				pfNoVat=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pfDlvAmt=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(5))));
+			}catch(NumberFormatException e){
+				pfDlvAmt=INVAILD_VALUE;
+				invaild=YES;
+			}
+			try{
+				pfDlvAmtNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(6))));
+			}catch(NumberFormatException e){
+				pfDlvAmtNoVat=INVAILD_VALUE;
+				invaild=YES;
+			}
 			
 			
 			String poMemoCont=StringUtil.excelGetCell(sheet.getRow(9).getCell(1));
@@ -403,8 +560,13 @@ public class OrderPOController extends AbstractFileController{
 			String poNo=StringUtil.excelGetCell(sheet.getRow(4).getCell(13));
 			String custId=StringUtil.excelGetCell(sheet.getRow(5).getCell(13));
 		
+			try{
+				stdXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(6).getCell(13))));
+			}catch(NumberFormatException e){
+				stdXchrAmt=INVAILD_VALUE;
+				invaild=YES;
+			}
 			
-			String stdXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(6).getCell(13))));
 			String stdXchrKindCd=StringUtil.excelGetCell(sheet.getRow(7).getCell(13));
 			String dlvModeCd=StringUtil.excelGetCell(sheet.getRow(8).getCell(13));
 			String poDt=StringUtil.excelGetCell(sheet.getRow(9).getCell(13));
@@ -438,57 +600,10 @@ public class OrderPOController extends AbstractFileController{
 	
 			
 			
-			//1-2.버전에 따른 이미지 저장방법이 다름
 			
-	        if(wb instanceof HSSFWorkbook) { 
-	            this.excelHSSFPictureInfo((HSSFWorkbook)wb,ordNo); 
-	        } 
-	        else { 
-	            this.excelXSSFPictureInfo((XSSFWorkbook)wb,ordNo); 
-	        } 
 
 			
-			//2.상품정보 VO생성
-			int rows = sheet.getPhysicalNumberOfRows();
 
-			
-			for(int i=13; i<rows-1; i++){
-
-				
-				OrderPOGudsVO poGudsVo = new OrderPOGudsVO();
-				
-				//poGudsVo.setImgSrcPath("file:///"+imgName+ordNo+i+".jpg");
-				Row getRow=sheet.getRow(i);
-				if(StringUtil.getCellUpcId(getRow.getCell(2))!=null){			//physicalNumber는 엑셀에 따라 더 커질수 있으므로 바코드를 기준으로 값을 관리한다.
-					poGudsVo.setImgSrcPath(ordNo+i+".jpg");
-					poGudsVo.setGudsUpcId(StringUtil.getCellUpcId(getRow.getCell(2)));
-					poGudsVo.setGudsCnsNm(StringUtil.excelGetCell(getRow.getCell(3)));
-					poGudsVo.setGudsKorNm(StringUtil.excelGetCell(getRow.getCell(4)));
-					System.out.println("제품수량 : "+StringUtil.excelGetCell(getRow.getCell(5)));
-					poGudsVo.setOrdGudsQty(qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(5)))));
-					
-					poGudsVo.setGudsInbxQty( qty.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(6)))));
-					poGudsVo.setVatYn(StringUtil.excelGetCell(getRow.getCell(7)));
-					System.out.println("pcprc value :"+StringUtil.excelGetCell(getRow.getCell(8)));
-					System.out.println("bigDecimal로 변경 :" +new BigDecimal(StringUtil.excelGetCell(getRow.getCell(8))));
-					
-					poGudsVo.setPcPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(8)))));
-					poGudsVo.setPcPrcVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(9)))));
-					poGudsVo.setPcPrcNoVat(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(10)))));
-					
-					poGudsVo.setPoPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(11)))));
-					poGudsVo.setPoPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(12)))));
-					poGudsVo.setPoXchrPrc(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(13)))));
-					poGudsVo.setPoXchrPrcSum(dF.format(new BigDecimal(StringUtil.excelGetCell(getRow.getCell(14)))));
-					poGudsVo.setPvdrnNm(StringUtil.excelGetCell(getRow.getCell(15)));
-				
-					poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
-					
-					if(poGudsVo.getGudsUpcId()!=null)	{		//바코드는 반드시 존재해야하므로 바코드가 존재하는데까지
-						poGudsList.add(poGudsVo);
-					}
-				}
-			}
 			
 		
 			
@@ -502,7 +617,8 @@ public class OrderPOController extends AbstractFileController{
 		model.addAttribute("poGudsList", poGudsList);
 		model.addAttribute("gudsCnt", poGudsList.size());
 		model.addAttribute("fileResultList",fileResultList);
-		
+		//저장불가일경우 표시 
+		model.addAttribute("invaild", invaild);
 		
 		
 

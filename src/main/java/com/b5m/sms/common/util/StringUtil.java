@@ -1022,7 +1022,7 @@ public class StringUtil {
 					//sReturn = Long.toString((long)cell.getNumericCellValue());		//수식일 경우 해당 값으로 출력하기 위함
 					
 				}catch(Exception e){
-					e.printStackTrace();
+					//e.printStackTrace();
 					sReturn = cell.getCellFormula().trim();			//수식이 그대로 출력된다 
 				}
 				if("".equals(sReturn)) sReturn=null;			// 공백("") 일 떄에는 Null 로 리턴 수정    - 20160226 주엽	

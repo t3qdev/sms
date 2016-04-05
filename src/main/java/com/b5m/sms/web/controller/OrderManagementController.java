@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -384,7 +385,7 @@ public class OrderManagementController  extends AbstractFileController{
 	@RequestMapping(value = "/downloadInvalidExcel", method = RequestMethod.GET)
 	public void downloadInvalidExcel(String fileName, HttpServletResponse response) throws InvalidFormatException, IOException {
 
-		//String tempDir = File.separator + "opt" + File.separator + "b5c-disk" + File.separator;
+		//String tempDir = File.separator + "opt" + File.separator + "sms-disk" + File.separator;
 		String tempDir = OPT_B5C_ETC;
 		String invalidExcelFileFullName = tempDir + fileName;
 
@@ -394,29 +395,34 @@ public class OrderManagementController  extends AbstractFileController{
 		writeExcelAttachmentForDownload(response, fileName, wb);
 
 		// 다운로드 후 파일을 삭제 한다.
-		if (inValidExcelFile.isFile() && inValidExcelFile.canWrite()) {
-			boolean isDeleted = inValidExcelFile.delete();
-			System.out.println(isDeleted);
-			
-			
+		inValidExcelFile.setWritable(true);
+		boolean isDeleted = inValidExcelFile.delete();
+		try{
+			Files.delete(inValidExcelFile.toPath());
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
+		System.out.println(isDeleted);
+			
+	
+
 
 	}
 	
 	
 	
-	
-	// DELETE
-	// 개발 및 안정화 과정 중에서, DB 를 지우고 다시 Batch 해야 하는 상황 때문에 만든 함수입니다.
-	// 서비스가 진행되고 나서는 이 부분은 삭제 해야 합니다.
-	@RequestMapping(value="/deleteBeforeFirstBatch")
-	public String deleteBeforeFirstBatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		orderService.deleteBeforeFirstBatch();
-		String result = "orderManagement";
-		return result;
-	}
-	
-	
+//	
+//	// DELETE
+//	// 개발 및 안정화 과정 중에서, DB 를 지우고 다시 Batch 해야 하는 상황 때문에 만든 함수입니다.
+//	// 서비스가 진행되고 나서는 이 부분은 삭제 해야 합니다.
+//	@RequestMapping(value="/deleteBeforeFirstBatch")
+//	public String deleteBeforeFirstBatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
+//		orderService.deleteBeforeFirstBatch();
+//		String result = "orderManagement";
+//		return result;
+//	}
+//	
+//	
 	
 	
 }
