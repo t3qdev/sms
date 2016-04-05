@@ -102,5 +102,18 @@
 			WHERE A.USER_EML = B.USER_EML
 				AND B.ORD_NO=#ordNo#
 	</select>
+	
+	<select id="smsMsUserDAO.selectSmsMsUserCnsOprList" resultMap="smsMsUser">
+			SELECT 
+				USER_EML,
+		        USER_PWD,
+		        USER_PWD_STAT_CD,
+		        USER_ALAS_ENG_NM,
+		        USER_ALAS_CNS_NM,
+		        OGNZ_DIV_CD,
+		        USER_STAT_CD
+			FROM sms_ms_user
+			WHERE OGNZ_DIV_CD='N000530100'
+	</select>
 
 </sqlMap>

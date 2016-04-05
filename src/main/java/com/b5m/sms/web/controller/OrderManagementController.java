@@ -31,6 +31,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -240,13 +241,13 @@ public class OrderManagementController  extends AbstractFileController{
 		}
 		//workbook 초기화
 		Workbook wb = WorkbookFactory.create(excelFile.getInputStream());
-		Sheet sheet = wb.getSheetAt(0);                    // 시트 번호
+		                    // 시트 번호
 		
 		//엑셀 업로드 할 때, 히스토리에 남기기 위해 user 정보 필요.
 	    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		// 서비스 진행.
-		result = orderService.insertExcelSmsMsOrdNSmsMsOrdGuds(sheet, user);
+		result = orderService.insertExcelSmsMsOrdNSmsMsOrdGuds(wb, user);
 		LOGGER.debug("2.1.=============================완료" );
 		return result;
 	}
@@ -380,6 +381,27 @@ public class OrderManagementController  extends AbstractFileController{
 		return tbMsOrdVO ;
 	}
 	
+	@RequestMapping(value = "/downloadInvalidExcel", method = RequestMethod.GET)
+	public void downloadInvalidExcel(String fileName, HttpServletResponse response) throws InvalidFormatException, IOException {
+
+		//String tempDir = File.separator + "opt" + File.separator + "b5c-disk" + File.separator;
+		String tempDir = OPT_B5C_ETC;
+		String invalidExcelFileFullName = tempDir + fileName;
+
+		File inValidExcelFile = new File(invalidExcelFileFullName);
+		Workbook wb = WorkbookFactory.create(inValidExcelFile);
+		// 엑셀 다운로드
+		writeExcelAttachmentForDownload(response, fileName, wb);
+
+		// 다운로드 후 파일을 삭제 한다.
+		if (inValidExcelFile.isFile() && inValidExcelFile.canWrite()) {
+			boolean isDeleted = inValidExcelFile.delete();
+			System.out.println(isDeleted);
+			
+			
+		}
+
+	}
 	
 	
 	

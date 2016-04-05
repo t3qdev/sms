@@ -190,7 +190,7 @@
                         <td><div><input type="text" id="ordGudsCnsNm" name="ordGudsCnsNm" value="${smsMsOrdGuds.ordGudsCnsNm}"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsQty" name="ordGudsQty" value="${smsMsOrdGuds.ordGudsQty}" class="tac"></div></td>
                         <td class="tac"><div><input type="text" id="ordGudsSizeVal" name="ordGudsSizeVal" value="${smsMsOrdGuds.ordGudsSizeVal}" class="tac"></div></td>
-                        <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar" title="환율정보&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> 
+                        <td class="tar"><div><input type="text" id="ordGudsSalePrc" name="ordGudsSalePrc" value="${smsMsOrdGuds.ordGudsSalePrc}" class="tar"></div></td> 
 <%--                         <td class="tar"><div><input type="text" id="ordGudsOrgPrc" name="ordGudsOrgPrc" value="${smsMsOrdGuds.ordGudsOrgPrc}" class="tar" title="汇率&#10;$42,208.00&#10;￦321,312,222&#10;￥321,312,222"></div></td> --%>
                         <td class="tac"><div><input type="text" id="gudsInbxQty" name="gudsInbxQty" class="tac"  value="${smsMsOrdGuds.gudsInbxQty}" readonly></div></td>
                         <td><div><input type="text" id="ordGudsUrlAddr" name="ordGudsUrlAddr" value="${smsMsOrdGuds.ordGudsUrlAddr}"></div></a></td>
@@ -330,6 +330,12 @@
 
 $(function(){
 
+	//상품이 없는 경우가 존재하면 안된다 저장버튼 비활성화+alert
+	if($('#gudsListSize').val()==0){
+		alert("check guds, guds does not exist");
+		$("#detailSave").hide();	
+		
+	}
 	//팝업페이지 연결
 	$(".btn_pop").each(function(){
        $(this).click(function(){
@@ -477,7 +483,9 @@ $(function(){
 	
 	if("YES"=="${reload}"){
 		//opener.parent.location.reload();		사용안함 (페이징기능때문에 특정함수필요)
-		opener.parent.reLoadJqgrid();
+		if(opener.parent && !opener.parent.closed && opener.parent.reLoadJqgrid){
+			opener.parent.reLoadJqgrid();
+		}
 	}
 	
 	//초기정보에따라 변경
@@ -561,14 +569,11 @@ $(function(){
 	
 	$('#orderDetailSaveForm').validate({
 		rules : {
-// 			stdXchrAmt :{
-// 				digits:true
-// 			}
-			
-
 		},
 		submitHandler: function(form,event){
 			event.preventDefault();
+			
+			var submitFlag=true;
 			var stdXchrAmt = $("#stdXchrAmt").val().replace(",","");
 			
 			//한국사용자를 사용자,사용자,사용자, 형태로 변경
@@ -580,19 +585,32 @@ $(function(){
 				oprKrStr+=item.value;
 			})
 			$("#oprKr").val(oprKrStr); 
-		//	alert($("#oprKr").val());
-			
-			 	
-			
-			
-			
-			
+
 			
 			if(isNaN(stdXchrAmt)){
-					$("#stdXchrAmt").focus();
-					return false;
+				$("#stdXchrAmt").focus();
+				return false;
 			}
-			form.submit();
+			
+			$("input[name=ordGudsQty]").each(function (index){
+				if(isNaN($(this).val())){
+					$(this).focus();
+					submitFlag=false;
+					return false;
+				}
+			});
+				
+				$("input[name=ordGudsSalePrc]").each(function (index){
+					var ordGudsSalePrc =$(this).val().replace(",",""); 
+					if(isNaN(ordGudsSalePrc)){
+						$(this).focus();
+						submitFlag=false;
+						return false;
+					}   				
+			});
+			if(submitFlag){
+				form.submit();
+			}
 		}
 
 	});

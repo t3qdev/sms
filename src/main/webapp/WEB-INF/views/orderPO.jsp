@@ -341,9 +341,13 @@ $(function(){
 			success:function(result){
 				if(result=="success"){
 					alert("PO确定");
-					opener.parent.location.reload();
-// 					opener.opener.parent.location.reload();
-					opener.opener.parent.reLoadJqgrid();
+					if(opener.parent && !opener.parent.closed){
+						opener.parent.location.reload();
+						if(opener.opener.parent && !opener.opener.parent.closed && opener.opener.parent.reLoadJqgrid){
+//								opener.opener.parent.location.reload();
+							opener.opener.parent.reLoadJqgrid();
+						}
+					}
 					window.open("about:blank","_self").close();
 				}else{
 					alert("PO确定失败");

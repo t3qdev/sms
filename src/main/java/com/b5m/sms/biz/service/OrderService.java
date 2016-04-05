@@ -2,12 +2,11 @@ package com.b5m.sms.biz.service;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.b5m.sms.common.file.FileResultVO;
 import com.b5m.sms.common.security.User;
 import com.b5m.sms.vo.CodeVO;
-import com.b5m.sms.vo.ExcelClientReqGudsVO;
 import com.b5m.sms.vo.OrderCalculateVO;
 import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.OrderPOGudsVO;
@@ -18,8 +17,6 @@ import com.b5m.sms.vo.SmsMsOrdGudsVO;
 import com.b5m.sms.vo.SmsMsOrdHistVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
 import com.b5m.sms.vo.SmsMsUserVO;
-import com.b5m.sms.vo.TbMsCmnCdVO;
-import com.b5m.sms.vo.TbMsOrdBatchVO;
 import com.b5m.sms.vo.TbMsOrdVO;
 
 
@@ -68,7 +65,7 @@ public interface OrderService {
 	public void updateSmsMsOrdGudsMpng(SmsMsOrdGudsVO smsMsOrdGudsVO) throws Exception;
 
 	// orderManagment 에서 사용, 클라이언트 요청 견적서를(EXCEL) 이용해서 주문이 새로 들어왔을 때, SMS_MS_ORD, SMS_MS_ORD_GUDS 에 INSERT
-	public String insertExcelSmsMsOrdNSmsMsOrdGuds(Sheet sheet, User user) throws Exception;
+	public String insertExcelSmsMsOrdNSmsMsOrdGuds(Workbook wb, User user) throws Exception;
 	
 	// orderManament 의 main Select
 	public List<SmsMsOrdVO> selectSmsMsOrdForOrderManamentView(SmsMsOrdVO smsMsOrdVO) throws Exception;

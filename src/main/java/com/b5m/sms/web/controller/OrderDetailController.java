@@ -398,9 +398,9 @@ public class OrderDetailController extends AbstractFileController{
 				LOGGER.debug(smsMsOrdGudsVO.toString());
 			}
 		}
-		if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
+/*		if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
 			return "error_notException"; 
-		}
+		}*/
 		LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS  List Load==========완료" );
 		//END////////////////////////////////////// 스페셜 오더, 견적서 엑셀 로드 - KJY ///////////////////////////////////////////END
 

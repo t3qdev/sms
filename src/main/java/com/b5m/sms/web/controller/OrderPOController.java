@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFPictureData;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -355,34 +356,54 @@ public class OrderPOController extends AbstractFileController{
 			Workbook wb = WorkbookFactory.create(excelFile.getInputStream());		//엑셀 파일생성
 			Sheet sheet = wb.getSheetAt(0);														//엑셀 시트선택
 
-			
-			
-			
-			
-			
+			String poAmt=null;
+			String poXchrAmt=null;
+			String pcSum=null;
+			String pcSumNoVat=null;
+			String dlvPcSum=null;
+			String dlvPcSumNoVat=null;
+			String dlvAmt=null;
+			String pf=null;
+			String pfNoVat=null;
+			String pfDlvAmt=null;
+			String pfDlvAmtNoVat=null;
 			
 			//1.PO정보 VO생성
 			OrderPOVO poVo = new OrderPOVO();
 			List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
 			
-			String poAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(1))));
-			String poXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(2))));
-			String pcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(3))));
-			String pcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(4))));
-			String dlvPcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(5))));
-
-			String dlvPcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(6))));
-			String dlvAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(1))));
-			String pf=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(3))));
-			String pfNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(4))));
-			String pfDlvAmt=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(5))));
 			
-			String pfDlvAmtNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(6))));
+			
+			poAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(1))));
+		
+			
+			poXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(2))));
+			
+			 pcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(3))));
+			
+			 pcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(4))));
+			
+			 dlvPcSum=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(5))));
+			
+			 dlvPcSumNoVat=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(4).getCell(6))));
+			
+			 dlvAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(1))));
+			
+			 pf=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(3))));
+			
+			 pfNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(4))));
+			
+			 pfDlvAmt=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(5))));
+			
+			pfDlvAmtNoVat=nf.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(7).getCell(6))));
+			
+			
 			String poMemoCont=StringUtil.excelGetCell(sheet.getRow(9).getCell(1));
 			//String ordNo=StringUtil.excelGetCell(sheet.getRow(3).getCell(13));	//엑셀값은 사용안함
 			String poNo=StringUtil.excelGetCell(sheet.getRow(4).getCell(13));
 			String custId=StringUtil.excelGetCell(sheet.getRow(5).getCell(13));
 		
+			
 			String stdXchrAmt=dF.format(new BigDecimal(StringUtil.excelGetCell(sheet.getRow(6).getCell(13))));
 			String stdXchrKindCd=StringUtil.excelGetCell(sheet.getRow(7).getCell(13));
 			String dlvModeCd=StringUtil.excelGetCell(sheet.getRow(8).getCell(13));

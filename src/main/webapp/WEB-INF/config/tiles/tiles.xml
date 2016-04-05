@@ -65,12 +65,6 @@
 		<put-attribute name="body" value="/WEB-INF/views/error.jsp" />
 		<put-attribute name="footer" value="" />
 	</definition>
-	
-	<definition name="error" extends=".basic">
-		<put-attribute name="header" value=""/>
-		<put-attribute name="body" value="/WEB-INF/views/error.jsp" />
-		<put-attribute name="footer" value=""/>
-	</definition>
 
 	<definition name="error_notException" extends=".basic">
 		<put-attribute name="header" value=""/>

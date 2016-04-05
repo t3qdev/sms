@@ -24,7 +24,7 @@
 	<div id="login_form" class="dialog">
 		<article>
 			<h1>
-				<span>시스템 오류</span>
+				<span>系统出错</span>
 			</h1>
 			<section class="ui-layout-form-b">
 				<h4>
@@ -35,14 +35,14 @@
 				</h4>
 							
 	
-				<p>시스템 오류입니다. 관리자에게 문의하세요.</p>
+				<p>系统出错，请联系管理者</p>
 				<P>
 				<!--
 				Exception Trace : 
 				
 				 -->
 
-					문의전화: 02-3404-7288 (오전 9시 - 오후 6시. 토/일/공휴일 제외)
+					联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
 				</p>
 			</section>
 		</article>
@@ -73,7 +73,7 @@
 				width : 505,
 				height : 300,
 				buttons : {
-					/* '확인' : function() {
+					/* '确认' : function() {
 						location.href = '${web_ctx}/'+parent.document.referrer;
 					} */
 				}

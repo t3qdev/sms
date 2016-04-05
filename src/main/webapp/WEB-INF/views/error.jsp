@@ -99,12 +99,12 @@
 					success : function(list, textStatus, jqXHR) {
 						//Sucess시, 처리
 						document.getElementById("myBtn").disabled = true;
-						alert("오류 내용을 관리자에게 전송했습니다.");
+						alert("错误信息已传送给管理者.");
 
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 						//Error시, 처리
-						alert("에러");
+						alert("出错");
 					}
 				});
 				
@@ -128,7 +128,7 @@
 				width : 505,
 				height : 370,
 				buttons : {
-					'확인' : function() {
+					'确认' : function() {
 						//location.href = parent.document.referrer;
 						window.history.back();
 					}

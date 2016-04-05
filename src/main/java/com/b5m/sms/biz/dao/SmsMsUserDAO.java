@@ -28,6 +28,9 @@ public class SmsMsUserDAO extends EgovAbstractDAO{
 	public List<SmsMsUserVO> selectSmsMsUserbyOrdNo(String ordNo) throws Exception{
 		return (List<SmsMsUserVO>) list("smsMsUserDAO.selectSmsMsUserbyOrdNo",ordNo);
 	}
-
+	public List<SmsMsUserVO> selectSmsMsUserCnsOprList() throws Exception{
+		return (List<SmsMsUserVO>)list("smsMsUserDAO.selectSmsMsUserCnsOprList");
+	}
+	
 
 }

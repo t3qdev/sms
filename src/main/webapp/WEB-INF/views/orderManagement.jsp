@@ -85,6 +85,16 @@
 				</section>
 			</form>
 		</div>
+		<!-- 160405 엑셀 upload 실패시 보여줄 dialog  -->
+		<div id="dialog_upload_result" title="엑셀업로드 실패">
+			<section class="ui-layout-form-b">
+				<ul>
+					<li>
+						<label for="">엑셀등록에 실패</label>
+					</li>
+				</ul>
+			</section>
+		</div>
 		
 		<div id="dialog_upload_special" title="上传特殊订单客户询价单">
 		 	<form id="dialog_upload_form_special" action="${web_ctx}/orderDetailSpecialView.do" method="post" enctype="multipart/form-data">
@@ -854,14 +864,19 @@ $(function(){
 	
 	function formatterCurrentAmt(cellvalue,options,rowObject){
 		//3자리수마다 콤마 , 소수점이하 2자리까지 표시, prefix에 통화마크 표시(stdXchrKindCd)
+		var result ="";
 		var ro = rowObject.stdXchrKindCd;
+		
 		if(ro) {
 			ro = formatterCurrentIcon(ro); 
 		} else {
 			ro = '';
 		}
+		if(cellvalue){
+			result=ro + ' ' + formatMoney(cellvalue);
+		}
 		//return '$ ' + $.number(cellvalue, 2);
-		return ro + ' ' + formatMoney(cellvalue);
+		return result;
 		
 	}
 	//[상세보기] 클릭 하면, 상세보기 새 창으로 링크
@@ -1005,21 +1020,41 @@ $(function(){
            
       	  if(data=="success"){
       		 alert('订单保存成功');
-    	  }else{
-    		  alert('订单保存失败');
-    	  }
-			$('#dialog_upload').dialog('close');
+      		 
+      		$('#dialog_upload').dialog('close');
 			$('#inputExcelFile').val('');
-// 			location.reload();
-			jQuery("#jqgrid_a").setGridParam({
+      		 jQuery("#jqgrid_a").setGridParam({
 				url : "${web_ctx}/orderManagementSearch.ajax",
 				ajaxGridOptions : {async:false},    // 동기로 변환
 				postData:{"rowInput":$('#rownum option:selected').val(), "pageInput":"1", "searchKeyword":""},
 				rowNum : $('#rownum option:selected').val(),
 				datatype : "json",
 			}).trigger('reloadGrid');
+      		 
+    	  }else if(data=="false"){			//DB입력시 잘못되는 경우 
+    		  alert('订单保存失败');
+    		  $('#dialog_upload').dialog('close');
+    		  $('#inputExcelFile').val('');
+    	  }else{									//엑셀파일이 잘못되었을경우
+    		  if (data !==  '') {
+	                $("#dialog_upload_result").dialog("option","buttons",{
+	                	'등록실패 엑셀 다운로드': function(){
+							
+							url = '${web_ctx}/downloadInvalidExcel.do?fileName=' +  data;
+							$(location).attr('href',url);
+							$(this).dialog("close");
+						}
+	                });
+    		  }
+    		  $('#dialog_upload').dialog('close');
+    		  $('#inputExcelFile').val('');
+    		  $('#dialog_upload_result').dialog('open');
+    	  }
+			
+// 			location.reload();
+			
           },
-          error : function(data){
+          error : function(data){				//ajax전송시 잘못되는 경우 
         	  alert('订单保存失败');
           }
     }); 	
@@ -1041,6 +1076,16 @@ $(function(){
 			}
 		}
 	});
+	//엑셀결과 dialog 160405
+	$("#dialog_upload_result").dialog({
+		modal: true,
+		autoOpen: false,
+		width: 500,
+		height: 150
+	});
+
+			
+		
 	// [Special + 접수] Dialog Control
 	$('#dialog_upload_special').dialog({
 		modal: true,
@@ -1082,8 +1127,8 @@ function dialogSpecialExcel(ordNo){
 		data:	{"ordNo" : ordNo},
 		async: false,
 		cache : false,
-		success:function(result){
-	 		$('#special_req_cont').val(result);
+		success:function(result){ 
+	 		$('#special_req_cont').val(result.reqCont);
 		}
 	});//end $.ajax	
 	
