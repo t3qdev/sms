@@ -397,11 +397,7 @@ public class OrderManagementController  extends AbstractFileController{
 		// 다운로드 후 파일을 삭제 한다.
 		inValidExcelFile.setWritable(true);
 		boolean isDeleted = inValidExcelFile.delete();
-		try{
-			Files.delete(inValidExcelFile.toPath());
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+
 		System.out.println(isDeleted);
 			
 	
