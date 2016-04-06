@@ -182,7 +182,6 @@ public class OrderPOController extends AbstractFileController{
 			BigDecimal qty = new BigDecimal(vo.getOrdGudsQty());
 			BigDecimal pcPrc = new BigDecimal(vo.getOrdGudsOrgPrc());	
 			BigDecimal poPrc = new BigDecimal(vo.getOrdGudsSalePrc());
-			//System.out.println("계산 사용변수2 :" +qty+"               "+orgPrc+"               "+salePrc);
 
 			
 			

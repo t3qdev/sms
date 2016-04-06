@@ -82,10 +82,10 @@ commonUtil.fnAjaxCall = function(option) {
 				if(data.error_loc_code == "0000200001"){
 					alert(data.error_detail_msg);
 				}else if(data.error_detail_code == "0000100009"){
-					alert("중복데이터 에러가 발생했습니다.");
+					alert("duplicated data");
 					
 				}else {
-					alert("에러가 발생했습니다.");
+					alert("error");
 				}
 				//alert("에러가 발생했습니다.");
 				//commonError.fnBusinessErrorView(option.error.errorCd||"B",option.error.errorDv||"");

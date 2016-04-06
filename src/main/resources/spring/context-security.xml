@@ -32,22 +32,22 @@
          <intercept-url pattern="/orderCalculateView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
          <intercept-url pattern="/orderHistoryView.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
          <intercept-url pattern="/orderManagementExcelTemplateDownload.do" access="hasAnyRole('N000580100','N000580200','N000580300','N000580400')" />
-         <intercept-url pattern="/login.do" access="permitAll" /> 
+         <intercept-url pattern="/" access="permitAll" /> 
          <intercept-url pattern="/*.do" access="isAuthenticated()" />
          <intercept-url pattern="/*.ajax" access="isAuthenticated()" />
 
            <form-login
-         login-page="/login.do"
+         login-page="/"
           username-parameter="sllrId" 
           password-parameter="sllrPwd"
-          default-target-url="/login.do"
+          default-target-url="/"
           always-use-default-target="false"
-          authentication-failure-url="/login.do?login_error=true"
+          authentication-failure-url="/?login_error=true"
            />
 		
 		     <logout
 		     invalidate-session="true"
-		     logout-success-url="/login.do"
+		     logout-success-url="/"
 		     logout-url="/logOut.do" />
     		
     		 <session-management>

@@ -92,9 +92,7 @@ public class UserManagementController {
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-//			System.out.println("사용자 리스트 가져오는 데 에러가 발생 했습니다.");
 		}
 		return smsMsUserVOList;
 	}

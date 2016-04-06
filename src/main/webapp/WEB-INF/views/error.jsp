@@ -48,10 +48,10 @@
 				<!-- 메일로 보내기 위해 textArea에 넣어둔다. -->
 				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;"></textarea>
 				<textarea id="exceptions" hidden>
-					에러이름: 			
+					Exception Name: 			
 					<%out.println(stringWriter.toString().substring(0,stringWriter.toString().indexOf('\n')));%>
 					
-					에러내용:
+					Exception Details:
 					<%
 					if(exception!=null){
 					

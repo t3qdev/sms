@@ -114,7 +114,7 @@
 				        	if(data=="success"){
 				            	alert("保存成功");  // 저장성공
 				            }else{
-				            	alert("false");
+				            	alert("保存失败");
 				            }
 
 			          }

@@ -42,16 +42,16 @@ $(function(){
 	    	if(statusCode === 500) {
 	    		alert("An error orcured!");
 	    		var jsonObj =$.parseJSON(jqXHR.responseText);
-	    		$('<form action="/sms/common/ajaxError.jsp" method="POST">' + 
+	    		$('<form action="/common/ajaxError.jsp" method="POST">' + 
 	    				'<input type="hidden" name="error" value="' + jsonObj.error + '">' +
 	    				'<input type="hidden" name="message" value="' + jsonObj.stackTrace + '">' +
 	    		'</form>').appendTo('body').submit();
 	    	} else if(statusCode === 401) {
 	    		alert("Unauthorized! It will be redirected login page.");
-	    		location.href = "/sms/login.do";
+	    		location.href = "/";
 	    	} else if(statusCode === 403) {
 	    		alert("Unauthorized! It will be redirected login page.");
-	    		location.href = "/sms/login.do";
+	    		location.href = "/";
 	    	}
 	    }
 	});
