@@ -567,7 +567,6 @@ public class OrderDetailController extends AbstractFileController{
 				smsMsOrdGudsList.add(vo);
 				
 			}
-			System.out.println(orderDetailVo);
 			orderService.updateSmsMsOrdGudsDetail(orderDetailVo,smsMsOrdGudsList,wrtrEml );
 		}catch(Exception e){
 

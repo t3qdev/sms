@@ -86,11 +86,11 @@
 			</form>
 		</div>
 		<!-- 160405 엑셀 upload 실패시 보여줄 dialog  -->
-		<div id="dialog_upload_result" title="엑셀업로드 실패">
+		<div id="dialog_upload_result" title="excel上传失败">
 			<section class="ui-layout-form-b">
 				<ul>
 					<li>
-						<label for="">엑셀등록에 실패</label>
+						<label for="">excel上传失败</label>
 					</li>
 				</ul>
 			</section>
@@ -1039,7 +1039,7 @@ $(function(){
     	  }else{									//엑셀파일이 잘못되었을경우
     		  if (data !==  '') {
 	                $("#dialog_upload_result").dialog("option","buttons",{
-	                	'등록실패 엑셀 다운로드': function(){
+	                	'上传失败excel下载': function(){
 							
 							url = '${web_ctx}/downloadInvalidExcel.do?fileName=' +  data;
 							$(location).attr('href',url);

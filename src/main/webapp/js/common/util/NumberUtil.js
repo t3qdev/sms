@@ -125,12 +125,12 @@
 		
 		if(date.length==6){
 			if(1>date.substr(4,2) || 12<date.substr(4,2) || 0==date.substr(0,1)){
-				alert("입력년월 확인 바랍니다.");
+				alert("请确认输入的日期");
 				return false;
 			}
 		}
 		else{
-			alert("입력년월 확인 바랍니다.");
+			alert("请确认输入的日期");
 			return false;
 		}
 		
@@ -143,12 +143,12 @@
 				success: function(data)
 				{
 					if(!commonError.fnErrorSuccessFlagCheck(data)){
-						alert("에러가 발생했습니다.");
+						alert("出错了");
 						return;
 					}
 
 					if((data.currentDate).substr(0,date.length)>date){
-						alert("현재일자보다 이전일자를 입력할 수 없습니다.");
+						alert("无法输入已过的日期");
 						rtn=false;
 					}
 					else{
@@ -165,12 +165,12 @@
 		
 		if(date.length==6){
 			if(1>date.substr(4,2) || 12<date.substr(4,2) || 0==date.substr(0,1)){
-				alert("입력년월 확인 바랍니다.");
+				alert("请确认输入的日期");
 				return false;
 			}
 		}
 		else{
-			alert("입력년월 확인 바랍니다.");
+			alert("请确认输入的日期");
 			return false;
 		}
 		
@@ -183,12 +183,12 @@
 			success: function(data)
 			{
 				if(!commonError.fnErrorSuccessFlagCheck(data)){
-					alert("에러가 발생했습니다.");
+					alert("出错了");
 					return;
 				}
 				
 				if((data.currentDate).substr(0,date.length)<date){
-					alert("현재일자보다 이후일자를 입력할 수 없습니다.");
+					alert("无法输入未来的日期");
 					rtn=false;
 				}
 				else{
@@ -290,13 +290,13 @@
 			var strAlert="";
 			
 			if(proposeGbn=="propose"){
-				strAlert="제시단가";
+				strAlert="提示单价";
 			}
 			else{
-				strAlert="수정단가";
+				strAlert="修正单价";
 			}
 			
-			alert(strAlert+"가 너무 낮습니다.");
+			alert(strAlert+" 太低");
 			$(gridObj).setCell(rowid,cellName,0);
 			
 		}
@@ -308,13 +308,13 @@
 			var strAlert="";
 			
 			if(proposeGbn=="propose"){
-				strAlert="제시단가";
+				strAlert="提示单价";
 			}
 			else{
-				strAlert="수정단가";
+				strAlert="修正单价";
 			}
 			
-			alert(strAlert+"가 너무 높습니다.");
+			alert(strAlert+" 太高");
 			
 			$(gridObj).setCell(rowid,cellName,0);
 		}

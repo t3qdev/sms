@@ -42,7 +42,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 //            logger.info("username : " + username + " / password : " + password + " / hash password : " + hashedPassword);
 //            logger.info("username : " + user.getUsername() + " / password : " + user.getPassword());
             //if (!hashedPassword.matches(user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
-            if(!bcrypt.matches(password, user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            if(!bcrypt.matches(password, user.getPassword())) throw new BadCredentialsException("密码不一致");
             authorities = user.getAuthorities();
         } catch(UsernameNotFoundException e) {
             logger.info(e.toString());

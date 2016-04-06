@@ -332,7 +332,7 @@ $(function(){
 
 	//상품이 없는 경우가 존재하면 안된다 저장버튼 비활성화+alert
 	if($('#gudsListSize').val()==0){
-		alert("check guds, guds does not exist");
+		alert("不存在订单的商品");
 		$("#detailSave").hide();	
 		
 	}

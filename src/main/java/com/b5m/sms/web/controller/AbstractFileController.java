@@ -483,12 +483,12 @@ public class AbstractFileController {
         // 압축 대상(sourcePath)이 디렉토리나 파일이 아니면 리턴한다.
         File sourceFile = new File(sourcePath);
         if (!sourceFile.isFile() && !sourceFile.isDirectory()) {
-            throw new Exception("압축 대상의 파일을 찾을 수가 없습니다.");
+            throw new Exception("无法找到压缩文件");
         }
 
         // output 의 확장자가 zip이 아니면 리턴한다.
         if (!(StringUtils.substringAfterLast(output, ".")).equalsIgnoreCase("zip")) {
-            throw new Exception("압축 후 저장 파일명의 확장자를 확인하세요");
+            throw new Exception("压缩后请确认文件的扩展名");
         }
 
         FileOutputStream fos = null;

@@ -65,6 +65,7 @@
 									B5C_ORD_NO 
 							FROM 
 									sms_ms_ord
+							WHERE B5C_ORD_NO IS NOT NULL
 							)
 	</select>
 	

@@ -68,6 +68,10 @@ public class LogInController {
 		    	if(("N000610300").equals(smsMsUserVOList.get(i).getUserStatCd())){    // 사용자가 퇴직중인가?
 		    		return "redirect:/logOut.do";
 		    	}
+		    	//권한체크 
+		    	if(usr.getAuthorities().size()==0){
+		    		return "redirect:/logOut.do";
+		    	}
 		    	if(("N000600100").equals(smsMsUserVOList.get(i).getUserPwdStatCd())){   // 사용자 비밀번호가 초기화된 상태라서 비밀번호를 변경해주어야 하는가?
 		    		return "redirect:/passwordChangeView.do";
 		    	}

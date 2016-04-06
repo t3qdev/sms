@@ -83,14 +83,14 @@ public class Mail {
 			if(mailAddress!=null && mailAddress.length>0){
 				recipientsAddress = new InternetAddress[mailAddress.length];
 			}else{
-				throw new AddressException("수신인이 없습니다.");
+				throw new AddressException("请输入收信人");
 			}
 			
 			for (int i = 0; i < mailAddress.length; i++) {
 				try {
 					recipientsAddress[i] = new InternetAddress(mailAddress[i]);
 				} catch (AddressException e) {
-					throw new AddressException(mailAddress[i]+"(은)는 올바르지 않은 수신인 입니다.");
+					throw new AddressException(mailAddress[i]+"无法识别的收信人");
 				}
 				System.out.println(i+"="+ mailAddress[i]);
 			}

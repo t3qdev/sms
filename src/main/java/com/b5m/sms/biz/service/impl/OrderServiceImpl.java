@@ -616,7 +616,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					dlvModeCd = null;
 					errorCnt++;																								//validate 11			
 					System.out.println("val11");
-					errMsg="존재하지 않는 견적조건입니다.";
+					errMsg="不存在的报价条款";
 					setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的报价条款"); 	
 					
 				}
@@ -633,7 +633,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					errorCnt++;																								//validate 4			
 					System.out.println("val4");
 					if(!"".equals(errMsg)){
-						errMsg+="\n존재하지 않는 항구입니다.";
+						errMsg+="\n不存在的港口";
 						setExcelCellComment(sheet.getRow(2).getCell(4),errMsg ); 	
 					}else{
 						setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的港口"); 	

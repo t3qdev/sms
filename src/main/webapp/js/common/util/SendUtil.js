@@ -1,7 +1,7 @@
 function fnMailSend(){
 	var objFrm = document.frm;
 		
-	if(!confirm("이메일를 발송하시겠습니까?")){
+	if(!confirm("确定要发送邮箱？")){
 		return;
 	}
 
@@ -20,14 +20,14 @@ function fnMailSend(){
 }
 
 function fnMailCallback(){
-	alert("이메일이 발송되었습니다.");
+	alert("邮箱已发送");
 	window.close();
 }
 
 function fnStatmentSend(){
 	var objFrm = document.frm;
 	
-	if(!confirm("팩스를 발송하시겠습니까?")){
+	if(!confirm("确定要发送传真？")){
 		return;
 	}
 	
@@ -48,7 +48,7 @@ function fnStatmentSend(){
 
 function fnDeliveryPrint(){
 		
-	if(!confirm("인쇄하시겠습니까?")){
+	if(!confirm("确定要打印？")){
 		return;
 	}
 
@@ -64,6 +64,6 @@ function fnDeliveryPrint(){
 }
 
 function fnStatmentCallback(){
-	alert("팩스가 발송되었습니다.");
+	alert("传真已发送");
 	window.close();
 }

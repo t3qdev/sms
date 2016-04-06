@@ -48,7 +48,7 @@ public class LoginService implements UserDetailsService {
         User user = new User();
         
         if(userList.size()==0){    // 로그인 정보가 DB 에 없음.
-        	 throw new UsernameNotFoundException("접속자 정보를 찾을 수 없습니다.");
+        	 throw new UsernameNotFoundException("无法读取在线用户");
         }else{
         	// 아직 DB에 pwd가 암호화 상태가 아니기 때문에, 가져와서 암호화.
             user.setUsername(username);

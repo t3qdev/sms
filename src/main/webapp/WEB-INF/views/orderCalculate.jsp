@@ -96,7 +96,7 @@ $(function(){
 			});//end $.ajax	
 		}else{//endif
 			a.preventDefault();
-			alert("check 金额");
+			alert("请确认金额");
 		}
 
 	//	
