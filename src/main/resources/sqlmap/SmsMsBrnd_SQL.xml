@@ -39,16 +39,7 @@
 			FROM
 					 sms_ms_brnd 
 			WHERE 1=1 
-				<isNotEmpty property="brndId">			 
 					 AND BRND_ID = #brndId#
-				</isNotEmpty>
-				<isNotEmpty property="brndEngNm">			 
-				 	 AND BRND_ENG_NM = #brndEngNm#
-				</isNotEmpty>
-				<isNotEmpty property="brndCnsNm">			 
-					 AND BRND_CNS_NM = #brndCnsNm#
-				</isNotEmpty>
-
 	</select>
 	
 	

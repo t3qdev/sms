@@ -235,7 +235,7 @@ $(function(){
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
-	 								value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP'
+	 								value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000550500:DROP'
 	 								,defaultValue:'none'
 	 								, multiple: true
 	 								},
@@ -244,7 +244,7 @@ $(function(){
 				 searchoptions: { 
 					 multiple: true,
 					
-						value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' 
+						value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000550500:DROP' 
 				}
 			},	
 		    //////end: 필터2
@@ -252,7 +252,7 @@ $(function(){
             {name:'histDetail',index:'histDetail',align:'left',width:300,resizable:false, formatter : formatterShowHistory, search:false},		
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:70,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
-					 							value:'N000550300:确定;N000550400:结算;N000560100:DROP'
+					 							value:'N000550300:确定;N000550400:结算;N000550500:DROP'
 					 							, defaultValue:'none'
 					 							, multiple: true
 					 							}

@@ -297,7 +297,7 @@
     
     
     
-    <div id="dialog_upload" title="P/O文件上传">
+    <div id="dialog_upload" title="P/O文件上传" style="display: none;">
 		<form id="dialog_upload_form" action="${web_ctx}/orderPOInsert.do?ordNo=${ordNo }&wrtrEml=${user.username }" method="post" enctype="multipart/form-data">
 			<section class="ui-layout-form-b">
 				<ul>
@@ -448,6 +448,7 @@ $(function(){
 	var ordStatCd = '${orderDetail.ordStatCd }';
 	
 	//버튼핸들링
+
 	if(ordStatCd=='' || ordStatCd=='N000550500'){		//드랍인경우도 사용불가 
 		$('#btn_01').hide();	//PO업로드
 		$("#btn_proc01").hide();	//PO확인
@@ -467,7 +468,7 @@ $(function(){
 		$("#btn_proc02").hide();	//정산
 		
 	}
-	if(ordStatCd=='N000550300' || ordStatCd=='N000550400'){
+	if(ordStatCd=='N000550300' || ordStatCd=='N000550400'|| ordStatCd=='N000550500'){
 		$("#detailSave").hide();		//detail저장
 		$(".btn-search").hide();		
 		$(":text").attr("disabled","true");

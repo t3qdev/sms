@@ -12,13 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.b5m.sms.biz.dao.SmsMsOrdDAO;
 import com.b5m.sms.biz.service.OrderService;
-import com.b5m.sms.biz.service.UserService;
 import com.b5m.sms.vo.OrderDetailVO;
 import com.b5m.sms.vo.SmsMsOrdHistVO;
 import com.b5m.sms.vo.SmsMsOrdVO;
-import com.b5m.sms.vo.SmsMsUserVO;
 
 @Controller
 public class OrderHistoryController {
@@ -69,7 +66,7 @@ public class OrderHistoryController {
 	}
 	@ResponseBody
 	@RequestMapping("/orderHistorySave.ajax")
-	public List<SmsMsOrdHistVO> orderHistorySave(HttpSession session, Model model, SmsMsOrdHistVO smsMsOrdHistVO) throws Exception {
+	public String orderHistorySave(HttpSession session, Model model, SmsMsOrdHistVO smsMsOrdHistVO) throws Exception {
 		// UserManagementController에서의 userManagementSave.ajax 와 전체적인 맥락이 같다.
 		//1. 받아온 vo에 ordHistSeq 가 null 이거나 "" 이면, 새로 insert 해야 할 대상
 		if(smsMsOrdHistVO.getOrdHistSeq()==null || "".equals(smsMsOrdHistVO.getOrdHistSeq())){
@@ -90,7 +87,7 @@ public class OrderHistoryController {
 		orderService.updateSmsMsOrdStatCd(smsMsOrdVO);
 //		updateSmsMsOrdStatCd
 
-		return null;
+		return "success";
 	}
 
 }

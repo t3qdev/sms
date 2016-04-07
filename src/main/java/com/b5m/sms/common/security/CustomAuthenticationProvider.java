@@ -46,7 +46,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             authorities = user.getAuthorities();
         } catch(UsernameNotFoundException e) {
             logger.info(e.toString());
-            throw new UsernameNotFoundException(e.getMessage());
+            throw e;
         }
 
         return new UsernamePasswordAuthenticationToken(user, password, authorities);

@@ -70,11 +70,12 @@ $(function(){
 	// 브라우저에 따라 caching 때문에 ajax 최신정보가 보이지 않게됨을 막음.
 	jQuery.ajaxSetup({cache:false}); 
 	
-	// SMS_MS_ORD 상태가 DROP(N000560100) 일 때에는, 본 화면은 기능하지 않는다.
+	// SMS_MS_ORD 상태가 DROP(N000550500) 일 때에는, 본 화면은 기능하지 않는다.
 	var ordStatCd = "${ordStatCd}";
-	if(ordStatCd == "N000560100"){
-		$("#history_add").hide();
-		$("#btn-save").hide();
+	if(ordStatCd == "N000550500"){
+		$("#history_add").attr('disabled',true).css('background','grey');
+		$("#btn-save").attr('disabled',true).css('background','grey');
+		$("#history_del").attr('disabled',true).css('background','grey');
 	}
 	
 	// [+히스토리 추가] 버튼을 눌렀을 때, Jqgrid 에서 한 행 추가 하기 위해 생성한 변수
@@ -98,8 +99,8 @@ $(function(){
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
     	onSelectRow: function(id){
-    		// SMS_MS_ORD 상태가 DROP(N000560100) 일 때에는, 본 화면은 기능하지 않는다.
-    		if(ordStatCd != "N000560100"){
+    		// SMS_MS_ORD 상태가 DROP(N000550500) 일 때에는, 본 화면은 기능하지 않는다.
+    		if(ordStatCd != "N000550500"){
     			//본인이 쓴 history 가 아니면 수정할 수 없다.
     			var ordHistWrtrEml =  $('#jqgrid_a').getCell(id, 'ordHistWrtrEml');
     			if(ordHistWrtrEml == "${user.username}"){
@@ -121,7 +122,7 @@ $(function(){
 // 		jQuery("#jqgrid_a").jqGrid('setColProp','ordStatCd',{editable:true});
 
 		// 상태가 Drop 일 때는 기능 하지 않는다.
-		if(ordStatCd != "N000560100"){
+		if(ordStatCd != "N000550500"){
 			id = jQuery("#jqgrid_a").jqGrid('getGridParam','selarrrow');
 			var data = $("#jqgrid_a").jqGrid("getRowData");
 			var list = [];
@@ -163,7 +164,7 @@ $(function(){
 					jQuery('#jqgrid_a').jqGrid('editRow',id[i],true);
 					return;
 				}else if(dataOrdStatCd != ordStatCd){
-					if(dataOrdStatCd != 'N000560100' ){
+					if(dataOrdStatCd != 'N000550500' ){
 // 						alert("상태변경은 Drop 만 가능합니다.");
 						alert("状态无法更改，或者只能选择DROP");
 						jQuery('#jqgrid_a').jqGrid('editRow',id[i],true);
@@ -180,7 +181,9 @@ $(function(){
 			
 			// 저장하면, 부모창의 상태도 reload 하고, 현재도 reload(상태 navigator refresh 때문)
 			location.reload();
-			opener.parent.location.reload();
+			if(opener!=null && opener.parent!=null){
+				opener.parent.location.reload();
+			}
 		}
   });				
     jQuery("#history_del").click( function() {
@@ -190,7 +193,7 @@ $(function(){
     			    leadingZeros(d.getFullYear(), 4) + '-' +
     			    leadingZeros(d.getMonth() + 1, 2) + '-' +
     			    leadingZeros(d.getDate(), 2);
-			var ordStatCd = "N000560100";
+			var ordStatCd = "N000550500";
 			var ordHistHistCont = "DROP";
         	$.ajax({
     			type : "POST",
@@ -199,9 +202,11 @@ $(function(){
     			async: false,
     			cache : false,
     			success:function(result){
-    		 		alert(result);
+    		 		alert("成功");
     				location.reload();
-    				opener.parent.location.reload();
+    				if(opener!=null && opener.parent!=null){
+    					opener.parent.location.reload();
+    				}
     			}
     		});//end $.ajax	
     	}
@@ -219,7 +224,7 @@ $(function(){
 			return "确定";
 		}else if(cellvalue == 'N000550400'){
 			return "结算";
-		}else if(cellvalue == 'N000560100'){
+		}else if(cellvalue == 'N000550500'){
 			return "DROP";
 		}else{
 			return "";

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.b5m.sms.vo.CodeVO;
 import com.b5m.sms.vo.SmsMsBrndVO;
 
 import egovframework.rte.psl.dataaccess.EgovAbstractDAO;

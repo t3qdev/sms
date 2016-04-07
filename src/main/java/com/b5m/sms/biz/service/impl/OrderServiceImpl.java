@@ -382,7 +382,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 	//		생략
 	///////////////////////////////////////////////////////////////////////////////////////////		
 
-			brndId = brndId;
 			String brndEngNm="";
 			String brndCnsNm="";
 			brndEngNm = tbMsOrdBatchVOList.get(i).getBrndStrEngNm();
@@ -394,10 +393,9 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 
 			List<SmsMsBrndVO> smsMsBrndVOList = null;
 			smsMsBrndVOList = smsMsBrndDAO.selectSmsMsBrnd(smsMsBrndVO);
-			if(smsMsBrndVOList.size()==0){
+			if(!StringUtil.isNullOrEmpty(brndId) && smsMsBrndVOList.size()==0){
 				smsMsBrndDAO.insertSmsMsBrnd_S(smsMsBrndVO);
 			}
-
 			
 			if(imageBoolean){
 		//		insert SMS_MS_GUDS_IMG
@@ -607,7 +605,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					}
 				}
 				
-				if(dlvModeCd!=null && "".equals(dlvModeCd) !=true){
+				if(!StringUtil.isNullOrEmpty(dlvModeCd)){
 					List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
 					tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvModeCd);
 					if(tbMsCmnCdVOList.size() >0){
@@ -1321,13 +1319,12 @@ catch(Exception e){
 								oprKrList+=",";
 							}
 							oprKrList+=vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
-							System.out.println("oprKrList ::::::::::::"+oprKrList);
 							/*String oprKr =vo.getUserAlasCnsNm()+"("+vo.getUserAlasEngNm()+")";
 							orderDetail.setOprKr(oprKr);
 							orderDetail.setOprKr(vo.getUserEml());*/
 						}
 					}
-					smsMsOrdVO1.setKorMng((oprKrList));
+					smsMsOrdVO1.setKorMng(oprKrList);
 					smsMsOrdVOList.add(smsMsOrdVO1);
 				}
 			}
