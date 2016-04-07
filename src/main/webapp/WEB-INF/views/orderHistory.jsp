@@ -94,7 +94,7 @@ $(function(){
             {name:'ordNo',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistSeq',align:'center',width:100,resizable:false, hidden : true,editable:true},
             {name:'ordHistRegDttm',align:'center',width:100,resizable:false,editable:true,editoptions:{readonly:'true'}},
-            {name:'ordStatCd',align:'center',width:70,resizable:true, formatter : "select", editable: true, edittype:"select",editoptions:{value:{N000550100:'接收',N000550200:'进行',N000550300:'确定',N000550400:'结算',N000560100:'DROP'},disabled:'disabled'} },
+            {name:'ordStatCd',align:'center',width:70,resizable:true, formatter : "select", editable: false, edittype:"select",editoptions:{value:{N000550100:'接收',N000550200:'进行',N000550300:'确定',N000550400:'结算',N000560100:'DROP'},disabled:'disabled'} },
             {name:'ordHistWrtrEml',align:'center',width:70,resizable:false, editable:true,editoptions:{readonly:'true'}},
             {name:'ordHistHistCont',align:'left', editable: true, edittype:"text", editoptions:{maxlength:50}}
         ],
