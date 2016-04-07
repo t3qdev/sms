@@ -86,7 +86,7 @@ $(function(){
         colNames:['邮箱','花名','简称','密码','所属','权限1', '权限2', '权限3','权限4','用户状态'],
         colModel:[
             {name:'userEml',align:'center',editable:true, editrules:{required:true,email:true},editoptions:{readonly:'true'}},
-            {name:'userAlasCnsNm',align:'center',width:80, editable: true, editrules:{required:true} },
+            {name:'userAlasCnsNm',align:'center',width:80, editable: true, editrules:{required:true},editoptions:{readonly:'true'} },
 			{name:'userAlasEngNm',align:'center',width:80, editable: true, editrules:{required:true}},
             {name:'userPwd',align:'center', editable: true,editrules:{required:true}, edittype: "password"},
             {name:'ognzDivCd',align:'center',width:80,formatter:'select',editable: true, edittype:"select",editoptions:{value:{N000530100:'上海',N000530200:'韩国'}}},
@@ -267,6 +267,7 @@ $(function(){
         
         $("#jqgrid_a").jqGrid('addRowData','new_'+cli_num,rowdata,'first');
         jQuery("#jqgrid_a").setColProp('userEml', {editoptions:{readonly:false}});
+        jQuery("#jqgrid_a").setColProp('userAlasCnsNm', {editoptions:{readonly:false}});
         jQuery("#jqgrid_a").setColProp('userPwd', {editrules:{required:true}});
         $("#jqg_jqgrid_a_new_"+cli_num).attr("checked","checked").click().parent().parent().addClass("ui-state-highlight");
 		
