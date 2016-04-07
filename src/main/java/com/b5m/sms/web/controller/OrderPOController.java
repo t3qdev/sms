@@ -306,7 +306,6 @@ public class OrderPOController extends AbstractFileController {
 			HttpServletRequest req, String ordNo, String wrtrEml)
 			throws Exception {
 		List<String> imgFileNameList = new ArrayList<String>();
-
 		List<MultipartFile> imgFileList = new ArrayList<MultipartFile>();
 		MultipartFile excelFile = null;
 		LOGGER.debug("1.=============================");
@@ -364,11 +363,11 @@ public class OrderPOController extends AbstractFileController {
 		List<OrderPOGudsVO> poGudsList = new ArrayList<OrderPOGudsVO>();
 
 		// 1-2.버전에 따른 이미지 저장방법이 다름
-
+		List<Integer> imgRowList;
 		if (wb instanceof HSSFWorkbook) {
-			this.excelHSSFPictureInfo((HSSFWorkbook) wb, ordNo);
+			imgRowList = this.excelHSSFPictureInfo((HSSFWorkbook) wb, ordNo);
 		} else {
-			this.excelXSSFPictureInfo((XSSFWorkbook) wb, ordNo);
+			imgRowList = excelXSSFPictureInfo((XSSFWorkbook) wb,	ordNo);
 		}
 		// validate 를 위해 상품부터 체크하여 DB에 넣는다
 		int rows = sheet.getPhysicalNumberOfRows();
@@ -469,12 +468,12 @@ public class OrderPOController extends AbstractFileController {
 
 					poGudsVo.setCrn(StringUtil.excelGetCell(getRow.getCell(16)));
 
-					if (poGudsVo.getGudsUpcId() != null) { // 바코드는 반드시 존재해야하므로
+					if (poGudsVo.getGudsUpcId() != null && imgRowList.indexOf(i)>-1) { // 바코드는 반드시 존재해야하므로
 															// 바코드가 존재하는데까지
 						poGudsList.add(poGudsVo);
 					}
 				}
-			}
+			}//end for i 
 
 			String poAmt = null;
 			String poXchrAmt = null;
@@ -634,12 +633,12 @@ public class OrderPOController extends AbstractFileController {
 
 	}
 
-	private void excelHSSFPictureInfo(HSSFWorkbook workbook, String ordNo)
-			throws IOException {
+	private List<Integer> excelHSSFPictureInfo(HSSFWorkbook workbook,
+			String ordNo) throws IOException {
 
 		List<HSSFPictureData> pictures = workbook.getAllPictures();
 		HSSFSheet sheet = workbook.getSheetAt(0);
-
+		List<Integer> imgRowList = new ArrayList<Integer>();
 		// Make a mapping of Interger and XSSFPictureData
 		// Map<Integer, HSSFPictureData> map = new HashMap<Integer,
 		// HSSFPictureData>();
@@ -661,6 +660,8 @@ public class OrderPOController extends AbstractFileController {
 				byte[] data = pictureData.getData();
 				String ext = pictureData.suggestFileExtension();
 
+				imgRowList.add(rowmark);
+
 				FileOutputStream out = new FileOutputStream(OPT_B5C_IMG + ordNo
 						+ rowmark + ".jpg");
 				out.write(data);
@@ -669,15 +670,15 @@ public class OrderPOController extends AbstractFileController {
 			}
 
 		}
-
+		return imgRowList;
 	}
 
-	private void excelXSSFPictureInfo(XSSFWorkbook workbook, String ordNo)
-			throws IOException {
+	private List<Integer> excelXSSFPictureInfo(XSSFWorkbook workbook,
+			String ordNo) throws IOException {
 
 		List<XSSFPictureData> pictures = workbook.getAllPictures();
 		XSSFSheet sheet = workbook.getSheetAt(0);
-
+		List<Integer> imgRowList = new ArrayList<Integer>();
 		// Make a mapping of Interger and XSSFPictureData
 		Map<Integer, XSSFPictureData> map = new HashMap<Integer, XSSFPictureData>();
 
@@ -697,6 +698,8 @@ public class OrderPOController extends AbstractFileController {
 					byte[] data = pictureData.getData();
 					String ext = pictureData.suggestFileExtension();
 
+					imgRowList.add(ctMarker.getRow());
+
 					FileOutputStream out = new FileOutputStream(OPT_B5C_IMG
 							+ ordNo + ctMarker.getRow() + ".jpg");
 
@@ -706,7 +709,7 @@ public class OrderPOController extends AbstractFileController {
 				}
 			}
 		}
-
+		return imgRowList;
 	}
 
 }
