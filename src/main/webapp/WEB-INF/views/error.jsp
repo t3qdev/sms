@@ -22,7 +22,7 @@
 
 	<!-- dialog -->
 	<div id="login_form" class="dialog">
-		<article>
+		<article  style="padding: 1px 1px;">
 			<h1>
 				<span>系统出错</span>
 			</h1>
@@ -43,33 +43,25 @@
 				%>
 				</h4>
 
-				请输入发生错误的详细过程
+				生错误的详细过程
 
 				<!-- 메일로 보내기 위해 textArea에 넣어둔다. -->
-				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;"></textarea>
-				<textarea id="exceptions" hidden>
+<!-- 				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;" ></textarea> -->
+				<textarea id="exceptions"   cols="75" rows="10" style="margin-top:10px; overflow-x:hidden;" readonly="readonly" >
 					Exception Name: 			
 					<%out.println(stringWriter.toString().substring(0,stringWriter.toString().indexOf('\n')));%>
-					
+										
 					Exception Details:
 					<%
-					if(exception!=null){
-					
-						out.println(stringWriter);
-					
-					}
-					printWriter.close();
-					stringWriter.close();
+						if(exception!=null){
+							out.println(stringWriter);
+						}
+						printWriter.close();
+						stringWriter.close();
 					%>
-				
-				</textarea>
-				<br>
-				<br>
-				<button type="button" class="button btn-sendError" id="myBtn">错误信息发送给管理者</button>
-				<br>
-				<br>
-				联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
-
+									
+				</textarea>			
+				<br>	联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
 			</section>
 		</article>
 	</div>
@@ -127,6 +119,7 @@
 					'确认' : function() {
 						//location.href = parent.document.referrer;
 						window.history.back();
+						window.close();		//백에 실패하면 닫기
 					}
 				}
 			});

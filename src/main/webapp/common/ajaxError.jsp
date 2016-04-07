@@ -22,27 +22,21 @@
 
 	<!-- dialog -->
 	<div id="login_form" class="dialog">
-		<article>
+		<article style="padding: 1px 1px;">
 			<h1>
 				<span>系统出错</span>
 			</h1>
-			<section class="ui-layout-form-b">
+			<section class="ui-layout-form-b" style="background: none;">
 				<h4 style="display:none">
 				</h4>
 
-				请输入发生错误的详细过程
+				生错误的详细过程
 
 				<!-- 메일로 보내기 위해 textArea에 넣어둔다. -->
-				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;"></textarea>
-				<textarea id="exceptions" hidden>
+<!-- 				<textarea id="user_exception" cols="70" rows="5" style="margin-top:10px;"></textarea> -->
+				<textarea id="exceptions" cols="75" rows="10" style="margin-top:10px;" readonly="readonly">
 				</textarea>
-				<br>
-				<br>
-				<button type="button" class="button btn-sendError" id="myBtn">错误信息发送给管理者</button>
-				<br>
-				<br>
-				联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
-
+				<br>联系电话: 02-3404-7288 (上午9点 - 下午6点. 周末，公休日除外)
 			</section>
 		</article>
 	</div>
