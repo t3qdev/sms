@@ -230,32 +230,8 @@ $(function(){
 				 stype:'select', 
 				 searchoptions: {
 					 multiple: true,
-					 dataInit : function (elem) {
-							var options = {
-                             height: "200",
-								minWidth : 'auto',
-								position: {
-									my: 'left bottom',
-									at: 'left top'
-								},
-                             open: function () {
-                                 var $menu = $(".ui-multiselect-menu:visible");
-                                 $menu.css("font-size","11px").width("auto");
-                                 $menu.css("z-index","100");
-                                 return;
-                             }
-							},
-								$elem = $(elem);
-								$elem.multiselect(options);
-								$elem.siblings('button.ui-multiselect').css({
-									width: "100%",
-									marginTop: "1px",
-									marginBottom: "1px",
-									paddingTop: "3px"
-								});
-							},
-					 value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'
-							}
+
+					 value:'N000620100:B5C(一般);N000620200:B5C(特殊);N000620300:线下订单'}
 				 },
             {name:'ordStatCd',index:'ordStatCd',align:'center',width:100,resizable:false,formatter: 'select',
 				 edittype:'select', editoptions:{ 
@@ -267,30 +243,7 @@ $(function(){
 				 stype:'select', 
 				 searchoptions: { 
 					 multiple: true,
-					 dataInit : function (elem) {
-							var options = {
-                         	 height: "200",
-								minWidth : 'auto',
-								position: {
-									my: 'left bottom',
-									at: 'left top'
-								},
-                          open: function () {
-                              var $menu = $(".ui-multiselect-menu:visible");
-                              $menu.css("font-size","11px").width("auto");
-                              $menu.css("z-index","100");
-                              return;
-                          }
-							},
-								$elem = $(elem);
-								$elem.multiselect(options);
-								$elem.siblings('button.ui-multiselect').css({
-									width: "100%",
-									marginTop: "1px",
-									marginBottom: "1px",
-									paddingTop: "3px"
-								});
-							},								
+					
 						value:'N000550100:接受;N000550200:进行;N000550300:确定;N000550400:结算;N000560100:DROP' 
 				}
 			},	
