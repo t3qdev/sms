@@ -489,75 +489,96 @@
              ,A.STD_XCHR_KIND_CD AS STD_XCHR_KIND_CD
              ,A.STD_XCHR_AMT AS STD_XCHR_AMT
  
-             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
-                   THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100'
-                             THEN A.ORD_SUM_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590200'
-                             THEN A.ORD_SUM_AMT / B.USD_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NULL
-                             THEN A.ORD_SUM_AMT * B.RMB_XCHR_AMT / B.USD_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NOT NULL
-                             THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT / B.USD_XCHR_AMT
-                        END
-                   WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400')
-                   THEN CASE WHEN C.STD_XCHR_KIND_CD = 'N000590100'
-                             THEN C.PO_SUM_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590200'
-                             THEN C.PO_SUM_AMT / B.USD_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NULL
-                             THEN C.PO_SUM_AMT * B.RMB_XCHR_AMT / B.USD_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL
-                             THEN C.PO_SUM_AMT * C.STD_XCHR_AMT  / B.USD_XCHR_AMT
-                        END
-              END,2) AS USD_XCHR_AMT
-             ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
-                   THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL
-                             THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL
-                             THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590200'
-                             THEN A.ORD_SUM_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NULL
-                             THEN A.ORD_SUM_AMT * B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NOT NULL
-                             THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT
-                        END
-                   WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400')
-                   THEN CASE WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NULL
-                             THEN C.PO_SUM_AMT * B.USD_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NOT NULL
-                             THEN C.PO_SUM_AMT * C.STD_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590200'
-                             THEN C.PO_SUM_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NULL
-                             THEN C.PO_SUM_AMT * B.RMB_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL
-                             THEN C.PO_SUM_AMT * C.STD_XCHR_AMT
-                        END
-              END,2) AS KRW_XCHR_AMT          
-            ,ROUND(CASE WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500')
-                   THEN CASE WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL
-                             THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL
-                             THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT / B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590200'
-                             THEN A.ORD_SUM_AMT / B.RMB_XCHR_AMT
-                             WHEN A.STD_XCHR_KIND_CD = 'N000590300'
-                             THEN A.ORD_SUM_AMT
-                        END
-                   WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400')
-                   THEN CASE WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NULL
-                             THEN C.PO_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NOT NULL
-                             THEN C.PO_SUM_AMT * C.STD_XCHR_AMT / B.RMB_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590200' AND C.STD_XCHR_AMT IS NULL
-                             THEN C.PO_SUM_AMT / B.RMB_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590200' AND C.STD_XCHR_AMT IS NOT NULL
-                             THEN C.PO_SUM_AMT / C.STD_XCHR_AMT
-                             WHEN C.STD_XCHR_KIND_CD = 'N000590300'
-                             THEN C.PO_SUM_AMT
-                        END
-              END,2) CNS_XCHR_AMT  
+           ,ROUND(
+				  CASE 
+				    WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500') /* 주문 상태코드가 접수/진행/드랍인 경우 */
+				      THEN 
+				        CASE 
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590100' /* 기준화폐가 달러인 경우 */
+				             THEN A.ORD_SUM_AMT /* 그대로 사용 */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화 */
+				             THEN A.ORD_SUM_AMT / B.USD_XCHR_AMT /* 원화 -> 달러로 변환.  */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NULL /* 기준화폐가 위안화이고 기준환율이 null인 경우 */
+				             THEN A.ORD_SUM_AMT * B.RMB_XCHR_AMT / B.USD_XCHR_AMT /* 위안화 -> 달러.  */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 위안화이고 기준환율이 있는 경우 */
+				             THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT / B.USD_XCHR_AMT /* 위안화 -> 달러.  */
+				        END
+				    WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400') /* 주문상태가 PO확정/정산 인 경우 */
+				      THEN 
+				        CASE 
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590100' /* 기준화폐가 달러인 경우 */
+				            THEN C.PO_SUM_AMT /* 그대로 사용 */
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화 */
+				            THEN C.PO_SUM_AMT / B.USD_XCHR_AMT  /* 원화 -> 달러로 변환.  */
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NULL  /* 기준화폐가 위안화이고 기준환율이 null인 경우 */
+				            THEN C.PO_SUM_AMT * B.RMB_XCHR_AMT / B.USD_XCHR_AMT /* 위안화 -> 달러.  */
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 위안화이고 기준환율이 있는 경우 */
+				            THEN C.PO_SUM_AMT * C.STD_XCHR_AMT  / B.USD_XCHR_AMT /* 위안화 -> 달러.  */
+				        END
+				  END,2) 
+				AS USD_XCHR_AMT /* 오더총액(달러표시) */
+				
+				,ROUND(
+				  CASE 
+				    WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500') /* 주문 상태코드가 접수/진행/드랍인 경우 */
+				      THEN 
+				        CASE 
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL /* 기준화폐가 달러인 경우 */
+				            THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT /* 달러 -> 원화 */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 달러인 경우 */
+				            THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT /* 달러 -> 원화 */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화 */
+				            THEN A.ORD_SUM_AMT /* 그대로 */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NULL /* 기준화폐가 위안화이고 */
+				            THEN A.ORD_SUM_AMT * B.RMB_XCHR_AMT /* 위안화 -> 한화  */
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590300' AND A.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 위안화이고 */
+				            THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT /* 위안화 -> 한화  */
+				        END
+				       WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400') /* 주문상태가 PO확정/정산 인 경우 */
+				        THEN 
+				          CASE 
+				            WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NULL /* 기준화폐가 달러인 경우 */
+				              THEN C.PO_SUM_AMT * B.USD_XCHR_AMT /* 달러 -> 원화 */
+				            WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 달러인 경우 */
+				              THEN C.PO_SUM_AMT * C.STD_XCHR_AMT /* 달러 -> 원화 */
+				            WHEN C.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화 */
+				              THEN C.PO_SUM_AMT /* 그대로 */
+				            WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NULL /* 기준화폐가 위안화 */
+				              THEN C.PO_SUM_AMT * B.RMB_XCHR_AMT /* 위안화 -> 한화  */
+				            WHEN C.STD_XCHR_KIND_CD = 'N000590300' AND C.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 위안화이고 */
+				              THEN C.PO_SUM_AMT * C.STD_XCHR_AMT /* 위안화 -> 한화  */
+				          END
+				END,2) 
+				AS KRW_XCHR_AMT      /* 원화 표시       */
+				
+				,ROUND(
+				  CASE 
+				    WHEN A.ORD_STAT_CD IN ('N000550100', 'N000550200', 'N000550500') /* 주문 상태코드가 접수/진행/드랍인 경우 */
+				      THEN 
+				        CASE 
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NULL /* 기준화폐가 달러인 경우 */
+				            THEN A.ORD_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590100' AND A.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 달러인 경우 */
+				            THEN A.ORD_SUM_AMT * A.STD_XCHR_AMT / B.RMB_XCHR_AMT
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화 */
+				            THEN A.ORD_SUM_AMT / B.RMB_XCHR_AMT
+				          WHEN A.STD_XCHR_KIND_CD = 'N000590300' /* 기준화폐가 위안화이고 */
+				            THEN A.ORD_SUM_AMT /* 그대로 */
+				        END
+				    WHEN A.ORD_STAT_CD IN ('N000550300', 'N000550400') /* 주문상태가 PO확정/정산 인 경우 */
+				      THEN 
+				        CASE 
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NULL /* 기준화폐가 달러인 경우 */
+				            THEN C.PO_SUM_AMT * B.USD_XCHR_AMT / B.RMB_XCHR_AMT
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590100' AND C.STD_XCHR_AMT IS NOT NULL /* 기준화폐가 달러인 경우 */
+				            THEN C.PO_SUM_AMT * C.STD_XCHR_AMT / B.RMB_XCHR_AMT
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590200' /* 기준화폐가 원화이고 */
+				            THEN C.PO_SUM_AMT / B.RMB_XCHR_AMT
+				          WHEN C.STD_XCHR_KIND_CD = 'N000590300'  /* 기준화폐가 위안화이고 */
+				            THEN C.PO_SUM_AMT
+				        END
+				  END,2) 
+				AS CNS_XCHR_AMT  /* 위안화 표시 */
      FROM
              sms_ms_ord A LEFT OUTER JOIN tb_ms_xchr B
                                ON xchr_std_dt = period_add(date_format(now(), "%Y%m"), -1)

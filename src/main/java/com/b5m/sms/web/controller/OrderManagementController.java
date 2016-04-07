@@ -233,7 +233,8 @@ public class OrderManagementController  extends AbstractFileController{
 		MultipartFile excelFile = null;
 		for (MultipartFile multipartFile : fileArray) {		
 			String originalFileName = multipartFile.getOriginalFilename();
-			if (originalFileName.endsWith(".xls") || originalFileName.endsWith(".xlsx")) {          //엑셀 파일 확인
+			String originalFileNameLowerCase = originalFileName.toLowerCase();
+			if (originalFileNameLowerCase.endsWith(".xls") || originalFileNameLowerCase.endsWith(".xlsx")) {          //엑셀 파일 확인
 				LOGGER.debug("1.1.=============================" );
 				excelFile = multipartFile;
 			}else{

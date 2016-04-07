@@ -444,12 +444,9 @@ $(function(){
             	krwXchrAmt = '₩ ' + formatMoney(krwXchrAmt,2,',','.'); // "$3,543.76"
             	usdXchrAmt = '\n$ ' + formatMoney(usdXchrAmt,2,',','.'); // "$3,543.76"
             	cnsXchrAmt = '\n¥ ' + formatMoney(cnsXchrAmt,2,',','.'); // "$3,543.76"
-            	
-            	if(stdXchrAmt == ""){
-        			content = "None";
-        		}else{
-	              		content = krwXchrAmt+usdXchrAmt+cnsXchrAmt;
-        		}
+
+            	content = krwXchrAmt+usdXchrAmt+cnsXchrAmt;
+
 
 //             	content += stdXchrAmt;
 				jQuery("#jqgrid_a").jqGrid('setCell', ids[i],"ordSumAmt", jQuery("#jqgrid_a").getRowData(ids[i]).ordSumAmt ,"", {title: content});
