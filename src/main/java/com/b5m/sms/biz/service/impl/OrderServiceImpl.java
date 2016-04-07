@@ -195,7 +195,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			stdXchrKindCd = "N000590100";      //  N000620200 스페셜일 경우 =>달러로 변경(160404)
 		}
 		
-		BigDecimal stdXchrAmt = new BigDecimal("1");			//  기준환율 테이블이 원화로 되어 있으므로 1로 세팅
+		//BigDecimal stdXchrAmt = new BigDecimal("1");			//  기준환율 테이블이 원화로 되어 있으므로 1로 세팅
 		String ordHopeArvlDt = null;      //  희망인도일자 - B5C의 ESTM_RCP_REQ_DT
 		
 		String ordSumAmt = null;   // 딜규모  - sql 에서 계산해옴
@@ -226,7 +226,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 			smsMsOrdVO.setCustId(custId);
 			smsMsOrdVO.setDlvModeCd(dlvModeCd);
 			smsMsOrdVO.setOrdEstmDt(ordEstmDt);
-			smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
+			//smsMsOrdVO.setStdXchrAmt(stdXchrAmt);
 			smsMsOrdVO.setStdXchrKindCd(stdXchrKindCd);
 			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
 			if(ordSumAmt != null) smsMsOrdVO.setOrdSumAmt(new BigDecimal(ordSumAmt));
@@ -339,7 +339,6 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 
 			
 			SmsMsGudsVO smsMsGudsVO = new SmsMsGudsVO();
-			gudsId = gudsId;
 			brndId = tbMsOrdBatchVOList.get(i).getBrndId();
 			gudsKorNm = tbMsOrdBatchVOList.get(i).getGudsNm();
 			gudsCnsNm = tbMsOrdBatchVOList.get(i).getGudsCnsNm();
