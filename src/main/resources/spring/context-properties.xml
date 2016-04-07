@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
 	
-	
+<!-- 	
 	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
 		<property name="properties">
 			<map>
@@ -12,7 +12,8 @@
 		</property>
 	</bean>
 
-	<!-- CDN ImageUploadUtil 초기 설정을 위해 무조건 한 번 인스텐스를 만들어 줌 -->
+ -->	
+ <!-- CDN ImageUploadUtil 초기 설정을 위해 무조건 한 번 인스텐스를 만들어 줌 -->
 	<!-- 	
 	<bean class="com.b5m.sms.common.file.cdn.ImageUploadUtil">
 		<property name="bsDomain" value="${file.cdn.bsDomain}" />

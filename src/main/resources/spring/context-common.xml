@@ -24,7 +24,7 @@
 			<value>60</value>
 		</property>
 	</bean>
-	
+
 	<!-- 
 		http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte:bsl:exception_handling 참고. 
 		사용을 위해서는 사용자가 만든 ServiceImple에서 EgovAbstractServiceImpl를 상속해야 함

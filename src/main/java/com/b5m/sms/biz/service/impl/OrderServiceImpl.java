@@ -521,309 +521,210 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 		// orderManagment 에서 사용, 클라이언트 요청 견적서를(EXCEL) 이용해서 주문이 새로 들어왔을 때, SMS_MS_ORD, SMS_MS_ORD_GUDS 에 INSERT
 		@Override
 		public String insertExcelSmsMsOrdNSmsMsOrdGuds(Workbook wb, User user) throws Exception {
-			Sheet sheet = wb.getSheetAt(0);
-			// TODO Auto-generated method stub
-			String result = "false";
-			int errorCnt=0;
-			String errMsg="";
-//			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
-			// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO
-			String userAlasCnsNm = null;							 //담당자   (중문 화명)
-			String custId = null;								// 클라이언트
-			String ordReqDt = null;							// 문의일자
-			String ordHopeArvlDt = null;					// 희망 인도일자
-			String	 dlvModeCdPlusdlvDestCd = null;		// 견적조건 + 항구 
-			String ctrtTmplYn = null;						// 계약서 템플릿 유무
-			String poSchdDt = null;							// PO예상일자
-			String smplReqYn = null;						// 샘플요청유무
-			String qlfcReqYn = null;							// 자격 요청 유무
-			String custOrdProcCont = null;				 // 주문 프로세스
-			String dlvModeCd = null;	 					// 견적조건
-			String dlvDestCd = null;						// 항구
-			String ordTypeCd = null;
-			String pymtPrvdModeCont=null;				//결제지급방식내용 : 추가됨
-			String ordMemoCont = null;                   //비고
-			boolean checkErr = true;
-			// 엑셀에서 ExcelClientReqGudsVO 변수들 가져와서 대입.
-			List<SmsMsUserVO> cnsUserList=smsMsUserDAO.selectSmsMsUserCnsOprList();
-			
-			
-			userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//담당자
-			for(SmsMsUserVO userVo :cnsUserList){
-				if(userVo.getUserAlasCnsNm().equals(userAlasCnsNm)){
-					checkErr=false;
-				}
-			}
-			if(checkErr){																								//validate1
-				userAlasCnsNm=null;
-				errorCnt++;
-				setExcelCellComment(sheet.getRow(1).getCell(2), "相关中国负责人不存在");
-				System.out.println("val1");
-			}
-			
-			
-			custId = StringUtil.excelGetCell(sheet.getRow(1).getCell(4));    						// 클라이언트
-			ordReqDt = StringUtil.excelGetCell(sheet.getRow(1).getCell(6)); 						// 문의일자
-			if(ordReqDt!=null){
-				ordReqDt = ordReqDt.replace("-", "");
-				ordReqDt.trim();
-				if(!GenericValidator.isDate(ordReqDt, "yyyyMMdd", true)){									//validate2
-					errorCnt++;
-					setExcelCellComment(sheet.getRow(1).getCell(6), "错误的日期格式"); 	
-					System.out.println("val2");
-				}
-				if("".equals(ordReqDt)) ordReqDt=null;
-				if(ordReqDt.length()>8) ordReqDt=null;
+			try{
+				Sheet sheet = wb.getSheetAt(0);
+				// TODO Auto-generated method stub
+				String result = "false";
+				int errorCnt=0;
+				String errMsg="";
+	//			LOGGER.debug(" 2.1.1 엑셀에서 SMS_MS_ORD 정보를 뽑아온다." );
+				// 클라이언트 요청 견적서 excel 에서 받아올 변수들 초기화.     SmsMsOrdVO
+				String userAlasCnsNm = null;							 //담당자   (중문 화명)
+				String custId = null;								// 클라이언트
+				String ordReqDt = null;							// 문의일자
+				String ordHopeArvlDt = null;					// 희망 인도일자
+				String	 dlvModeCdPlusdlvDestCd = null;		// 견적조건 + 항구 
+				String ctrtTmplYn = null;						// 계약서 템플릿 유무
+				String poSchdDt = null;							// PO예상일자
+				String smplReqYn = null;						// 샘플요청유무
+				String qlfcReqYn = null;							// 자격 요청 유무
+				String custOrdProcCont = null;				 // 주문 프로세스
+				String dlvModeCd = null;	 					// 견적조건
+				String dlvDestCd = null;						// 항구
+				String ordTypeCd = null;
+				String pymtPrvdModeCont=null;				//결제지급방식내용 : 추가됨
+				String ordMemoCont = null;                   //비고
+				boolean checkErr = true;
+				// 엑셀에서 ExcelClientReqGudsVO 변수들 가져와서 대입.
+				List<SmsMsUserVO> cnsUserList=smsMsUserDAO.selectSmsMsUserCnsOprList();
 				
-			}
-			ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// 희망 인도일자
-			if(ordHopeArvlDt!=null){
-				ordHopeArvlDt = ordHopeArvlDt.replace("-", "");
-				ordHopeArvlDt.trim();
-				if(!GenericValidator.isDate(ordHopeArvlDt, "yyyyMMdd", true)){							//validate3
-					System.out.println("val3");
-					errorCnt++;
-					setExcelCellComment(sheet.getRow(2).getCell(2), "错误的日期格式"); 	
-				}
-				if("".equals(ordHopeArvlDt)) ordHopeArvlDt=null;
-				if(ordHopeArvlDt.length()>8) ordHopeArvlDt=null;	
-			}
-			dlvModeCdPlusdlvDestCd = StringUtil.excelGetCell(sheet.getRow(2).getCell(4));	// 견적조건 + 항구 	
-//			약자 - 풀네임(항구)
-			if(dlvModeCdPlusdlvDestCd!=null){
-				String [] strArr = null;
-				strArr = dlvModeCdPlusdlvDestCd.trim().split(" ");
-
-				if(strArr.length==2){			
-					dlvModeCd = strArr[0].trim();
-					dlvDestCd = strArr[1].trim();
-
-				}else if(strArr.length==1){
-					dlvModeCd = strArr[0].trim();
-				}else{
-					errorCnt++;																								
-					System.out.println("val10");
-					setExcelCellComment(sheet.getRow(2).getCell(4), "格式应该为'报价条款+空白+港口'"); 	//validate 10
-				}
-			}
-			
-			if(dlvModeCd!=null && "".equals(dlvModeCd) !=true){
-				List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
-				tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvModeCd);
-				if(tbMsCmnCdVOList.size() >0){
-					dlvModeCd = tbMsCmnCdVOList.get(0).getCd();
-				}else{
-					dlvModeCd = null;
-					errorCnt++;																								//validate 11			
-					System.out.println("val11");
-					errMsg="不存在的报价条款";
-					setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的报价条款"); 	
-					
-				}
-			}
-			
-			// 배송 방법은- Code 테이블에서 직접 가져오고, 정확하지 않으면 null 처리 한다.
-			if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
-				List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
-				tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvDestCd);
-				if(tbMsCmnCdVOList.size() == 1){
-					dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
-				}else{
-					dlvDestCd = null;
-					errorCnt++;																								//validate 4			
-					System.out.println("val4");
-					if(!"".equals(errMsg)){
-						errMsg+="\n不存在的港口";
-						setExcelCellComment(sheet.getRow(2).getCell(4),errMsg ); 	
-					}else{
-						setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的港口"); 	
+				
+				userAlasCnsNm = StringUtil.excelGetCell(sheet.getRow(1).getCell(2));  						//담당자
+				for(SmsMsUserVO userVo :cnsUserList){
+					if(userVo.getUserAlasCnsNm().equals(userAlasCnsNm)){
+						checkErr=false;
 					}
 				}
-			}
-			pymtPrvdModeCont=StringUtil.excelGetCell(sheet.getRow(2).getCell(6)); 
-			ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
-			if("Y".equalsIgnoreCase(ctrtTmplYn) || "有".equals(ctrtTmplYn)){ctrtTmplYn="Y";}									
-			else if("N".equalsIgnoreCase(ctrtTmplYn) || "无".equals(ctrtTmplYn)) {ctrtTmplYn="N";}							
-			else{
-				ctrtTmplYn=null;
-				setExcelCellComment(sheet.getRow(3).getCell(2), "输入了错误的值"); 			//validate 5
-				System.out.println("val5");
-			}
-			poSchdDt = StringUtil.excelGetCell(sheet.getRow(3).getCell(6));     							// PO예상일자
-			if(poSchdDt!=null){
-				poSchdDt = poSchdDt.replace("-", "");
-				poSchdDt.trim();
-				if(!GenericValidator.isDate(poSchdDt, "yyyyMMdd", true)){										//validate6
-					System.out.println("val6");
+				if(checkErr){																								//validate1
+					userAlasCnsNm=null;
 					errorCnt++;
-					setExcelCellComment(sheet.getRow(3).getCell(6), "错误的日期格式"); 	
+					setExcelCellComment(sheet.getRow(1).getCell(2), "相关中国负责人不存在");
+					System.out.println("val1");
 				}
-				if("".equals(poSchdDt)) poSchdDt=null;
-				if(poSchdDt.length()>8) poSchdDt=null;
-			}
-			
-			smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// 샘플요청유무
-			if("Y".equalsIgnoreCase(smplReqYn)|| "有".equals(smplReqYn)) {smplReqYn="Y";}
-			else if("N".equalsIgnoreCase(smplReqYn)|| "无".equals(smplReqYn)) {smplReqYn="N";}
-			else{
-				smplReqYn=null;
-				setExcelCellComment(sheet.getRow(3).getCell(4), "输入了错误的值"); 			//validate 7
-				System.out.println("val7");
-			}
-			qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// 자격 요청 유무
-			if("Y".equalsIgnoreCase(qlfcReqYn)|| "有".equals(qlfcReqYn)) {qlfcReqYn="Y";}
-			else if("N".equalsIgnoreCase(qlfcReqYn)|| "无".equals(qlfcReqYn)) {qlfcReqYn="N";}
-			else{
-				setExcelCellComment(sheet.getRow(4).getCell(2), "输入了错误的值"); 			//validate 8
-				qlfcReqYn=null;
-				System.out.println("val8");
-			}
-			custOrdProcCont = StringUtil.excelGetCell(sheet.getRow(4).getCell(4));  			// 주문 프로세스
-			int tempRows = sheet.getPhysicalNumberOfRows();
-			ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//비고
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//			System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
-//			System.out.println("클라이언트 : " + custId);
-//			System.out.println("문의일자 : " + ordReqDt);
-//			System.out.println("희망 인도일자 : " + ordHopeArvlDt);
-//			System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
-//			System.out.println("견적조건  : " + dlvModeCd);
-//			System.out.println("항구  : " + dlvDestCd);
-//			System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
-//			System.out.println("샘플요청유무 : " + smplReqYn);
-//			System.out.println("자격 요청 유무 : " + qlfcReqYn);
-//			System.out.println("주문 프로세스 : " + custOrdProcCont);
-//			System.out.println("비고 : " + ordMemoCont);
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-			// 변수들을 SMS_MS_ORD 에 집어 넣는다.
-			SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();     						// 1. SMS_MS_ORD 에 넣을 VO
-			smsMsOrdVO.setUserAlasCnsNm(userAlasCnsNm);// 담당자명 : 중문화명
-			smsMsOrdVO.setCustId(custId);
-			smsMsOrdVO.setOrdReqDt(ordReqDt);
-			smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
-			smsMsOrdVO.setDlvModeCd(dlvModeCd);
-			smsMsOrdVO.setDlvDestCd(dlvDestCd);
-			smsMsOrdVO.setPoSchdDt(poSchdDt);
-			smsMsOrdVO.setCtrtTmplYn(ctrtTmplYn);
-			smsMsOrdVO.setSmplReqYn(smplReqYn);
-			smsMsOrdVO.setQlfcReqYn(qlfcReqYn);
-			smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
-			smsMsOrdVO.setOrdMemoCont(ordMemoCont);
-			smsMsOrdVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160401 
-			smsMsOrdVO.setStdXchrKindCd("N000590300");		//일반주문인경우 위안화 160404
-			String ordNo = null;
-			ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
-			smsMsOrdVO.setOrdNo(ordNo);
-//				smsMsOrdVO.setB5cOrdNo(b5cOrdNo);  // 방우차이 아니니까 필요 없음.  null
-			smsMsOrdVO.setOrdTypeCd("N000620300");  // 주문유형코드		오프라인
-			smsMsOrdVO.setOrdStatCd("N000550100");		 // 주문상태 코드 : 접수(N000550100)
-//			LOGGER.debug("2.1.2.1  SMS_MS_ORD 에 넣을 VO : "+smsMsOrdVO.toString() );
-//			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  											// SMS_MS_ORD 에 INSERT		//////////////////////////////////////////////
-//			LOGGER.debug("2.1.2.2======SMS_MS_ORD 에 INSERT==========완료" );
-
-			
-			/*SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
-			smsMsUserVO.setUserAlasCnsNm(userAlasCnsNm); 								//  SMS_MS_USER 에 담당자 중국어 화명 있는지 검색
-			List <SmsMsUserVO> smsMsUserVOList = smsMsUserDAO.selectSmsMsUser(smsMsUserVO);
-			if(smsMsUserVOList.size()==1){		// 몇개 더 있을수도 있지만, 여러개가 검색되면 차라리 mapping 을 안 하는 것이 낫다.
-				SmsMsOrdUserVO smsMsOrdUserVO = new SmsMsOrdUserVO();
-				smsMsOrdUserVO.setOrdNo(ordNo);
-				smsMsOrdUserVO.setUserEml(smsMsUserVOList.get(0).getUserEml());
-				smsMsOrdUserDAO.insertSmsMsOrdUser_S(smsMsOrdUserVO);						// SMS_MS_ORD_USER 에 INSERT		//////////////////////////////////////////////
-			}*/
-			
-			// SMS_MS_ORD_HIST 추가.
-			SmsMsOrdHistVO smsMsOrdHistVO = new SmsMsOrdHistVO();
-			smsMsOrdHistVO.setOrdNo(ordNo);
-			String ordHistSeq = smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(smsMsOrdHistVO);
-			int tempSeq = Integer.parseInt(ordHistSeq)+1;
-			ordHistSeq=Integer.toString(tempSeq);
-			smsMsOrdHistVO.setOrdHistSeq(ordHistSeq);
-			smsMsOrdHistVO.setOrdStatCd("N000550100");       // 주문상태 코드 : 접수(N000550100)
-			smsMsOrdHistVO.setOrdHistWrtrEml(user.getUsername());  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
-//				smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
-			smsMsOrdHistVO.setOrdHistHistCont("线下订单 已在进行");   // "오프라인 주문 접수"
-//			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
-
-//			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);								// SMS_MS_ORD_HIST 에 INSERT		//////////////////////////////////////////////
-			
-//			LOGGER.debug("2.1.3.2.======SMS_MS_ORD_HIST 에 INSERT==========완료");
-			
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//			LOGGER.debug("2.1.4.1 엑셀에서 주문의 상품 리스트를 뽑아온다." );
-			int rows = sheet.getPhysicalNumberOfRows();
-
-			int tempNum=1;   					//ord_guds_seq에 넣을 숫자 관리용
-			ordNo = ordNo;						//ordNo
-			String ord_guds_seq=null;   		//NO
-			String gudsId=null;					//상품id   -   b5c gudsId 와는 별개.   이 테이블 자체의 유일키 개념
-			String ordGudsUpcId=null;       		//상품바코드		
-			String ordGudsCnsNm=null;  		//중문 상품명
-			String ordGudsQty=null;     		//상품 수량, (예상요청)수량
-			String ordGudsSizeVal=null;		//주문상품크기값 ,규격
-			String ordGudsSalePrc=null;		//주문상품판매가(PO단가USD)
-			String ordGudsUrlAddr=null;	    // //주문상품url주소, 링크
-			
-			List<SmsMsOrdGudsVO> gudsList = new ArrayList<SmsMsOrdGudsVO>();			//
-			boolean gudsExist = false;
-			for(int i=6; i<rows-1; i++){
 				
 				
-				ordGudsUpcId = StringUtil.getCellUpcId(sheet.getRow(i).getCell(1));
-				ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
-				
-				if(sheet.getRow(i).getCell(3).getCellType()!=Cell.CELL_TYPE_NUMERIC &&sheet.getRow(i).getCell(5).getCellType()!=Cell.CELL_TYPE_BLANK ){					//validate 11
-					errorCnt++;
-					setExcelCellComment(sheet.getRow(i).getCell(3), "输入了错误的值");
-					System.out.println("val11");
+				custId = StringUtil.excelGetCell(sheet.getRow(1).getCell(4));    						// 클라이언트
+				ordReqDt = StringUtil.excelGetCell(sheet.getRow(1).getCell(6)); 						// 문의일자
+				if(ordReqDt!=null){
+					ordReqDt = ordReqDt.replace("-", "");
+					ordReqDt.trim();
+					if(!GenericValidator.isDate(ordReqDt, "yyyyMMdd", true)){									//validate2
+						errorCnt++;
+						setExcelCellComment(sheet.getRow(1).getCell(6), "错误的日期格式"); 	
+						System.out.println("val2");
+					}
+					if("".equals(ordReqDt)) ordReqDt=null;
+					if(ordReqDt.length()>8) ordReqDt=null;
+					
 				}
-				ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
-				ordGudsSizeVal =  StringUtil.getCellUpcId(sheet.getRow(i).getCell(4));
-				
-				if(sheet.getRow(i).getCell(5).getCellType()!=Cell.CELL_TYPE_NUMERIC &&sheet.getRow(i).getCell(5).getCellType()!=Cell.CELL_TYPE_BLANK ){					//validate 9
-					errorCnt++;
-					setExcelCellComment(sheet.getRow(i).getCell(5), "输入了错误的值");
-					System.out.println("val9");
+				ordHopeArvlDt = StringUtil.excelGetCell(sheet.getRow(2).getCell(2)); 				// 희망 인도일자
+				if(ordHopeArvlDt!=null){
+					ordHopeArvlDt = ordHopeArvlDt.replace("-", "");
+					ordHopeArvlDt.trim();
+					if(!GenericValidator.isDate(ordHopeArvlDt, "yyyyMMdd", true)){							//validate3
+						System.out.println("val3");
+						errorCnt++;
+						setExcelCellComment(sheet.getRow(2).getCell(2), "错误的日期格式"); 	
+					}
+					if("".equals(ordHopeArvlDt)) ordHopeArvlDt=null;
+					if(ordHopeArvlDt.length()>8) ordHopeArvlDt=null;	
 				}
-				ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
-				
-//				유효기간 =   ?????= StringUtil.excelGetCell(sheet.getRow(i).getCell(6));      //skip 무시
-				ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
-				
-				
-				// 상품 정보 중에서, (ordGudsCnsNm) 가 빠지면 의미가 없다.
-				if(ordGudsCnsNm!=null && "".equals(ordGudsCnsNm)!=true){
-					gudsExist = true;
-					ord_guds_seq =  String.valueOf(tempNum++);
-					SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
-					smsMsOrdGudsVO.setOrdNo(ordNo);
-					smsMsOrdGudsVO.setOrdGudsSeq(ord_guds_seq);
-					gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
-					smsMsOrdGudsVO.setGudsId(gudsId);
-					smsMsOrdGudsVO.setOrdGudsMpngYn("N");
-					smsMsOrdGudsVO.setOrdGudsUpcId(ordGudsUpcId);
-					smsMsOrdGudsVO.setOrdGudsCnsNm(ordGudsCnsNm);
-					smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
-					smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
-					smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
-					smsMsOrdGudsVO.setOrdGudsSizeVal(ordGudsSizeVal); 		//추가됨 
-					gudsList.add(smsMsOrdGudsVO);
-//					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);				//validate 이후 일관 수행
-//					LOGGER.debug(smsMsOrdGudsVO.toString());
+				dlvModeCdPlusdlvDestCd = StringUtil.excelGetCell(sheet.getRow(2).getCell(4));	// 견적조건 + 항구 	
+	//			약자 - 풀네임(항구)
+				if(dlvModeCdPlusdlvDestCd!=null){
+					String [] strArr = null;
+					strArr = dlvModeCdPlusdlvDestCd.trim().split(" ");
+	
+					if(strArr.length==2){			
+						dlvModeCd = strArr[0].trim();
+						dlvDestCd = strArr[1].trim();
+	
+					}else if(strArr.length==1){
+						dlvModeCd = strArr[0].trim();
+					}else{
+						errorCnt++;																								
+						System.out.println("val10");
+						setExcelCellComment(sheet.getRow(2).getCell(4), "格式应该为'报价条款+空白+港口'"); 	//validate 10
+					}
 				}
-			}
-			if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
-				throw new Exception("Goods list is empty!!");
-				//return "false";
+				
+				if(dlvModeCd!=null && "".equals(dlvModeCd) !=true){
+					List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
+					tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvModeCd);
+					if(tbMsCmnCdVOList.size() >0){
+						dlvModeCd = tbMsCmnCdVOList.get(0).getCd();
+					}else{
+						dlvModeCd = null;
+						errorCnt++;																								//validate 11			
+						System.out.println("val11");
+						errMsg="不存在的报价条款";
+						setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的报价条款"); 	
 						
-			}
-			
-			if(errorCnt==0){				//성공인경우 각종 insert실행
-				//주문정보 삽입
-				smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  			
-				//주문-유저테이블 삽입
-				SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
+					}
+				}
+				
+				// 배송 방법은- Code 테이블에서 직접 가져오고, 정확하지 않으면 null 처리 한다.
+				if(dlvDestCd!=null && "".equals(dlvDestCd) !=true){
+					List<TbMsCmnCdVO> tbMsCmnCdVOList = null;
+					tbMsCmnCdVOList = tbMsCmnCdDAO.selectCmnCdByEtcNCdVal(dlvDestCd);
+					if(tbMsCmnCdVOList.size() == 1){
+						dlvDestCd = tbMsCmnCdVOList.get(0).getCd();
+					}else{
+						dlvDestCd = null;
+						errorCnt++;																								//validate 4			
+						System.out.println("val4");
+						if(!"".equals(errMsg)){
+							errMsg+="\n不存在的港口";
+							setExcelCellComment(sheet.getRow(2).getCell(4),errMsg ); 	
+						}else{
+							setExcelCellComment(sheet.getRow(2).getCell(4), "不存在的港口"); 	
+						}
+					}
+				}
+				pymtPrvdModeCont=StringUtil.excelGetCell(sheet.getRow(2).getCell(6)); 
+				ctrtTmplYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(2));     				// 계약서 템플릿 유무
+				if("Y".equalsIgnoreCase(ctrtTmplYn) || "有".equals(ctrtTmplYn)){ctrtTmplYn="Y";}									
+				else if("N".equalsIgnoreCase(ctrtTmplYn) || "无".equals(ctrtTmplYn)) {ctrtTmplYn="N";}							
+				else{
+					ctrtTmplYn=null;
+					setExcelCellComment(sheet.getRow(3).getCell(2), "输入了错误的值"); 			//validate 5
+					System.out.println("val5");
+				}
+				poSchdDt = StringUtil.excelGetCell(sheet.getRow(3).getCell(6));     							// PO예상일자
+				if(poSchdDt!=null){
+					poSchdDt = poSchdDt.replace("-", "");
+					poSchdDt.trim();
+					if(!GenericValidator.isDate(poSchdDt, "yyyyMMdd", true)){										//validate6
+						System.out.println("val6");
+						errorCnt++;
+						setExcelCellComment(sheet.getRow(3).getCell(6), "错误的日期格式"); 	
+					}
+					if("".equals(poSchdDt)) poSchdDt=null;
+					if(poSchdDt.length()>8) poSchdDt=null;
+				}
+				
+				smplReqYn = StringUtil.excelGetCell(sheet.getRow(3).getCell(4));     					// 샘플요청유무
+				if("Y".equalsIgnoreCase(smplReqYn)|| "有".equals(smplReqYn)) {smplReqYn="Y";}
+				else if("N".equalsIgnoreCase(smplReqYn)|| "无".equals(smplReqYn)) {smplReqYn="N";}
+				else{
+					smplReqYn=null;
+					setExcelCellComment(sheet.getRow(3).getCell(4), "输入了错误的值"); 			//validate 7
+					System.out.println("val7");
+				}
+				qlfcReqYn = StringUtil.excelGetCell(sheet.getRow(4).getCell(2));       				// 자격 요청 유무
+				if("Y".equalsIgnoreCase(qlfcReqYn)|| "有".equals(qlfcReqYn)) {qlfcReqYn="Y";}
+				else if("N".equalsIgnoreCase(qlfcReqYn)|| "无".equals(qlfcReqYn)) {qlfcReqYn="N";}
+				else{
+					setExcelCellComment(sheet.getRow(4).getCell(2), "输入了错误的值"); 			//validate 8
+					qlfcReqYn=null;
+					System.out.println("val8");
+				}
+				custOrdProcCont = StringUtil.excelGetCell(sheet.getRow(4).getCell(4));  			// 주문 프로세스
+				int tempRows = sheet.getPhysicalNumberOfRows();
+				ordMemoCont = StringUtil.excelGetCell(sheet.getRow(tempRows-1).getCell(1));  	//비고
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//			System.out.println("담당자 명 : " + userAlasCnsNm);        //담당자명 : 중문화명
+	//			System.out.println("클라이언트 : " + custId);
+	//			System.out.println("문의일자 : " + ordReqDt);
+	//			System.out.println("희망 인도일자 : " + ordHopeArvlDt);
+	//			System.out.println("견적조건 + 항구  : " + dlvModeCdPlusdlvDestCd);
+	//			System.out.println("견적조건  : " + dlvModeCd);
+	//			System.out.println("항구  : " + dlvDestCd);
+	//			System.out.println("계약서 템플릿 유무 : " + ctrtTmplYn);
+	//			System.out.println("샘플요청유무 : " + smplReqYn);
+	//			System.out.println("자격 요청 유무 : " + qlfcReqYn);
+	//			System.out.println("주문 프로세스 : " + custOrdProcCont);
+	//			System.out.println("비고 : " + ordMemoCont);
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+				// 변수들을 SMS_MS_ORD 에 집어 넣는다.
+				SmsMsOrdVO smsMsOrdVO = new SmsMsOrdVO();     						// 1. SMS_MS_ORD 에 넣을 VO
+				smsMsOrdVO.setUserAlasCnsNm(userAlasCnsNm);// 담당자명 : 중문화명
+				smsMsOrdVO.setCustId(custId);
+				smsMsOrdVO.setOrdReqDt(ordReqDt);
+				smsMsOrdVO.setOrdHopeArvlDt(ordHopeArvlDt);
+				smsMsOrdVO.setDlvModeCd(dlvModeCd);
+				smsMsOrdVO.setDlvDestCd(dlvDestCd);
+				smsMsOrdVO.setPoSchdDt(poSchdDt);
+				smsMsOrdVO.setCtrtTmplYn(ctrtTmplYn);
+				smsMsOrdVO.setSmplReqYn(smplReqYn);
+				smsMsOrdVO.setQlfcReqYn(qlfcReqYn);
+				smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
+				smsMsOrdVO.setOrdMemoCont(ordMemoCont);
+				smsMsOrdVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160401 
+				smsMsOrdVO.setStdXchrKindCd("N000590300");		//일반주문인경우 위안화 160404
+				String ordNo = null;
+				ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
+				smsMsOrdVO.setOrdNo(ordNo);
+	//				smsMsOrdVO.setB5cOrdNo(b5cOrdNo);  // 방우차이 아니니까 필요 없음.  null
+				smsMsOrdVO.setOrdTypeCd("N000620300");  // 주문유형코드		오프라인
+				smsMsOrdVO.setOrdStatCd("N000550100");		 // 주문상태 코드 : 접수(N000550100)
+	//			LOGGER.debug("2.1.2.1  SMS_MS_ORD 에 넣을 VO : "+smsMsOrdVO.toString() );
+	//			smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  											// SMS_MS_ORD 에 INSERT		//////////////////////////////////////////////
+	//			LOGGER.debug("2.1.2.2======SMS_MS_ORD 에 INSERT==========완료" );
+	
+				
+				/*SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
 				smsMsUserVO.setUserAlasCnsNm(userAlasCnsNm); 								//  SMS_MS_USER 에 담당자 중국어 화명 있는지 검색
 				List <SmsMsUserVO> smsMsUserVOList = smsMsUserDAO.selectSmsMsUser(smsMsUserVO);
 				if(smsMsUserVOList.size()==1){		// 몇개 더 있을수도 있지만, 여러개가 검색되면 차라리 mapping 을 안 하는 것이 낫다.
@@ -831,36 +732,140 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 					smsMsOrdUserVO.setOrdNo(ordNo);
 					smsMsOrdUserVO.setUserEml(smsMsUserVOList.get(0).getUserEml());
 					smsMsOrdUserDAO.insertSmsMsOrdUser_S(smsMsOrdUserVO);						// SMS_MS_ORD_USER 에 INSERT		//////////////////////////////////////////////
+				}*/
+				
+				// SMS_MS_ORD_HIST 추가.
+				SmsMsOrdHistVO smsMsOrdHistVO = new SmsMsOrdHistVO();
+				smsMsOrdHistVO.setOrdNo(ordNo);
+				String ordHistSeq = smsMsOrdHistDAO.selectSmsMsOrdHistSeqCount(smsMsOrdHistVO);
+				int tempSeq = Integer.parseInt(ordHistSeq)+1;
+				ordHistSeq=Integer.toString(tempSeq);
+				smsMsOrdHistVO.setOrdHistSeq(ordHistSeq);
+				smsMsOrdHistVO.setOrdStatCd("N000550100");       // 주문상태 코드 : 접수(N000550100)
+				smsMsOrdHistVO.setOrdHistWrtrEml(user.getUsername());  				// Excel 을 클라이언트가 올렸으니까, 클라이언트 이름으로
+	//				smsMsOrdHistVO.setOrdHistRegDttm(ordHistRegDttm);     // SQL 문에서 NOW() 사용
+				smsMsOrdHistVO.setOrdHistHistCont("线下订单 已在进行");   // "오프라인 주문 접수"
+	//			LOGGER.debug("2.1.3.1.  SMS_MS_ORD_HIST 에 넣을 VO : "+smsMsOrdHistVO.toString());
+	
+	//			smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);								// SMS_MS_ORD_HIST 에 INSERT		//////////////////////////////////////////////
+				
+	//			LOGGER.debug("2.1.3.2.======SMS_MS_ORD_HIST 에 INSERT==========완료");
+				
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//			LOGGER.debug("2.1.4.1 엑셀에서 주문의 상품 리스트를 뽑아온다." );
+				int rows = sheet.getPhysicalNumberOfRows();
+	
+				int tempNum=1;   					//ord_guds_seq에 넣을 숫자 관리용
+				ordNo = ordNo;						//ordNo
+				String ord_guds_seq=null;   		//NO
+				String gudsId=null;					//상품id   -   b5c gudsId 와는 별개.   이 테이블 자체의 유일키 개념
+				String ordGudsUpcId=null;       		//상품바코드		
+				String ordGudsCnsNm=null;  		//중문 상품명
+				String ordGudsQty=null;     		//상품 수량, (예상요청)수량
+				String ordGudsSizeVal=null;		//주문상품크기값 ,규격
+				String ordGudsSalePrc=null;		//주문상품판매가(PO단가USD)
+				String ordGudsUrlAddr=null;	    // //주문상품url주소, 링크
+				
+				List<SmsMsOrdGudsVO> gudsList = new ArrayList<SmsMsOrdGudsVO>();			//
+				boolean gudsExist = false;
+				for(int i=6; i<rows-1; i++){
+					
+					
+					ordGudsUpcId = StringUtil.getCellUpcId(sheet.getRow(i).getCell(1));
+					ordGudsCnsNm = StringUtil.excelGetCell(sheet.getRow(i).getCell(2));
+					
+					if(sheet.getRow(i).getCell(3).getCellType()!=Cell.CELL_TYPE_NUMERIC &&sheet.getRow(i).getCell(3).getCellType()!=Cell.CELL_TYPE_BLANK ){					//validate 11
+						errorCnt++;
+						setExcelCellComment(sheet.getRow(i).getCell(3), "输入了错误的值");
+						System.out.println("val11");
+					}
+					ordGudsQty = StringUtil.excelGetCell(sheet.getRow(i).getCell(3));
+					ordGudsSizeVal =  StringUtil.getCellUpcId(sheet.getRow(i).getCell(4));
+					
+					if(sheet.getRow(i).getCell(5).getCellType()!=Cell.CELL_TYPE_NUMERIC &&sheet.getRow(i).getCell(5).getCellType()!=Cell.CELL_TYPE_BLANK ){					//validate 9
+						errorCnt++;
+						setExcelCellComment(sheet.getRow(i).getCell(5), "输入了错误的值");
+						System.out.println("val9");
+					}
+					ordGudsSalePrc = StringUtil.excelGetCell(sheet.getRow(i).getCell(5));
+					
+	//				유효기간 =   ?????= StringUtil.excelGetCell(sheet.getRow(i).getCell(6));      //skip 무시
+					ordGudsUrlAddr = StringUtil.excelGetCell(sheet.getRow(i).getCell(7));
+					
+					
+					// 상품 정보 중에서, (ordGudsCnsNm) 가 빠지면 의미가 없다.
+					if(ordGudsCnsNm!=null && "".equals(ordGudsCnsNm)!=true){
+						gudsExist = true;
+						ord_guds_seq =  String.valueOf(tempNum++);
+						SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
+						smsMsOrdGudsVO.setOrdNo(ordNo);
+						smsMsOrdGudsVO.setOrdGudsSeq(ord_guds_seq);
+						gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
+						smsMsOrdGudsVO.setGudsId(gudsId);
+						smsMsOrdGudsVO.setOrdGudsMpngYn("N");
+						smsMsOrdGudsVO.setOrdGudsUpcId(ordGudsUpcId);
+						smsMsOrdGudsVO.setOrdGudsCnsNm(ordGudsCnsNm);
+						smsMsOrdGudsVO.setOrdGudsQty(ordGudsQty);
+						smsMsOrdGudsVO.setOrdGudsSalePrc(ordGudsSalePrc);
+						smsMsOrdGudsVO.setOrdGudsUrlAddr(ordGudsUrlAddr);
+						smsMsOrdGudsVO.setOrdGudsSizeVal(ordGudsSizeVal); 		//추가됨 
+						gudsList.add(smsMsOrdGudsVO);
+	//					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);				//validate 이후 일관 수행
+	//					LOGGER.debug(smsMsOrdGudsVO.toString());
+					}
+				}
+				if(gudsExist == false){        // 상품이 하나도 없으면, 주문생성 X
+					throw new Exception("Goods list is empty!!");
+					//return "false";
+							
 				}
 				
-				//히스토리 삽입
-				smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);
-				
-				//상품삽입
-				for(SmsMsOrdGudsVO smsMsOrdGudsVO:gudsList){
-					smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);
+				if(errorCnt==0){				//성공인경우 각종 insert실행
+					//주문정보 삽입
+					smsMsOrdDAO.insertSmsMsOrd_S(smsMsOrdVO);  			
+					//주문-유저테이블 삽입
+					SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
+					smsMsUserVO.setUserAlasCnsNm(userAlasCnsNm); 								//  SMS_MS_USER 에 담당자 중국어 화명 있는지 검색
+					List <SmsMsUserVO> smsMsUserVOList = smsMsUserDAO.selectSmsMsUser(smsMsUserVO);
+					if(smsMsUserVOList.size()==1){		// 몇개 더 있을수도 있지만, 여러개가 검색되면 차라리 mapping 을 안 하는 것이 낫다.
+						SmsMsOrdUserVO smsMsOrdUserVO = new SmsMsOrdUserVO();
+						smsMsOrdUserVO.setOrdNo(ordNo);
+						smsMsOrdUserVO.setUserEml(smsMsUserVOList.get(0).getUserEml());
+						smsMsOrdUserDAO.insertSmsMsOrdUser_S(smsMsOrdUserVO);						// SMS_MS_ORD_USER 에 INSERT		//////////////////////////////////////////////
+					}
+					
+					//히스토리 삽입
+					smsMsOrdHistDAO.insertSmsMsOrdHist(smsMsOrdHistVO);
+					
+					//상품삽입
+					for(SmsMsOrdGudsVO smsMsOrdGudsVO:gudsList){
+						smsMsOrdGudsDAO.insertSmsMsOrdGuds_S(smsMsOrdGudsVO);
+					}
+					result = "success";
+				}else{					//실패인경우 _엑셀 파일 생성후 파일 이름 return
+					//잘못된 경우	 invailed excel을 로컬에 저장하고 내려받을 수 있도록 한다.
+					String tempDir = OPT_B5C_ETC;
+					String fileName;
+					String invalidExcelFileFullName;
+					fileName = "invalid_EstimateRequest_" + DateUtil.sGetCurrentTime("yyyyMMddHHmmssSSS") + ".xlsx";
+					invalidExcelFileFullName = tempDir + fileName;
+					File invalidExcelFile = new File(invalidExcelFileFullName);
+					invalidExcelFile.setWritable(true, false);
+	
+					FileOutputStream out = new FileOutputStream(invalidExcelFile);
+					wb.write(out);
+					out.flush();
+					if(out!=null)out.close();
+					result=fileName;
 				}
-				result = "success";
-			}else{					//실패인경우 _엑셀 파일 생성후 파일 이름 return
-				//잘못된 경우	 invailed excel을 로컬에 저장하고 내려받을 수 있도록 한다.
-				String tempDir = OPT_B5C_ETC;
-				String fileName;
-				String invalidExcelFileFullName;
-				fileName = "invalid_EstimateRequest_" + DateUtil.sGetCurrentTime("yyyyMMddHHmmssSSS") + ".xlsx";
-				invalidExcelFileFullName = tempDir + fileName;
-				File invalidExcelFile = new File(invalidExcelFileFullName);
-				invalidExcelFile.setWritable(true, false);
-
-				FileOutputStream out = new FileOutputStream(invalidExcelFile);
-				wb.write(out);
-				out.flush();
-				if(out!=null)out.close();
-				result=fileName;
+				
+	
+				
+				return result;
+			}catch(NullPointerException npe){
+				LOGGER.error("Wrong Excel Template");
+				throw new Exception("Wrong Excel Templete",npe);
 			}
-			
-
-			
-			return result;
 //			LOGGER.debug("2.1.4.2.======SMS_MS_ORD_GUDS 에 INSERT==========완료" );
 		}
 

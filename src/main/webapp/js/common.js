@@ -40,7 +40,7 @@ $(function(){
 	   error: function(jqXHR, textStatus, errorThrown ){
 	    	var statusCode = jqXHR.status;
 	    	if(statusCode === 500) {
-	    		alert("An error orcured!");
+	    		alert("An error occurred!");
 	    		var jsonObj =$.parseJSON(jqXHR.responseText);
 	    		$('<form action="/common/ajaxError.jsp" method="POST">' + 
 	    				'<input type="hidden" name="error" value="' + jsonObj.error + '">' +

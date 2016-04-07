@@ -47,7 +47,11 @@ public class B5MSimpleMappingExceptionResolver extends SimpleMappingExceptionRes
 			}
 			String error;
 			try {
-				error = URLEncoder.encode(ex.getMessage(), "UTF-8");
+				if(ex!=null && ex.getMessage()!=null){
+					error = URLEncoder.encode(ex.getMessage(), "UTF-8");
+				}else{
+					error="unknown";
+				}
 			} catch (UnsupportedEncodingException e1) {
 				error = "unknown";
 				e1.printStackTrace();
