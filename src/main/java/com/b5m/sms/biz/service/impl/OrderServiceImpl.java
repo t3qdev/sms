@@ -797,8 +797,8 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 						SmsMsOrdGudsVO smsMsOrdGudsVO = new SmsMsOrdGudsVO();											// SMS_MS_ORD_GUDS 에 넣을 VO
 						smsMsOrdGudsVO.setOrdNo(ordNo);
 						smsMsOrdGudsVO.setOrdGudsSeq(ord_guds_seq);
-						gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();
-						smsMsOrdGudsVO.setGudsId(gudsId);
+/*						gudsId = smsMsOrdGudsDAO.selectSmsMsOrdGudsGudsIdCount();				//잘못된 구문160408
+						smsMsOrdGudsVO.setGudsId(gudsId);*/
 						smsMsOrdGudsVO.setOrdGudsMpngYn("N");
 						smsMsOrdGudsVO.setOrdGudsUpcId(ordGudsUpcId);
 						smsMsOrdGudsVO.setOrdGudsCnsNm(ordGudsCnsNm);
