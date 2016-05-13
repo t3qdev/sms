@@ -50,6 +50,7 @@ public class UserManagementController {
 	public String userManagement(HttpSession session, Model model) throws Exception{
 		SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
 		String result2 = "userManagement";
+		String test="test";
 		List<SmsMsUserVO> smsMsUserVOList = null;
 		smsMsUserVOList = userService.selectSmsMsUser(smsMsUserVO);     // selectSmsMsUser에 null VO를 넣어서 모든 user 나올수 있게 한다.
 		for(int i=0; i<smsMsUserVOList.size();i++){
