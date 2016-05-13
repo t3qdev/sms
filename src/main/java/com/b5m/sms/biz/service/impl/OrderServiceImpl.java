@@ -709,7 +709,7 @@ public class OrderServiceImpl extends AbstractFileController implements OrderSer
 				smsMsOrdVO.setCustOrdProcCont(custOrdProcCont);
 				smsMsOrdVO.setOrdMemoCont(ordMemoCont);
 				smsMsOrdVO.setPymtPrvdModeCont(pymtPrvdModeCont);		//추가160401 
-				smsMsOrdVO.setStdXchrKindCd("N000590300");		//일반주문인경우 위안화 160404
+				smsMsOrdVO.setStdXchrKindCd("N000590100");		//일반주문인경우 위안화 160404 ->오프라인 
 				String ordNo = null;
 				ordNo = smsMsOrdDAO.selectSmsMsOrdMaxTodaysOrdNo();
 				smsMsOrdVO.setOrdNo(ordNo);

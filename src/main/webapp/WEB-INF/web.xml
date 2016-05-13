@@ -34,13 +34,13 @@
 
 	<!-- Root Web Application Context 설정 -->
 	<!-- Root Web App. Context 디폴트 설정파일 (/WEB-INF/applicationContext.xml)을 사용하지 않을 때. 설정파일 위치 지정 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value> classpath*:spring/context-*.xml </param-value>
 	</context-param>
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
 
 	<!-- Servlet Web Application Context 설정 -->
 	<servlet>

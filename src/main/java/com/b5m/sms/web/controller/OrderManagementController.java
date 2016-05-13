@@ -480,16 +480,16 @@ public class OrderManagementController extends AbstractFileController {
 	}
 
 	
-//	 // DELETE
-//	 // 개발 및 안정화 과정 중에서, DB 를 지우고 다시 Batch 해야 하는 상황 때문에 만든 함수입니다.
-//	 // 서비스가 진행되고 나서는 이 부분은 삭제 해야 합니다.
-//	 @RequestMapping(value="/deleteBeforeFirstBatch")
-//	 public String deleteBeforeFirstBatch(HttpServletRequest request,
-//	 HttpServletResponse response) throws Exception{
-//	 orderService.deleteBeforeFirstBatch();
-//	 String result = "orderManagement";
-//	 return result;
-//	 }
+	 // DELETE
+	 // 개발 및 안정화 과정 중에서, DB 를 지우고 다시 Batch 해야 하는 상황 때문에 만든 함수입니다.
+	 // 서비스가 진행되고 나서는 이 부분은 삭제 해야 합니다.
+	 @RequestMapping(value="/deleteBeforeFirstBatch")
+	 public String deleteBeforeFirstBatch(HttpServletRequest request,
+	 HttpServletResponse response) throws Exception{
+	 orderService.deleteBeforeFirstBatch();
+	 String result = "orderManagement";
+	 return result;
+	 }
 	
 	
 
