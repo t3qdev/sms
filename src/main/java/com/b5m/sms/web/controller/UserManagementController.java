@@ -47,10 +47,37 @@ public class UserManagementController {
 	public UserService userService;
 
 	@RequestMapping(value="/userManagementView")
-	public String userManagement(HttpSession session, Model model){
-		String result = "userManagement";
+	public String userManagement(HttpSession session, Model model) throws Exception{
+		SmsMsUserVO smsMsUserVO = new SmsMsUserVO();
 		String result2 = "userManagement";
-		//충돌테스트를 위한 내용들
+		List<SmsMsUserVO> smsMsUserVOList = null;
+		smsMsUserVOList = userService.selectSmsMsUser(smsMsUserVO);     // selectSmsMsUser에 null VO를 넣어서 모든 user 나올수 있게 한다.
+		for(int i=0; i<smsMsUserVOList.size();i++){
+			SmsMsRoleUserVO smsMsRoleUserVO = new SmsMsRoleUserVO();
+			smsMsRoleUserVO.setUserEml(smsMsUserVOList.get(i).getUserEml());   
+			List<SmsMsRoleUserVO> smsMsRoleUserVOList = null;
+			smsMsRoleUserVOList = userService.selectSmsMsRoleUser(smsMsRoleUserVO);  // 한 list 의 유저의 모든 role 을 가져온다.
+			if(smsMsRoleUserVOList!=null){		//role 갯수만큼 VO 에 넣어준다.
+				if(smsMsRoleUserVOList.size()==1){
+					smsMsUserVOList.get(i).setRoleGrpDivCd1(smsMsRoleUserVOList.get(0).getRoleGrpDivCd());
+				}else if(smsMsRoleUserVOList.size()==2){
+					smsMsUserVOList.get(i).setRoleGrpDivCd1(smsMsRoleUserVOList.get(0).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd2(smsMsRoleUserVOList.get(1).getRoleGrpDivCd());
+				}else if(smsMsRoleUserVOList.size()==3){
+					smsMsUserVOList.get(i).setRoleGrpDivCd1(smsMsRoleUserVOList.get(0).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd2(smsMsRoleUserVOList.get(1).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd3(smsMsRoleUserVOList.get(2).getRoleGrpDivCd());
+				}else if(smsMsRoleUserVOList.size()==4){
+					smsMsUserVOList.get(i).setRoleGrpDivCd1(smsMsRoleUserVOList.get(0).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd2(smsMsRoleUserVOList.get(1).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd3(smsMsRoleUserVOList.get(2).getRoleGrpDivCd());
+					smsMsUserVOList.get(i).setRoleGrpDivCd4(smsMsRoleUserVOList.get(3).getRoleGrpDivCd());
+				}else{
+					
+				}
+				smsMsUserVOList.get(i).setUserPwd("**********");         // 패스워드는 암호화 되어 있다. 하지만 jsp 로 보내주지 않는다.
+			}
+		}
 		
 		return result2;
 	}
