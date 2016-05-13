@@ -49,7 +49,10 @@ public class UserManagementController {
 	@RequestMapping(value="/userManagementView")
 	public String userManagement(HttpSession session, Model model){
 		String result = "userManagement";
-		return result;
+		String result2 = "userManagement";
+		//충돌테스트를 위한 내용들
+		
+		return result2;
 	}
 	
 	@ResponseBody
